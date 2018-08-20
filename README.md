@@ -35,3 +35,6 @@ But how to train general adversarial network with such big data beforehand.
 
 Sixth idea is *recurrent neural networks* to predict some event. For example
 explosion of a stellar object from photometry.
+
+OpenAI's Request for Research is good resource for inspiration:
+https://blog.openai.com/requests-for-research-2/
