@@ -49,16 +49,18 @@ Third idea is *unsupervised learning* that is very needed area of research
 and very hard. The applications are obvious as there is many unlabeled data
 in astronomy.
 
-Forth idea is *recurrent neural networks* to predict some event. For example
-explosion of a stellar object from photometry.
-First idea is *meta learning* which I am currently most excited about
+Forth idea is *meta learning* which I am currently most excited about
 but I need to do a lot of reading to get know what is possible to do
 and what are the applications.
 
-Fifth idea is *reinforcement learning* that would be very nice as it is
+Fifth idea is *recurrent neural networks* to predict some event. For example
+explosion of a stellar object from photometry. Anomaly detection in stellar
+catalogues to search for interesting objects.
+
+Sixth idea is *reinforcement learning* that would be very nice as it is
 an exciting area of research but the application to astronomy is not obvious
 now to me. Maybe interactive learning where human select what he want to find
 is large data and the network is learning what she or he want to find.
 
-Sixth idea is *natural language processing* which seems unsuitable for
+Seventh idea is *natural language processing* which seems unsuitable for
 astronomy.
