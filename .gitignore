@@ -1,6 +1,10 @@
 tex/thesis.pdf
 tex/*.ref
 
+## Cover
+tex/cover/cover-black-white.pdf
+tex/cover/cover-inverse-colors.pdf
+
 ## CTUstyle
 ctustyle2/
 
