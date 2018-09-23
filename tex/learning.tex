@@ -1,9 +1,107 @@
 \chap Machine Learning
 
-Blablabla~\cite[Goodfellow2016].
-
 \sec Transfer Learning
 
 In~\cite[Ackermann2018] transfer learning is used as {\em regularization}.
 Their network for classification of galaxy mergers is pretrained with ImageNet
 dataset.
+
+\sec Deep Learning
+
+Deep learning survey according to~\cite[Goodfellow2016].
+
+\sec Active Learning
+
+This section is summary of~\cite[Settles2009]. The idea of {\em active
+learning} is that a machine learning algorithm can achieve better accuracy
+with fewer training examples if it is allowed to choose the data from which
+it learns. An active learner my pose {\em queries} for data instances to be
+labeled by an {\em oracle} (a human expert).
+
+\secc Scenarios
+
+There are three problem scenarios in which the learning algorithm may ask
+queries {\em membership query synthesis}, {\em stream-based selective sampling}
+and {\em pool-based sampling}.
+
+All these scenarios assume that queries take the form of unlabeled examples
+to be labeled by the oracle.
+
+In {\bf membership query synthesis} the learner may request labeling of any
+unlabeled example in the input space, including synthetically generated
+examples, rather than sampling from underlying distribution. Query synthesis
+is reasonable for many problems but may produce examples without semantic
+meaning that are awkward to label if the oracle is a human annotator.
+
+{\bf Stream-based selective sampling} assumes that obtaining an unlabeled
+example is inexpensive, so it first sampled the underlying distribution
+and that it decides whether or not to request its label.  The decision whether
+or not to query an example can be based on evaluation of some informativeness
+measure and setting threshold or other query strategy.
+
+{\bf Pool-based sampling} is optimal if there large collection of unlabeled
+data can be gathered at once. It assumes a small set of labeled data $\cal L$
+and a large pool of unlabeled data $\cal U$. Queries are selectively drawn
+from the pool according to an informativeness measure used to evaluate all
+examples in the pool.
+
+The main difference between stream-base and pool-based active learning is
+that the stream-based process the data sequentially and make the decisions
+individually while the pool-based ranks the entire collection before
+selecting the best query.
+
+\secc Query Strategy Framework
+
+All active learning scenarios involve evaluating the informativeness
+of unlabeled example. Here are some proposed ways of formulating such query
+strategies:
+
+\begitems
+* passive sampling,
+* uncertainty sampling,
+* query-by-committee,
+* expected model change,
+* expected error reduction,
+* variance reduction and
+* density-weighted methods.
+\enditems
+
+The simplest is {\em passive sampling} which selects examples at random.
+
+The most commonly used strategy is {\em uncertainty sampling} that queries
+examples about which it is least certain how to label. For example
+{\em Shannon's entropy} can be used.
+
+A more theoretically-motivated approach is the {\em query-by-committee}
+(\glref{QBC}) algorithm. The \glref{QBC} involves maintaining a committee of
+${\cal C} = \{\theta^{(1)}, \dots, \theta^{(C)}\}$ of $C$ models
+which vote on the labeling query candidates. The most informative query is
+the example they most disagree on (can be measured using
+Kullback-Leibler divergence).
+
+{\em Expected model change} query strategy framework is based on
+decision-theoretic approach, selecting the example with biggest impact to
+the current model if its label is known.
+
+Similar idea of {\em expected error reduction} is to choose an example based
+on how much the generalization error is likely to be reduced. Related
+method is {\em variance reduction} which tries to reduce generalization error
+indirectly by minimizing output variance.
+
+Lastly the survey present {\em density-weighted methods} which model the input
+distribution explicitly during query selection to find informative instances
+which are both uncertain and representative (inhabit dense regions of the input
+space).
+
+\secc Related Research Areas
+
+Active learning is very similar to
+{\em semi-supervised learning}~\cite[Zhu2005], but while
+semi-supervised learning methods exploit the area they are most confident
+about, the active learning methods attempt to explore the uncertain aspects.
+
+Other similar area to active learning is
+{\em reinforcement learning}~\cite[Sutton2018] in which learner interacts
+with an environment via actions and tries to find optimal policy with respect
+to rewards. The relationship to active learning is that, in order to perform
+well, the learner must be proactive.
