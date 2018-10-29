@@ -105,3 +105,59 @@ Other similar area to active learning is
 with an environment via actions and tries to find optimal policy with respect
 to rewards. The relationship to active learning is that, in order to perform
 well, the learner must be proactive.
+
+\sec Machine Learning in Astronomy
+
+\secc Active Learning to Overcome Sample Selection Bias
+
+In~\cite[Richards2012] authors use active learning to overcome the {\em sample
+selection bias} (in astronomy the distributions of training and testing
+data are usually different). They aim to classify variable
+stars from light curves from archive data different that the data used for
+learning the classifier using {\em importance weighting}, {\em co-training}
+and {\em active learning}. Result is that active learning perform best on
+their astronomical data.
+
+\secc Transfer Learning in Astronomy: A New Machine-Learning Paradigm
+
+In~\cite[Vilalta2017] Vilalta studies usage of transfer learning in astronomy.
+Common machine learning assumption is that a training distribution is static
+but there is wide range of application which do not follow this assumption.
+For example there is a lot of information known about nearby objects but
+as technology improves it is possible to observe more distant objects which come
+from very different distribution because distant objects can be observed only
+if they are luminous enough.
+
+A source dataset $T_s = \{({\bf x}, y)\}$ where ${\bf x} \in {\cal X}$ is
+a feature vector and $y \in {\cal Y}$ is a class. A source dataset produces
+a predictive model $f_s({\bf x})$ which needs some adaptation to perform better
+on a new distribution. Examples in $T_s$ are drawn from a joint
+distribution $P_s({\bf x}, y)$. Then there is the marginal distribution
+$P_s({\bf x})$ and the posterior distribution $P_s(y | {\bf x})$. The target
+dataset $T_t$ corresponds to a new application similar to the source dataset.
+Transfer learning helps to exploit previous knowledge acquired in $f_s({\bf x})$
+so that classifier $f_t({\bf x})$ does not need to be created from scratch.
+
+In homogenous transfer learning the feature representations are the same
+${\cal X}_s = {\cal X}_t$ otherwise it is called heterogeous. In homogenous
+transfer learning there can be differences in marginal distributions
+$P_s({\bf x}) \neq P_t({\bf x})$, in posterior distributions
+$P_s(y | {\bf x}) \neq P_t(y | {\bf x})$ or in both.
+
+There are different approches to transfer learning. One is
+{\em covariance-shift} where the model is built on a new source
+distribution which is weighted to be similar to target distribution.
+Another approach is to adapt model parameter in some way to perform better
+on a target distribution.
+
+The paper then describes application of transfer learning where source domain
+is well-labeled spectroscopic data and target domain is data from
+a photometric survey. It uses PCA and other methods to map the to dataset
+to a common space.
+
+{\em Negative transfer} is a phenomenon where the use of transfer learning
+leads to loss of performance.
+
+Finaly, during experiments, when the performance of transfer learning is not
+that good, active learning is introduces which bring significant improvement
+in performance.
