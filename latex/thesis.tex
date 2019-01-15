@@ -1,0 +1,75 @@
+% arara: xelatex
+% arara: bibtex
+% arara: xelatex
+% arara: xelatex
+\documentclass[thesis=M,english]{FITthesis}[2012/10/20]
+
+% graphics files inclusion
+\usepackage{graphicx}
+% subfigures
+\usepackage{subfig}
+% advanced maths
+\usepackage{amsmath}
+% additional math symbols
+\usepackage{amssymb}
+% directory tree visualisation
+\usepackage{dirtree}
+
+\department{Department of Applied Mathematics}
+\title{Transfer Learning in Astronomical Spectroscopy}
+\authorGN{Ondřej}
+\authorFN{Podsztavek}
+% author's name without academic degrees
+\author{Ondřej Podsztavek}
+\authorWithDegrees{Bc. Ondřej Podsztavek}
+\supervisor{Petr Škoda}
+\acknowledgements{TODO}
+\abstractEN{TODO}
+\abstractCS{TODO}
+\placeForDeclarationOfAuthenticity{Prague}
+\keywordsCS{TODO}
+\keywordsEN{TODO}
+% TODO select according to the desired license (integer 1-6)
+\declarationOfAuthenticityOption{2}
+% TODO optional thesis URL
+%\website{}
+
+\begin{document}
+
+\setsecnumdepth{part}
+\chapter{Introduction}
+
+\setsecnumdepth{all}
+\chapter{State-of-the-art}
+\cite{goodfellow2016}
+
+\chapter{Analysis and design}
+
+\chapter{Realisation}
+
+\setsecnumdepth{part}
+\chapter{Conclusion}
+
+\bibliographystyle{iso690}
+\bibliography{references}
+
+\setsecnumdepth{all}
+\appendix
+
+\chapter{Acronyms}
+\begin{description}
+    \item[LAMOST] Large Sky Area Multi-Object Fiber Spectroscopis Telescope
+\end{description}
+
+\chapter{Contents of Enclosed CD}
+
+\begin{figure}
+\dirtree{%
+    .1 README.md\DTcomment{the file with CD contents description}.
+    .1 src\DTcomment{the directory of source codes}.
+    .2 latex\DTcomment{the directory of \LaTeX{} source codes of the thesis}.
+    .1 thesis.pdf\DTcomment{the thesis text in PDF format}.
+}
+\end{figure}
+
+\end{document}

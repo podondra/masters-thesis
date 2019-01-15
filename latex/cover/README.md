@@ -19,7 +19,7 @@ All the proposed information must be included in correct order and letter case:
 
 Shelf back should include information in the following format:
 
-year (left)     TYPE OF THESIS (centre)     Name and SURNAME (right)
+year (left)	TYPE OF THESIS (centre)	Name and SURNAME (right)
 
 Use this template with LATEX 2e (TeXLive 2010 recommended).
 

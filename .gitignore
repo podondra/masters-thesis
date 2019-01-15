@@ -1,12 +1,8 @@
-tex/thesis.pdf
-tex/*.ref
+latex/thesis.pdf
 
 ## Cover
-tex/cover/cover-black-white.pdf
-tex/cover/cover-inverse-colors.pdf
-
-## CTUstyle
-ctustyle2/
+latex/cover/cover-black-white.pdf
+latex/cover/cover-inverse-colors.pdf
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
