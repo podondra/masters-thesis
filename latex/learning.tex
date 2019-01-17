@@ -1,0 +1,43 @@
+\chapter{Machine learning}
+
+\cite{goodfellow2016}
+
+\section{Transfer learning}
+
+Notation citations are \cite{pan2010, csurka2017}.
+
+A \textit{domain} is defined as a tuple \(\mathcal{D} = (\mathcal{X}, P(\mathbf{X}))\) where \(\mathcal{X}\) is a feature space, \(P(\mathbf{X})\) is a marginal probability distribution and \(\mathbf{X}\) is a random vector I guess. The random vector \(\mathbf{X}\) has its values in \(\mathcal{X}\).
+
+Why marginal probability distribution and what does it mean then?
+
+How to write that a random vector has its values in a space?
+
+A \textit{task} is defined as a tuple \(\mathcal{T} = (\mathcal{Y}, P(Y | \mathbf{X}))\) where \(\mathcal{Y}\) is a label space, \(P(Y | \mathbf{X})\) is a conditional probability distribution and \(Y\) is a random variable. The goal of machine learning is to approximate the conditional probability distribution \(P(Y | \mathbf{X})\).
+
+Am I sure with the goal of machine learning?
+
+A conditional probability distribution:
+
+\begin{equation}
+    P(Y | \mathbf{X}) = \frac{P(Y \cap \mathbf{X})}{P(\mathbf{X})}.
+\end{equation}
+
+For \(P(Y | \mathbf{X}) \in \{0, 1\}\) then \(P(Y \cap \mathbf{X}) = P(\mathbf{X})\) or \(P(Y \cap \mathbf{X}) = 0\). Does it mean that the classes are separable given these features.
+
+How can that conditional probability work when the \(Y\) is a random variable while the \(\mathbf{X}\) is a random vector?
+
+Transfer learning works with a \textit{source domain} \(\mathcal{D}_S\) with a corresponding \textit{source task} \(\mathcal{T}_S\) and a \textit{target domain} \(\mathcal{D}_T\) with a corresponding \textit{target task} \(\mathcal{T}_T\).
+
+Transfer learning can be divided into \textit{homogenous} (\(\mathcal{X}_S = \mathcal{X}_T\)) and \textit{heterogeous} (\(\mathcal{X}_S \neq \mathcal{X}_T\)) transfer learning.
+
+\section{Domain adaptation}
+
+Domain adaptation is a subfield of transfer learning where the assumption is that tasks are the same (\(\mathcal{T}_S = \mathcal{T}_T\)) but the domains are different (\(\mathcal{D}_S = \mathcal{D}_T\)). That means \(\mathcal{Y}_S = \mathcal{Y}_T\) and \(P_S(Y | \mathbf{X}) = P_T(Y | \mathbf{X})\) but the second condition might be relaxed. Therefore, there could be three cases:
+
+\begin{itemize}
+    \item \(\mathcal{X}_S = \mathcal{X}_T\) and \(P_S(\mathbf{X}) \neq P_T(\mathbf{X})\);
+    \item \(\mathcal{X}_S \neq \mathcal{X}_T\) and \(P_S(\mathbf{X}) = P_T(\mathbf{X})\);
+    \item \(\mathcal{X}_S \neq \mathcal{X}_T\) and \(P_S(\mathbf{X}) \neq P_T(\mathbf{X})\);
+\end{itemize}
+
+Think about the relaxed condition.
