@@ -1,7 +1,3 @@
-% arara: xelatex
-% arara: bibtex
-% arara: xelatex
-% arara: xelatex
 \documentclass[thesis=M,english]{FITthesis}[2012/10/20]
 
 % graphics files inclusion
@@ -16,7 +12,7 @@
 \usepackage{dirtree}
 
 \department{Department of Applied Mathematics}
-\title{Transfer Learning in Astronomical Spectroscopy}
+\title{Domain Adaptation with/using Neural Network Models between Source-One? and Source-Two? Astronomical Spectral Data}
 \authorGN{Ondřej}
 \authorFN{Podsztavek}
 % author's name without academic degrees
@@ -29,26 +25,63 @@
 \placeForDeclarationOfAuthenticity{Prague}
 \keywordsCS{TODO}
 \keywordsEN{TODO}
-% TODO select according to the desired license (integer 1-6)
+% select according to the desired license (integer 1-6)
 \declarationOfAuthenticityOption{2}
 % TODO optional thesis URL
 %\website{}
 
 \begin{document}
 
-\setsecnumdepth{part}
 \chapter{Introduction}
 
-\setsecnumdepth{all}
-\include{learning}
+How to apply \textit{domain adaptation} using \textit{neural network models} to two different sources of \textit{astronomical spectral data}?
 
-\setsecnumdepth{part}
+In this work, we would like to prove that astronomical spectroscopy can benefit from domain adapatation (DA).
+Previous research has shown that DA can overcome the problem of analysis data from different distribution in one experiment.
+In the first chapter~\ref{da_chapter}, we provide a summary of theory of DA, neural networks in DA and DA in astronomy.
+Then, in chapter~\ref{data_chapter}, we describe two source of astronomical spectral data.
+In experiments~\ref{exp_chapter}, we try to show the benefits of neural DA in astronomy.
+Consider that our work is limited to astronomical spectroscopy and neural models.
+Having said that, we will apply these methods\dots{}
+
+\section{Problem Definition and Motivation}
+
+\chapter{Domain Adaptation (DA)}
+\label{da_chapter}
+
+\section{DA in Context of Machine and Transfer Learning}
+
+\section{Theory and Formalization of DA}
+
+\section{Neural Networks in DA}
+
+\section{Previous Applications of DA in Astronomy}
+
+\chapter{Two Sources of Astronomical Spectral Data}
+\label{data_chapter}
+
+\section{Description of Source-One?}
+
+\section{Description of Source-Two?}
+
+\section{Comparison of Spectral Data of the Two Sources}
+
+\chapter{Experiments: Applicatoin of Neural DA to Spectral Data}
+\label{exp_chapter}
+
+\section{Results without use of Neural DA}
+
+\section{Benefits of Neural DA: Analysis and Visualisation of Results}
+
 \chapter{Conclusion}
+
+\section{Discussion of Performance}
+
+\section{Future Plans}
 
 \bibliographystyle{iso690}
 \bibliography{references}
 
-\setsecnumdepth{all}
 \appendix
 
 \chapter{Acronyms}
