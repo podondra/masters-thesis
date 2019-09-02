@@ -12,19 +12,24 @@
 \usepackage{dirtree}
 
 \department{Department of Applied Mathematics}
-\title{Domain Adaptation with/using Neural Network Models between Source-One? and Source-Two? Astronomical Spectral Data}
+\title{Neural Networks Based Domain Adaptation in Spectroscopic Sky Surveys}
 \authorGN{Ondřej}
 \authorFN{Podsztavek}
 % author's name without academic degrees
 \author{Ondřej Podsztavek}
 \authorWithDegrees{Bc. Ondřej Podsztavek}
 \supervisor{Petr Škoda}
-\acknowledgements{TODO}
-\abstractEN{TODO}
-\abstractCS{TODO}
+% TODO acknowledgements
+\acknowledgements{}
+% TODO english abstract
+\abstractEN{}
+% TODO czech abstract
+\abstractCS{}
 \placeForDeclarationOfAuthenticity{Prague}
-\keywordsCS{TODO}
-\keywordsEN{TODO}
+% TODO english keywords
+\keywordsEN{domain adaptation, neural networks, astronomy, spectroscopy}
+% TODO czech keywords
+\keywordsCS{}
 % select according to the desired license (integer 1-6)
 \declarationOfAuthenticityOption{2}
 % TODO optional thesis URL
@@ -34,20 +39,29 @@
 
 \chapter{Introduction}
 
-How to apply \textit{domain adaptation} using \textit{neural network models} to two different sources of \textit{astronomical spectral data}?
+How to use \textit{neural network based domain adaptation} to extract knowledge from the source domain of \textit{astronomical spectral data}
+and apply it to the target \textit{astronomical spectral data}?
 
 In this work, we would like to prove that astronomical spectroscopy can benefit from domain adapatation (DA).
 Previous research has shown that DA can overcome the problem of analysis data from different distribution in one experiment.
 In the first chapter~\ref{da_chapter}, we provide a summary of theory of DA, neural networks in DA and DA in astronomy.
-Then, in chapter~\ref{data_chapter}, we describe two source of astronomical spectral data.
+Then, in chapter~\ref{data_chapter}, we describe current spectroscopic sky surveys
+which might be source of suitable astronomical spectral data.
 In experiments~\ref{exp_chapter}, we try to show the benefits of neural DA in astronomy.
 Consider that our work is limited to astronomical spectroscopy and neural models.
 Having said that, we will apply these methods\dots{}
 
 \section{Problem Definition and Motivation}
 
+The goal of this thesis is the analysis of the impact of domain adaptation in astronomical archives with a focus on neural networks
+that would allow using labelled data from one ground-based telescope or space mission archive to discover knowledge in another archive.
+Current astronomy has been the primary customer of scalable Big data handling and analysis requirements due to its petabyte-scale archives,
+where an advanced machine learning is an indispensable part of workflows leading to new discoveries.
+
 \chapter{Domain Adaptation (DA)}
 \label{da_chapter}
+
+Survey the current state of domain adaptation using neural network models in machine learning and with a focus on astronomical applications.
 
 \section{DA in Context of Machine and Transfer Learning}
 
@@ -57,27 +71,39 @@ Having said that, we will apply these methods\dots{}
 
 \section{Previous Applications of DA in Astronomy}
 
-\chapter{Two Sources of Astronomical Spectral Data}
+\chapter{Spectroscopic Sky Surveys}
 \label{data_chapter}
+
+Select suitable dataset of astronomical spectra for experiments.
 
 \section{Description of Source-One?}
 
 \section{Description of Source-Two?}
 
-\section{Comparison of Spectral Data of the Two Sources}
+\section{Comparison of Spectral Data}
 
-\chapter{Experiments: Applicatoin of Neural DA to Spectral Data}
+Investigate the structure of data space in selected datasets.
+
+\chapter{Experiments: Application of Neural DA to Spectral Data}
 \label{exp_chapter}
+
 
 \section{Results without use of Neural DA}
 
 \section{Benefits of Neural DA: Analysis and Visualisation of Results}
 
+Apply domain adaptation to the selected data
+and prepare visualisation of results.
+
 \chapter{Conclusion}
 
 \section{Discussion of Performance}
 
+Discuss the precision performance and scalability of various solutions.
+
 \section{Future Plans}
+
+Suggest future improvements.
 
 \bibliographystyle{iso690}
 \bibliography{references}
