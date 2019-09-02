@@ -65,7 +65,43 @@ Survey the current state of domain adaptation using neural network models in mac
 
 \section{DA in Context of Machine and Transfer Learning}
 
+Now, we introduce the crucial concept of our work: \textit{domain adaptation}.
+Domain adaptation is \textit{a subfield of transfer learning},
+which is part of machine learning.
+Transfer learning is defined in most papers regarding the survey by Pan and Yang~\cite{pan2010}.
+A more recent survey by Weiss, Khoshgoftaar and Wang~\cite{weiss2016} has the benefit
+that it contains newer methods than the survey by Pan and Yang~\cite{pan2010},
+but its definition of transfer learning and domain adaptation is the same.
+
+Machine learning has a common assumption that training and test data are \textit{independent and identically distributed}
+that means samples are drawn from the same feature space and the same distribution.~\cite{daume2006}
+When this assumption does not hold transfer learning and domain adaptation come into play.
+Moreover, there is a biological inspiration
+because humans seem to have natural ways to transfer knowledge from previous experience to new challenges.~\cite{torrey2010}
+
+Pan and Yang define transfer learning as the ability of a system to recognise and apply knowledge and skill learned in previous tasks to novel tasks
+and they introduce the notion of \textit{a domain} and \textit{a task}.
+A domain consists of two components: \textit{a feature space} and \textit{a marginal probability distribution}.
+Given a specific domain, a task consists of two components: \textit{a label space} and \textit{an objective predictive function}
+which is not observed but learned from training data.
+When we are given a transfer learning problem,
+we have to identify \textit{a source domain} and \textit{a source learning task},
+\textit{a target domain} and \textit{a target learning task}.
+Then, transfer learning aims to help improve the learning of the target predictive function in the target domain using knowledge in the source domain and the source task,
+where the domains are different or the tasks are different.~\cite{pan2010}
+
+Lastly, Torrey and Shavlik warn that both the source and target domains and tasks need to be sufficiently related
+else negative transfer may occur.
+Negative transfer is the situation in which the usage of source data degrades the performance.
+On the other side, when the performance is improved,
+we talk about a positive transfer.~\cite{torrey2010}
+
 \section{Theory and Formalization of DA}
+
+Domain adaptation is the scenario when the source and target domains have different marginal probability distributions
+(for example two different telescopes observed the spectra)
+while the tasks are the same
+(we would like to classify them into the same classes).
 
 \section{Neural Networks in DA}
 
@@ -76,17 +112,16 @@ Survey the current state of domain adaptation using neural network models in mac
 
 Select suitable dataset of astronomical spectra for experiments.
 
-\section{Description of Source-One?}
+\section{Astronomical Spectroscopy}
 
-\section{Description of Source-Two?}
+\section{Large Spectral Archives}
 
-\section{Comparison of Spectral Data}
+\section{Comparison of the Spectral Data}
 
 Investigate the structure of data space in selected datasets.
 
 \chapter{Experiments: Application of Neural DA to Spectral Data}
 \label{exp_chapter}
-
 
 \section{Results without use of Neural DA}
 
