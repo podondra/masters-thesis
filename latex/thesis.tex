@@ -148,15 +148,102 @@ This transfer learning approach allowed Ackermann et al. to lower the best error
 \chapter{Spectroscopic Sky Surveys}
 \label{data_chapter}
 
+% TODO chapter summary
+
 Select suitable dataset of astronomical spectra for experiments.
+
+To understand this work we need first to introduce the spectral
+data because we are interested in classifying them.
 
 \section{Astronomical Spectroscopy}
 
+Telescopes are giant eyes that can collect much more light that human's eye.
+Spectrographs can disperse the light collected by a telescope into spectra
+which reveal objects composition, speed, temperature and more.
+
+% TODO cite Bennett (2005) and ESA's webpage about Gaia spectroscopy:
+% https://www.esa.int/Science_Exploration/Space_Science/Gaia/Spectroscopy
+
+The visible light is only a tiny part of the complete spectrum of electromagnetic radiation.
+The complete spectrum of electromagnetic radiation is usually called the electromagnetic spectrum.
+Electromagnetic radiation carries information about stars and planets made of matter across the universe.
+The energy carried by light interacts with matter in following ways:
+
+\begin{itemize}
+	\item \textit{emission} (an electric current flowing through the bulb heats it to a point at
+		which its matter emits visible light);
+	\item \textit{absorption} (hand placed near a lit light bulb absorbs some of the light).
+\end{itemize}
+
+Spectra come in three basic types, and real astronomical spectra are usually a combination of these types:
+
+\begin{itemize}
+	\item the spectrum of a conventional light bulb is a continuous rainbow (called thermal radiation spectrum);
+	\item if a cloud of gas lies between a detector and a bulb,
+		the cloud can absorb specific wavelength making what an absorption line spectrum;
+	\item the cloud might emit light itself; therefore, this spectrum is called an emission-line spectrum.
+\end{itemize}
+
+The fact that each atom, ion or molecule possesses a unique set of energy levels
+causes emission and absorption lines at specific wavelengths in spectra.
+Spectral lines correspond to the wavelengths of light absorbed by chemicals on the surface of the star.
+Therefore, positions of emission and absorption lines can tell us objects composition.
+We display spectra as bands of light that is a projection of light that passes through a prism on a wall
+(see Fig.~\ref{solar_spectrum}).
+A more reasonable way is to display spectra as graphs of intensities of the light in each wavelength.
+
+\begin{figure}
+	% TODO give credit https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	\includegraphics[width=\textwidth]{img/solarspectrum.jpg}
+	\caption{The Solar Spectrum (Image by \href{https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/}{NASA})}
+	\label{solar_spectrum}
+\end{figure}
+
+Finally, we can view an astronomical spectrum as a one-dimensional image.
+Therefore, convolutional neural networks seem to be a great tool to analyse them.
+
 \section{Large Spectral Archives}
+
+Give list of large spectral archives focused on observation of QSOs.
+Main archives are Ondřejov, LAMOST, Gaia (doesn't have spectra available yet)
+and SDSS (similar to LAMOST, optical and IR, APOGEE survey).
+Marginal archives are GALEX (ultraviolet), CALIFA or ESO MUSE.
+
+Choose LAMOST and SDSS and tell why we have choosen them.
+
+\subsection{Sloan Digital Sky Survey}
+
+Describe SDSS, its spectra and catalog of QSOs.
+
+\begin{figure}
+	% TODO cite https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	\includegraphics[width=\textwidth]{img/sdss_gaulme.jpg}
+	\caption{The SDSS telescope at night (Image by Patrick Gaulme is licensed under CC BY 4.0)}
+	\label{solar_spectrum}
+\end{figure}
+
+\subsection{Large Sky Area Multi-Object Fiber Spectroscopic Telescope}
+
+Describe LAMOST, its spectra and catalog of QSOs.
+
+\section{Quasi-Stellar Objects}
+
+Also known as \textit{quasars} and abbreviated \textit{QSO}.
+
+\begin{itemize}
+	\item Physical definition of QSOs.
+	\item Definition of QSOs according SDSS DR14Q.
+	\item Why QSOs are interesting? Something as the expanding Universe.
+	\item Why QSOs are suitable for experimenting with DA?
+		QSOs have big redshift and CNNs are shift invariant.
+		Searching for QSOs in different archives.
+\end{itemize}
 
 \section{Comparison of the Spectral Data}
 
-Investigate the structure of data space in selected datasets.
+Compare instruments, data and sky coverage.
+
+Investigate the structure of data space in selected datasets (dimensionality reduction).
 
 \chapter{Experiments: Application of Neural DA to Spectral Data}
 \label{exp_chapter}
