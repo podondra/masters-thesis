@@ -157,12 +157,125 @@ data because we are interested in classifying them.
 
 \section{Astronomical Spectroscopy}
 
+Almost all we know about the universe outside our solar solar is based on the analysis of electromagnetic radiation.
+We have derived information by observing flux, time variations, etc.~\cite{appenzeller2012}
+
+Light is an electromagnetic wave that can be decomposed (by a prism or a diffraction grating) as a function of its wavelength.
+The decomposition is called spectrum.
+Electromagnetic wave propagetes in the speed of light \(c\).
+The electromagnetic wave transfers energy
+(the higher the frequency the more energy it carries).~\cite{cochard2018}
+
+Secondly, light is a beam of photons: particles of light.
+Photons has no mass but transport energy and have momentum.
+Every photon has an associated frequency \(\nu\) of the corresponding electromagnetic wave giving it a energy \(E = h \nu\).
+
+Matter is made of atoms.
+An atom has a specific number of electrons which are place in particular orbits of the atom.
+Electrons in an orbit have a specic energy level.
+We know from quantum mechanics that an electron can change energy level by an exchange of energy in form of a photon.
+The energy transfer is not continuous.
+The energy has to precisily correspond to the difference in the energy levels.
+Therefore the change produces a light with an energy \(E\) in the wavelegth \(\lambda\):
+
+\begin{equation}
+	\lambda = c \frac{h}{E}.
+\end{equation}
+
+Therefore, the specific set of energy levels of a atom detemines photons either abosrbed or emitted by it.
+This is a direct consequence for spectroscopy.~\cite{cochard2018}
+
+Black body radiation.
+Light is produced by either heating up matter or by exciting atoms.
+Heating transforms into an emission of light at all wavelenghts with an energy distribution (a function of wavelength) which only depends on the temperature.
+Planck's law:
+
+% https://en.wikipedia.org/wiki/Planck%27s_law
+\begin{equation}
+	B_{\lambda}(\lambda, T) = \frac{2 h c^2}{\lambda^5} \frac{1}{e^{\frac{hc}{\lambda k_{\mathrm{B}}T}} - 1}
+\end{equation}
+
+where \(k_{\mathrm{B}}\) is the Boltzmann constant.
+This phenomenon does not depend on the composition of the body.
+The Wien's displacement law gives the wavelenght of maximum intensity \(\lambda_{\max}\):
+
+\begin{equation}
+	\lambda_{\max} = \frac{b}{T}
+\end{equation}
+
+where \(b\) is the Wien's displacement constant.
+Similarly, we can derive the temperature \(T\) with known wavelength of maximum intesity \(\lambda_{\max}\):
+
+\begin{equation}
+	T = \frac{b}{\lambda_{\max}}.
+\end{equation}
+
+where \(b\) is the Wien's displacement constant.~\cite{cochard2018}
+
+Secondly, light can be emitted by exciting atoms.
+
+Photons carry information about the observed object to a pixel of a \textit{charge-coupled device} (CCD) camera. % TODO add CCD to acronyms
+Electomagnetic radiation exhibits both wave and particle nature throughout the entire spectra
+(\(\gamma\) rays, X-rays, ultraviolet, visible light, infrared radiation, microwaves, radio waves).
+CCD cameras require the particle nature of light (electromagnetic radiation).~\cite{trypsteen2017}
+
+Maybe include Table~1.3 from~\cite{trypsteen2017}.
+
+A photon caries a specific energy that match certain frequency.
+Higher frequency means higher energy.
+All photons always move in the speed of light.
+For each wavelength the corresponding photon energy \(E\) is given by the Planck--Einstein relation:
+
+\begin{equation}
+	E = h \nu \label{planck_einstein_equation}
+\end{equation}
+
+where \(h\) is the Planck constant and \(\nu\) is frequency of the photon.
+The frequency \(\nu\) is related to the wavelength \(\lambda\):
+
+\begin{equation}
+	\nu = \frac{c}{\lambda} \label{frequency_wavelength_equation}
+\end{equation}
+
+where \(c\) is the speed of light.
+Combining equations~\ref{planck_einstein_equation} and \ref{frequency_wavelength_equation} gives:
+
+\begin{equation}
+	E = h \frac{c}{\lambda}.
+\end{equation}
+
+Therefore, the energy of a photon is proportional to its frequency \(\nu\)
+and inversly proportional to the wavelength \(\lambda\).~\cite{trypsteen2017}
+
+The blackbody is a physical model for stellar radiation.
+Objects hotter than its environment emit electromagnetic radiation.
+Objects also reflect radiation.
+But stars rather absorb all incomming radiation.
+Therefore, we consider the Sun as a blackbody.
+A perfert blackbody absorbs all incomming radiation.
+Therefore, all its radiation is determined only by its temperature.~\cite{trypsteen2017}
+
+The undisturbed profile of a continuum level \(I_C(\lambda)\) represents roughly the temperature dependence blackbody radiation characteristics \(B_T(\lambda)\).
+
+With the Wien's displacement law we can estimate the absolute temperature \(T\) of a star.
+
+Bolometric energy flow \(F_{\mathrm{bol}}\):
+
+\begin{equation}
+	F_{\mathrm{bol}} = \int_0^{\infty} I(\lambda) \mathrm{d} \lambda
+\end{equation}
+
+and Stefan--Bolzmann law:
+
+\begin{equation}
+	F_{\mathrm{bol}} = \sigma T^4
+\end{equation}
+
+where \(\sigma\) is the Stefan--Bolzmann constant.~\cite{trypsteen2017}
+
 Telescopes are giant eyes that can collect much more light that human's eye.
 Spectrographs can disperse the light collected by a telescope into spectra
-which reveal objects composition, speed, temperature and more.
-
-% TODO cite Bennett (2005) and ESA's webpage about Gaia spectroscopy:
-% https://www.esa.int/Science_Exploration/Space_Science/Gaia/Spectroscopy
+which reveal objects composition, speed, temperature and more.~\cite{bennett2005}
 
 The visible light is only a tiny part of the complete spectrum of electromagnetic radiation.
 The complete spectrum of electromagnetic radiation is usually called the electromagnetic spectrum.
@@ -178,7 +291,7 @@ The energy carried by light interacts with matter in following ways:
 Spectra come in three basic types, and real astronomical spectra are usually a combination of these types:
 
 \begin{itemize}
-	\item the spectrum of a conventional light bulb is a continuous rainbow (called thermal radiation spectrum);
+	\item the spectrum of a conventional light bulb is a continuous rainbow (called \textit{thermal radiation spectrum});
 	\item if a cloud of gas lies between a detector and a bulb,
 		the cloud can absorb specific wavelength making what an absorption line spectrum;
 	\item the cloud might emit light itself; therefore, this spectrum is called an emission-line spectrum.
@@ -189,20 +302,21 @@ causes emission and absorption lines at specific wavelengths in spectra.
 Spectral lines correspond to the wavelengths of light absorbed by chemicals on the surface of the star.
 Therefore, positions of emission and absorption lines can tell us objects composition.
 We display spectra as bands of light that is a projection of light that passes through a prism on a wall
-(see Fig.~\ref{solar_spectrum}).
-A more reasonable way is to display spectra as graphs of intensities of the light in each wavelength.
+(see Fig.~\ref{solar_spectrum}):
+called \textit{two dimensional} spectra.~\cite{cochard2018}
+A more reasonable way is to display spectra as graphs of intensities of the light as the vertical axis and wavelengths as the horizontal axis:
+called a \textit{one-dimensional spectral profile}.~\cite{cochard2018}
+This representation of a astronomical spectrum can be seen as a one-dimensional image.
+Therefore, convolutional neural networks seem to be a great tool to analyse them.~\cite{bennett2005}
 
 \begin{figure}
-	% TODO give credit https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
 	\includegraphics[width=\textwidth]{img/solarspectrum.jpg}
 	\caption{The Solar Spectrum (Image by \href{https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/}{NASA})}
 	\label{solar_spectrum}
 \end{figure}
 
-Finally, we can view an astronomical spectrum as a one-dimensional image.
-Therefore, convolutional neural networks seem to be a great tool to analyse them.
-
-\section{Large Spectral Archives}
+\section{Large Spectroscopic Surveys}
 
 Give list of large spectral archives focused on observation of QSOs.
 Main archives are Ondřejov, LAMOST, Gaia (doesn't have spectra available yet)
@@ -211,12 +325,18 @@ Marginal archives are GALEX (ultraviolet), CALIFA or ESO MUSE.
 
 Choose LAMOST and SDSS and tell why we have choosen them.
 
+LAMOST is a stellar and extra-galactic spectroscopic survey.
+
+SDSS is a spectroscopic and optical survey.
+
+CALIFA is a spectroscopic survey of galaxies
+
 \subsection{Sloan Digital Sky Survey}
 
 Describe SDSS, its spectra and catalog of QSOs.
 
 \begin{figure}
-	% TODO cite https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
 	\includegraphics[width=\textwidth]{img/sdss_gaulme.jpg}
 	\caption{The SDSS telescope at night (Image by Patrick Gaulme is licensed under CC BY 4.0)}
 	\label{solar_spectrum}
