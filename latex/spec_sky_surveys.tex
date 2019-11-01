@@ -10,6 +10,33 @@ data because we are interested in classifying them.
 
 \section{Astronomical Spectroscopy}
 
+Spectroscopy started when Issac Newton carried out the experiment of light decomposition throgh a prism in 1666.
+Next, Thomas Young has shown that light behaves like a wave.
+The wave nature of light allowed Joseph von Fraunhofer to invet the diffraction grating.
+Diffraction gratings are one of the essential parts of modern spectroscopes
+because they allow greater dispersion than prisms.
+Fraunhofer was also one of the first to observe dark lines in the solar spectrum.
+David Brewster postulated that the dark lines correspond to absoption from gas in the way of light travelling towards us.
+Robert Wilhelm Bunsen and Gustav Kichhoff showed that each chemical element has its own set of spectral lines.
+Therefore, spectrocopy can be used for chemical analysis of matter.
+Kichhoff established the three famous laws describing the three types of spectra:
+continuous, emission and absorption.
+Joseph von Fraunhofer was the first to observe spectra of stars by using spectroscope in combination with telescope.
+Christian Doppler discoverd the Doppler effect that allowed to measure the motion of celestial objects using Doppler shift in its spectrum.
+Then, at the beginning of the twentieth century,
+the invention quantum mechanics help us to understand the origin of spectral lines.
+Max Planck derived the spectral distributon of a black body.
+Ludwig Boltzmann, Joseph Stefan, Wilhelm Wien, Niels Bohr etc.
+Nowadays, new technologies have advanced spectroscopic observations
+(CCD detectors, optical fibers and computing power).~\cite{cochard2018}
+
+\begin{figure}
+	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	\includegraphics[width=\textwidth]{img/solarspectrum.jpg}
+	\caption{The Solar Spectrum (Image by \href{https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/}{NASA})}
+	\label{solar_spectrum}
+\end{figure}
+
 Almost all we know about the universe outside our solar solar is based on the analysis of electromagnetic radiation.
 We have derived information by observing flux, time variations, etc.~\cite{appenzeller2012}
 
@@ -72,7 +99,22 @@ Electomagnetic radiation exhibits both wave and particle nature throughout the e
 (\(\gamma\) rays, X-rays, ultraviolet, visible light, infrared radiation, microwaves, radio waves).
 CCD cameras require the particle nature of light (electromagnetic radiation).~\cite{trypsteen2017}
 
-Maybe include Table~1.3 from~\cite{trypsteen2017}.
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|l|r|}
+			\hline
+			Radiation type & Wavelength (m) \\ \hline \hline
+			\(\gamma\) ray & \(10^{-12}\) \\ \hline
+			X-ray & \(10^{-10}\) \\ \hline
+			Ultraviolet & \(10^{-8}\) \\ \hline
+			Visible & \(0.5 \times 10^{-6}\) \\ \hline
+			Infrared & \(10^{-5}\) \\ \hline
+			Microwave & \(10^{-2}\) \\ \hline
+			Radio & \(10^{3}\) \\ \hline
+		\end{tabular}
+	\end{center}
+	\caption{Electromagnetic spectrum}
+\end{table}
 
 A photon caries a specific energy that match certain frequency.
 Higher frequency means higher energy.
@@ -162,45 +204,9 @@ called a \textit{one-dimensional spectral profile}.~\cite{cochard2018}
 This representation of a astronomical spectrum can be seen as a one-dimensional image.
 Therefore, convolutional neural networks seem to be a great tool to analyse them.~\cite{bennett2005}
 
-\begin{figure}
-	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
-	\includegraphics[width=\textwidth]{img/solarspectrum.jpg}
-	\caption{The Solar Spectrum (Image by \href{https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/}{NASA})}
-	\label{solar_spectrum}
-\end{figure}
-
-\section{Large Spectroscopic Surveys}
-
-Give list of large spectral archives focused on observation of QSOs.
-Main archives are Ondřejov, LAMOST, Gaia (doesn't have spectra available yet)
-and SDSS (similar to LAMOST, optical and IR, APOGEE survey).
-Marginal archives are GALEX (ultraviolet), CALIFA or ESO MUSE.
-Maybe GALAH.
-
-Choose LAMOST and SDSS and tell why we have choosen them.
-
-LAMOST is a stellar and extra-galactic spectroscopic survey.
-
-SDSS is a spectroscopic and optical survey.
-
-CALIFA is a spectroscopic survey of galaxies
-
-\subsection{Sloan Digital Sky Survey}
-
-Describe SDSS, its spectra and catalog of QSOs.
-
-\begin{figure}
-	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
-	\includegraphics[width=\textwidth]{img/sdss_gaulme.jpg}
-	\caption{The SDSS telescope at night (Image by Patrick Gaulme is licensed under CC BY 4.0)}
-	\label{solar_spectrum}
-\end{figure}
-
-The SDSS DR14 Quasar Catalog described in~\cite{paris2018}.
-
-\subsection{Large Sky Area Multi-Object Fiber Spectroscopic Telescope}
-
-Describe LAMOST, its spectra and catalog of QSOs.
+% TODO add acronym SNR
+Signal-to-noise ratio (SNR) is a parameter of our instrument.
+We can tust our measurment when signal is high in compared to nise.~\cite{cochard2018}
 
 \section{Quasi-Stellar Objects}
 
@@ -226,18 +232,79 @@ There are different types of QSOs: radio-loud, radio-quiet, broad absorption-lin
 \end{itemize}
 
 \begin{figure}
-	% TODO give credit https://www.spacetelescope.org/images/potw1346a/
-	\includegraphics[width=\textwidth]{img/potw1346a.jpg}
-	%\includegraphics[width=0.5\textwidth]{img/0131_xray.jpg}
+	% TODO align
+	\begin{center}
+		\subfloat[Best image of bright quasar 3C 273][
+			Best image of the bright quasar 3C 273
+			(Image by \href{https://www.spacetelescope.org/images/potw1346a/}{ESA/Hubble} is licensed under CC BY 4.0)
+			]{
+			% TODO give credit https://www.spacetelescope.org/images/potw1346a/
+			\includegraphics[height=0.45\textwidth]{img/potw1346a.jpg}
+			}
+		\subfloat[Jet]{
+			% TODO give credit https://chandra.harvard.edu/photo/2000/0131/index.html
+			\includegraphics[height=0.45\textwidth]{img/0131_xray.jpg}
+			}
+	\end{center}
 	\caption{
-		Best image of bright quasar 3C 273
-		(Image by \href{https://www.spacetelescope.org/images/potw1346a/}{ESA/Hubble} is licensed under CC BY 4.0)
+		The first ever discover quasar 3C 273.
 		}
 	\label{3c_273}
 \end{figure}
 
-% TODO include https://chandra.harvard.edu/photo/2000/0131/index.html
 % TODO include \includegraphics[width=\textwidth]{img/spec_3c_273.pdf}
+
+\section{Large Spectroscopic Surveys}
+
+Give list of large spectral archives focused on observation of QSOs.
+Main archives are SDSS and LAMOST.
+Gaia doesn't have spectra available yet.
+Marginal archives are GALEX (ultraviolet), CALIFA or ESO MUSE.
+Spectroscopic surveys mentioned by SDSS DR14Q:
+
+\begin{itemize}
+	\item Bright Quasar Survey;
+	\item Large Bright Quasar Survey (LBQS); and
+	\item 2dF Quasar Redshift Survey.
+\end{itemize}
+
+Choose LAMOST and SDSS and tell why we have choosen them.
+
+LAMOST is a stellar and extra-galactic spectroscopic survey.
+
+SDSS is a spectroscopic and optical survey.
+
+CALIFA is a spectroscopic survey of galaxies.
+
+\subsection{Sloan Digital Sky Survey}
+
+Describe SDSS, its spectra and catalog of QSOs.
+
+\begin{figure}
+	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
+	\includegraphics[width=\textwidth]{img/sdss_gaulme.jpg}
+	\caption{The SDSS telescope at night (Image by Patrick Gaulme is licensed under CC BY 4.0)}
+	\label{sdss_telescope}
+\end{figure}
+
+The SDSS Data Release 14 Quasar (DR14Q) catalog described in~\cite{paris2018}. % TODO add DR14Q acronym?
+The DR14Q catalog contains 526\,356 quasars (contamination is estimated to be about 0.5\%).
+% TODO what calibrated means?
+% TODO define spectral resolution
+SDSS provides calibrated spectra covering the wavelength range 3\,610--10\,140~\AA at a spectral resolution 1\,300 < \(R\) < 2\,500 for all the quasars.
+The DR14Q catalog paper~\cite{paris2018} defines a quasar:
+
+\begin{definition}
+	A quasar is an object with a luminosity \(M_i[z = 2] < -20.5\)
+	% TODO what is FWHM?
+	and either displaying at least one emission line with FWHM > 500~km~s\(^{-1}\) or,
+	if not, having interesting absorption features.
+	\label{qso_definition}
+\end{definition}
+
+\subsection{Large Sky Area Multi-Object Fiber Spectroscopic Telescope}
+
+Describe LAMOST, its spectra and catalog of QSOs.
 
 \section{Comparison of the Spectral Data}
 
