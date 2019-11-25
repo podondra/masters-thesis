@@ -56,7 +56,7 @@ Electrons in an orbit have a specic energy level.
 We know from quantum mechanics that an electron can change energy level by an exchange of energy in form of a photon.
 The energy transfer is not continuous.
 The energy has to precisily correspond to the difference in the energy levels.
-Therefore the change produces a light with an energy \(E\) in the wavelegth \(\lambda\):
+Therefore the change produces a light with an energy \(E\) in the wavelength \(\lambda\):
 
 \begin{equation}
 	\lambda = c \frac{h}{E}.
@@ -208,6 +208,27 @@ Therefore, convolutional neural networks seem to be a great tool to analyse them
 Signal-to-noise ratio (SNR) is a parameter of our instrument.
 We can tust our measurment when signal is high in compared to nise.~\cite{cochard2018}
 
+The most important parameter of a telescope is its resolving power \(R\)
+which experess capacity of a telescope to oberve details of a spectrum.
+% TODO convert into definition
+Resolving power is defined as:
+
+\begin{equation}
+	R = \frac{\lambda}{\Delta \lambda}
+\end{equation}
+
+% TODO considered wavelength?
+where \(\lambda\) is considered wavelength
+and \(\Delta \lambda\) is the smallest visible detail.
+
+% TODO add acronym FWHM
+Full width at half maximum (FWHM) is the measurement of the width of a spectral line
+% TODO define continuum
+at the half of its maximum intensity measured from the continuum.
+% TODO what is slit?
+FWHM is determined by the width of a slit which makes the broadening of a line.
+A perfect instrument would have an infinitely thin line.
+
 \section{Quasi-Stellar Objects}
 
 Quasi-stellar (star-like) objects (also known as \textit{quasars} and abbreviated \textit{QSO}) are the most luminious \textit{active galactic nuclei} (AGNs).~\cite{beckmann2013}
@@ -284,25 +305,24 @@ Describe SDSS, its spectra and catalog of QSOs.
 The SDSS is designed to provide both a photometrically and astrometrically clalibrated imaging survey
 and a spectroscopic survey of galaxies and quasars.~\cite{york2000}
 
-The SDSS survey uses a 2.5~m telescope located at the Apache Point Observatory, New Mexico.
+The SDSS survey uses a 2.5~m telescope located at the Apache Point Observatory, New Mexico (see~Figure~\ref{sdss_telescope}).
 The telescope has 3\(^{\circ}\) fild of view due to the mirror.
 The original spectrograph of the telescope was able to obtain 640 spectra
 with a wavelength coverage 380--920~nm simultaneously
-with spectral resolution \(R \sim 1800\).~\cite{gunn1998, york2000}
-
-In 2009, the original spectrograph was upgraded for Baryon Oscillation Spectroscopic Survey (BOSS).
-The upgraded BOSS spectrograph covers a wavelength range 356--1040~nm
-with resolving power \(R \sim 2000\)
-and is capable to 1000 spectra at once.~\cite{smee2013}
-
-% TODO SDSS has absolute flux calibration while LAMOST does not
+with spectral resolution \(R \sim 1\,800\).~\cite{gunn1998, york2000}
 
 \begin{figure}
-	% source https://solarsystem.nasa.gov/resources/390/the-solar-spectrum/
 	\includegraphics[width=\textwidth]{img/sdss_gaulme.jpg}
 	\caption{The SDSS telescope at night (Image by Patrick Gaulme is licensed under CC BY 4.0)}
 	\label{sdss_telescope}
 \end{figure}
+
+In 2009, the original spectrograph was upgraded for Baryon Oscillation Spectroscopic Survey (BOSS).
+The upgraded BOSS spectrograph covers a wavelength range 356--1\,040~nm
+with resolving power \(R \sim 2\,000\)
+and is capable to 1\,000 spectra at once.~\cite{smee2013}
+
+% TODO SDSS has absolute flux calibration while LAMOST does not
 
 The SDSS Data Release 14 Quasar (DR14Q) catalog described in~\cite{paris2018}. % TODO add DR14Q acronym?
 The DR14Q catalog contains 526\,356 quasars (contamination is estimated to be about 0.5\%).
@@ -325,9 +345,9 @@ Describe LAMOST, its spectra and catalog of QSOs.
 
 The LAMOST is a special telescope with a primary mirror made of 37 hexagonal spherical mirros of total size 6.67~m times 6.05~m.
 The large primary mirror makes the field of view of 5\(^{\circ}\).
-The focal surface has 4000 fibers connected to 16 spectrographs with 32 CCD cameras.
-Therefore, the telescope is capable of observing up to 4000 spectra simultaneously
-in a wavelength coverage of 370--900~nm with spectral resolution \(R = 1000\) or \(R = 1500\) depending on gratings and camera positions.~\cite{cui2012}
+The focal surface has 4\,000 fibers connected to 16 spectrographs with 32 CCD cameras.
+Therefore, the telescope is capable of observing up to 4\,000 spectra simultaneously
+in a wavelength coverage of 370--900~nm with spectral resolution \(R = 1\,000\) or \(R = 1\,500\) depending on gratings and camera positions.~\cite{cui2012}
 
 One of the key scientific goals of LAMOST is the extragalactic spectroscopic survey of the large scale structure of the universe and the physics of galaxies.
 The goal includes spectroscopic survey of nearly 10 millions galaxies and \textit{quasars}
@@ -336,5 +356,17 @@ that will contribute to the study of the accretion process of massive black hole
 \section{Comparison of the Spectral Data}
 
 Compare instruments, data and sky coverage.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			& SDSS & BOSS & LAMOST \\ \hline \hline
+			wavelength coverage (nm) & 380--920 & 356--1\,040 & 370--900 \\ \hline
+			spectral resolution \(R\) & \dots & \dots & \dots \\ \hline
+		\end{tabular}
+	\end{center}
+	\caption{Parameters of spectrographs}
+\end{table}
 
 Investigate the structure of data space in selected datasets (dimensionality reduction).
