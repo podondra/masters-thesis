@@ -45,6 +45,78 @@ while the tasks are the same
 
 \section{Neural Networks in DA}
 
+Our case is the \textit{homogeneous} DA where the feature spaces are identical
+(\(\mathcal{X}^s = \mathcal{X}^t\))
+still the source and target data are have different distributions
+(\(P^s(X) = P^t(X)\)).
+The other case is calle \textit{heterogeneous},
+where the feature spaces are different (\(\mathcal{X}^s \ne \mathcal{X}^t\)).
+Moreover, we are concern with \textit{unsupervised DA} because we have
+no labelled data in the target domain.~\cite{wang2018}
+
+The group of DA methods using neural networks is called \textit{deep DA}
+and Wang \& Deng define it in~\cite{wang2018}:
+
+% TODO broad and narrow sense
+\begin{definition}
+	Deep DA is a method that utilizes a deep network to enhance the performance of DA.
+\end{definition}
+
+Approaches to deep DA were divided into three categories:
+
+\begin{itemize}
+	\item \textit{discrepancy-based};
+	\item \textit{adversial-based}; and
+	\item \textit{reconstruction-based}.
+\end{itemize}
+
+\begin{figure}
+\begin{tikzpicture}
+	\path[mindmap, concept color=black, text=white]
+	node[concept] {Deep DA}
+	[clockwise from=60]
+	child[concept] {
+		node[concept] {Adversarial}
+		[clockwise from=75]
+		child {node[concept] {generative model}}
+		child {
+			node[concept] {non-generative model}
+			child {node[concept] {DANN}}
+			child {node[concept] {ADDA}}
+			}
+		}
+	child[concept] {
+		node[concept] {Recon\-struction}
+		[clockwise from=30]
+		child {node[concept] {adversarial model}}
+		child {
+			node[concept] {encoder-decoder model}
+			child {node[concept] {SDA}}
+			child {node[concept] {mSDA}}
+			child {node[concept] {DRCN}}
+			child {node[concept] {DSN}}
+			}
+		}
+	child[concept] {
+		node[concept] {Discrepancy}
+		[clockwise from=30]
+		child {node[concept] {class criterion}}
+		child {
+			node[concept] {statistic criterion}
+			child {node[concept] {DDC}}
+			child {node[concept] {DAN}}
+			child {node[concept] {JAN}}
+			child {node[concept] {Deep CORAL}}
+			}
+		child {node[concept] {archi\-tecture criterion}}
+		child {node[concept] {geometric criterion}}
+		}
+		;
+\end{tikzpicture}
+	\caption{Mind map of Deep DA}
+	\label{mind_map}
+\end{figure}
+
 \section{Previous Applications of DA in Astronomy}
 
 As we have shown, domain adaptation is of great interest to astronomers
@@ -55,7 +127,7 @@ If we have a common set of observed stars in both archives,
 then we can map them and learn a transfer function.
 Ho et al.~\cite{ho2017} did exactly that
 % TODO add APOGEE to acronyms
-because they found a common set of 9952 spectra in both APOGEE and LAMOST archive.
+because they found a common set of 9\,952 spectra in both APOGEE and LAMOST archive.
 Using that set, they trained the Cannon method~\cite{ness2015},
 and they used the model to transfer some physical parameters from APOGEE to LAMOST.
 
