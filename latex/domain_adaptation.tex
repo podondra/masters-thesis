@@ -3,6 +3,8 @@
 
 Survey the current state of domain adaptation using neural network models in machine learning and with a focus on astronomical applications.
 
+% TODO include examples from astronomical spectroscopy
+
 \section{DA in Context of Machine and Transfer Learning}
 
 Now, we introduce the crucial concept of our work: domain adaptation.
@@ -19,11 +21,29 @@ When this assumption does not hold transfer learning and domain adaptation come 
 Moreover, there is a biological inspiration
 because humans seem to have natural ways to transfer knowledge from previous experience to new challenges.~\cite{torrey2010}
 
-Pan and Yang define transfer learning as the ability of a system to recognise and apply knowledge and skill learned in previous tasks to novel tasks
+% TODO define TL
+Pan and Yang~\cite{pan2010} define transfer learning
+as the ability of a system to recognise and apply knowledge and skill
+learned in previous tasks to novel tasks
 and they introduce the notion of a domain and a task.
+
 A domain consists of two components: a feature space and a marginal probability distribution.
+
+\begin{definition}
+	A domain \(\mathcal{D} = [\mathcal{X}, P(\mathbf{X})]\)
+	is a~\(d\)-dimensional feature space \(\mathcal{X} \subset \mathbb{R}^d\)
+	with a~marginal provavility distribution \(P(\mathbf{X})\).~\cite{pan2010}
+\end{definition}
+
 Given a specific domain, a task consists of two components: a label space and an objective predictive function
 which is not observed but learned from training data.
+
+\begin{definition}
+	A task \(\mathcal{T} = [\mathcal{Y}, P(\mathbf{Y} | \mathbf{X})]\)
+	is a label space \(\mathcal{Y}\)
+	and a conditional probability distribution \(P(\mathbf{Y} | \mathbf{X})\).~\cite{pan2010}
+\end{definition}
+
 When we are given a transfer learning problem,
 we have to identify a source domain and a source learning task,
 a target domain and a target learning task.
@@ -36,23 +56,86 @@ Negative transfer is the situation in which the usage of source data degrades th
 On the other side, when the performance is improved,
 we talk about a positive transfer.~\cite{torrey2010}
 
+TL helps to exploit data or models available in similar domains.~\cite{csurka2017}
+
 \section{Theory and Formalization of DA}
 
-Domain adaptation is the scenario when the source and target domains have different marginal probability distributions
-(for example two different telescopes observed the spectra)
-while the tasks are the same
-(we would like to classify them into the same classes).
+% TODO define DA
+Domain adaptation (DA) is a particular case of TL
+that leverages labelled data from source domain to learn a classifier for a target domain while the tasks are the same.
+It is assumed that source and target domains are not identical but related.
+If they were identical it would be a standard machine learning problem.
+Therefore there is a distribution discrepancy between the source and target domains (\textit{domain shift}).~\cite{csurka2017}
 
-\section{Neural Networks in DA}
+\begin{definition}
+	\textit{Domain adapatiton} is the scenario when the source
+	\(\mathcal{D}^s = [\mathcal{X}^s, P(\mathbf{X}^s)]\)
+	and target \(\mathcal{D}^t = [\mathcal{X}^t, P(\mathbf{X}^t)]\)
+	are different (\(\mathcal{D}^s \ne \mathcal{D}^t\))
+	but the source \(\mathcal{T}^s\) and target \(\mathcal{T}^t\)
+	tasks are the same (\(\mathcal{T}^s = \mathcal{T}^t\)).
+	% TODO should be the second condition always true for DA
+	The first condition implies \(\mathcal{X}^s \ne \mathcal{X}^t\),
+	\(P(\mathbf{X}^s) \ne P(\mathbf{X}^t)\) or both are true.~\cite{pan2010}
+\end{definition}
 
+% TODO refer to specific section
+In our case, the two archive have different target selection strategies
+and the instrument are different.
+
+\begin{definition}
+	\textit{Homogeneous} DA is setting in which the source \(\mathcal{X}^s\)
+	and target \(\mathcal{X}^t\) feature spaces are the same
+	(\(\mathcal{X}^s = \mathcal{X}^t\))
+	while in \textit{heterogeneous} the source and target spaces are different
+	(\(\mathcal{X}^s \ne \mathcal{X}^t\)).~\cite{csurka2017}
+\end{definition}
+
+% TODO check feature space
 Our case is the \textit{homogeneous} DA where the feature spaces are identical
 (\(\mathcal{X}^s = \mathcal{X}^t\))
 still the source and target data are have different distributions
-(\(P^s(X) = P^t(X)\)).
-The other case is calle \textit{heterogeneous},
-where the feature spaces are different (\(\mathcal{X}^s \ne \mathcal{X}^t\)).
-Moreover, we are concern with \textit{unsupervised DA} because we have
+(\(P(\mathbf{X}^s) \ne P(\mathbf{X}^t)\)).
+Therefore, further we focus on homogeneous DA.
+because our spectra prepared into a same feature space (\(\mathbb{R}^{3659}\)).
+
+% TODO define S, SS and US DA
+Next we distinguish \textit{supervised}, \textit{semi-supervised}
+and \textit{unsupervised} DA
+according to availability of labels in the target domain:
+
+\begin{itemize}
+	\item superivesed DA: labelled data in the target domain are present;
+	\item semi-supervised DA: we have only very limited amount of labelled data in the target domain while most of the data is unlabelled;
+	\item unsupervised DA: no labelled data are available in the target domain.
+\end{itemize}
+
+We are concern with \textit{unsupervised DA} because we have
 no labelled data in the target domain.~\cite{wang2018}
+
+Nowadays, methods of DA are generally distinguished into to categories:
+\textit{shallow DA} methods that can be applied on extracted vectors of features
+and \textit{deep DA} methods based on neural networks and deep learning
+augemented for domain adapation.~\cite{csurka2017}
+
+According to Wang and Deng~\cite{wang2018} shallow DA methods
+can be categorised into two classes:
+\textit{instance-based DA}
+(the discrepancy is reduces by reweighting the source instances)
+and \textit{feature-based DA}
+(tries to learn a common shared space in which the discrepancy diminishes).
+However, shallow DA methods are not interesting for us
+because they do not utilize neural network.
+Still one possibility is to use a neural network as a feature extractor.
+
+The following section introduces the other category of deep DA
+which takes the advantage of neural networks.
+
+\section{Neural Networks in DA}
+
+Donahue et al. showed in the paper on DeCAF~\cite{donahue2014}
+that deep neural networks learn more transferable features,
+the performance is still affected by the domain shift.
 
 The group of DA methods using neural networks is called \textit{deep DA}
 and Wang \& Deng define it in~\cite{wang2018}:
@@ -62,13 +145,15 @@ and Wang \& Deng define it in~\cite{wang2018}:
 	Deep DA is a method that utilizes a deep network to enhance the performance of DA.
 \end{definition}
 
-Approaches to deep DA were divided into three categories:
+Approaches to deep DA were divided into three categories according to training loss:
 
 \begin{itemize}
 	\item \textit{discrepancy-based};
 	\item \textit{adversial-based}; and
 	\item \textit{reconstruction-based}.
 \end{itemize}
+
+We summarize the deep DA methods categorisation in the mind map of Figure~\ref{mind_map}.
 
 \begin{figure}
 \begin{tikzpicture}
@@ -110,10 +195,9 @@ Approaches to deep DA were divided into three categories:
 			}
 		child {node[concept] {archi\-tecture criterion}}
 		child {node[concept] {geometric criterion}}
-		}
-		;
+		};
 \end{tikzpicture}
-	\caption{Mind map of Deep DA}
+	\caption{Mind map of deep DA}
 	\label{mind_map}
 \end{figure}
 
