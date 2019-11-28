@@ -10,6 +10,9 @@
 \usepackage{amssymb}
 % directory tree visualisation
 \usepackage{dirtree}
+% tikz package and the mindmap library
+\usepackage{tikz}
+\usetikzlibrary{mindmap}
 
 \department{Department of Applied Mathematics}
 \title{Neural Networks Based Domain Adaptation in Spectroscopic Sky Surveys}
@@ -26,10 +29,18 @@
 % TODO czech abstract
 \abstractCS{}
 \placeForDeclarationOfAuthenticity{Prague}
-% TODO english keywords
-\keywordsEN{domain adaptation, neural networks, astronomy, spectroscopy}
-% TODO czech keywords
-\keywordsCS{}
+\keywordsEN{
+	domain adaptation,
+	neural networks,
+	deep learning,
+	astronomy
+}
+\keywordsCS{
+	doménová adaptace,
+	neuronové sítě,
+	hluboké učení,
+	astronomie
+}
 % select according to the desired license (integer 1-6)
 \declarationOfAuthenticityOption{2}
 % TODO optional thesis URL
@@ -39,7 +50,7 @@
 \newtheorem{definition}{Definition}
 
 % TODO delete
-%\includeonly{}
+\includeonly{domain_adaptation}
 
 \begin{document}
 
