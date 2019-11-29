@@ -99,7 +99,6 @@ still the source and target data are have different distributions
 Therefore, further we focus on homogeneous DA.
 because our spectra prepared into a same feature space (\(\mathbb{R}^{3659}\)).
 
-% TODO define S, SS and US DA
 Next we distinguish \textit{supervised}, \textit{semi-supervised}
 and \textit{unsupervised} DA
 according to availability of labels in the target domain:
@@ -126,7 +125,7 @@ and \textit{feature-based DA}
 (tries to learn a common shared space in which the discrepancy diminishes).
 However, shallow DA methods are not interesting for us
 because they do not utilize neural network.
-Still one possibility is to use a neural network as a feature extractor.
+Still one possibility is to use a neural network as a feature extractor.~\cite{csurka2017}
 
 The following section introduces the other category of deep DA
 which takes the advantage of neural networks.
@@ -134,8 +133,10 @@ which takes the advantage of neural networks.
 \section{Neural Networks in DA}
 
 Donahue et al. showed in the paper on DeCAF~\cite{donahue2014}
-that deep neural networks learn more transferable features,
-the performance is still affected by the domain shift.
+that deep neural networks learn more transferable features
+but the performance is still affected by the domain shift.
+
+% TODO write about DeCAF
 
 The group of DA methods using neural networks is called \textit{deep DA}
 and Wang \& Deng define it in~\cite{wang2018}:
@@ -145,63 +146,105 @@ and Wang \& Deng define it in~\cite{wang2018}:
 	Deep DA is a method that utilizes a deep network to enhance the performance of DA.
 \end{definition}
 
-Approaches to deep DA were divided into three categories according to training loss:
+Approaches to deep DA were originally divided by Csurka in~\cite{csurka2017}
+into three categories according to training loss.
+Then, Wang and Deng further improve and detail the categorisation in~\cite{wang2018}:
 
 \begin{itemize}
-	\item \textit{discrepancy-based};
-	\item \textit{adversial-based}; and
-	\item \textit{reconstruction-based}.
+	\item \textit{discrepancy-based} DA fine-tunes the neural network
+		with target data to diminish the domain shift;
+	\item \textit{adversarial-based} DA encorage domain confusion
+		by using discriminators with adversarial objective; and
+	\item \textit{reconstruction-based} DA uses data reconstruction auxialiary task to learn domain invariant features.
 \end{itemize}
 
 We summarize the deep DA methods categorisation in the mind map of Figure~\ref{mind_map}.
 
 \begin{figure}
-\begin{tikzpicture}
-	\path[mindmap, concept color=black, text=white]
-	node[concept] {Deep DA}
-	[clockwise from=60]
-	child[concept] {
-		node[concept] {Adversarial}
-		[clockwise from=75]
-		child {node[concept] {generative model}}
-		child {
-			node[concept] {non-generative model}
-			child {node[concept] {DANN}}
-			child {node[concept] {ADDA}}
+	\begin{tikzpicture}
+		\path[mindmap, concept color=black, text=white]
+		node[concept] {Deep DA}
+		[clockwise from=60]
+		child[concept] {
+			node[concept] {Adversarial}
+			[clockwise from=75]
+			child {node[concept] {generative model}}
+			child {
+				node[concept] {non-generative model}
+				child {node[concept] {DANN}}
+				child {node[concept] {ADDA}}
+				}
 			}
-		}
-	child[concept] {
-		node[concept] {Recon\-struction}
-		[clockwise from=30]
-		child {node[concept] {adversarial model}}
-		child {
-			node[concept] {encoder-decoder model}
-			child {node[concept] {SDA}}
-			child {node[concept] {mSDA}}
-			child {node[concept] {DRCN}}
-			child {node[concept] {DSN}}
+		child[concept] {
+			node[concept] {Recon\-struction}
+			[clockwise from=30]
+			child {node[concept] {adversarial model}}
+			child {
+				node[concept] {encoder-decoder model}
+				child {node[concept] {SDA}}
+				child {node[concept] {mSDA}}
+				child {node[concept] {DRCN}}
+				child {node[concept] {DSN}}
+				}
 			}
-		}
-	child[concept] {
-		node[concept] {Discrepancy}
-		[clockwise from=30]
-		child {node[concept] {class criterion}}
-		child {
-			node[concept] {statistic criterion}
-			child {node[concept] {DDC}}
-			child {node[concept] {DAN}}
-			child {node[concept] {JAN}}
-			child {node[concept] {Deep CORAL}}
-			}
-		child {node[concept] {archi\-tecture criterion}}
-		child {node[concept] {geometric criterion}}
-		};
-\end{tikzpicture}
+		child[concept] {
+			node[concept] {Discrepancy}
+			[clockwise from=30]
+			child {node[concept] {class criterion}}
+			child {
+				node[concept] {statistic criterion}
+				child {node[concept] {DDC}}
+				child {node[concept] {DAN}}
+				child {node[concept] {JAN}}
+				child {node[concept] {Deep CORAL}}
+				}
+			child {node[concept] {archi\-tecture criterion}}
+			child {node[concept] {geometric criterion}}
+			};
+	\end{tikzpicture}
 	\caption{Mind map of deep DA}
 	\label{mind_map}
 \end{figure}
 
+\subsection{Discrepancy-based DA}
+
+Discrepancy-based deep DA uses either labelled or unlabelled target data
+to fine-tune a neural network to diminish the dicrepancy
+between the source and target domains.
+
+The discrepancy-based method divided based on
+\textit{class}, \textit{statistic}, \textit{architecture} and \textit{geometric}
+criterion by~\cite{wang2018}.
+
+DDC~\cite{tzeng2014}, DAN~\cite{long2015}, JAN~\cite{long2017}
+and Deep CORAL~\cite{sun2016}.
+
+\subsection{Adversarial-based DA}
+
+Adversarial-based deep DA utilizes a domain discriminator
+that tries to distinguish whether a sample comes from source and target domains.
+If we are able to confuse the discriminator
+we will also achieve domain confusion through the adversarial objective.
+
+The methods are divided into \textit{generative} and \textit{non-generative}
+models by~\cite{wang2018}
+
+DANN~\cite{ganin2016} and ADDA~\cite{tzeng2017}.
+
+\subsection{Reconstruction-based DA}
+
+The last group of methods is based on data reconstruction auxialiary task.
+The reconstructor forces to find a shared representation
+of a source and target domains.
+
+According to~\cite{wang2018} subgroups are \textit{encoder-decoder} and
+\textit{adversarial} reconstruction.
+
+SDA~\cite{vincent2008, glorot2011}, mSDA~\cite{chen2012}, DRCN~\cite{ghifary2016} and DSN~\cite{bousmalis2016}.
+
 \section{Previous Applications of DA in Astronomy}
+
+% TODO something like: so far shallow but some deep DA not sufficient
 
 As we have shown, domain adaptation is of great interest to astronomers
 because of different instruments, measurements and observation distribution.
