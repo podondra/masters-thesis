@@ -1,9 +1,44 @@
 \chapter{Experiments: Application of Neural DA to Spectral Data}
 \label{exp_chapter}
 
-\section{Results without use of Neural DA}
+\section{Data Preparation}
 
-\section{Benefits of Neural DA: Analysis and Visualisation of Results}
+There is a bug in the SDSS DR14Q catalog as some QSO cannot be identified.
+Therefore the labels are incomplete and there will be spectra truly QSO
+but not identified in our dataset
+acting againt our objective during learning.
+We hope to find a robust solution.
 
-Apply domain adaptation to the selected data
-and prepare visualisation of results.
+Moreover, evaluation on LAMOST data can be biased
+because the QSO identification strategy is different in LAMOST and SDSS.
+Therefore, some QSO might not be identified in LAMOST.
+
+Analysis of wavelength range.
+
+Sizes of source and target datasets: number of QSOs.
+
+\section{Dimensionality Reduction}
+
+\subsection{Principal Component Analysis (PCA)}
+
+\subsection{t-distributed Stochastic Neighbor Embedding (t-SNE)}
+
+\subsection{Uniform Manifold Approximation and Projection (UMAP)}
+
+\section{Baseline: Results without Use of Deep DA}
+
+LeNet-5 and DeCAF.
+
+\section{Experiments with Deep DA}
+
+Apply domain adaptation to the selected data.
+
+\subsection{Deep CORAL: Correlation Alignment for Deep DA}
+
+\subsection{DANN: Domain-Adversarial Training of Neural Networks}
+
+\subsection{DRCN: Deep Reconstruction-Classification Networks}
+
+\section{Evaluation of Experiments}
+
+Prepare visualisation of results.
