@@ -3,19 +3,76 @@
 
 \section{Data Preparation}
 
-There is a bug in the SDSS DR14Q catalog as some QSO cannot be identified.
-Therefore the labels are incomplete and there will be spectra truly QSO
+The SDSS DR14 Optical Spectra Catalog contains 4\,851\,200 spectra
+and the corresponding SDSS DR14 QSO Catalog contains 526\,356 object.
+To the 526\,356 QSO there is supposed to be 649\,791 spectra
+according to the QSO catalog metadata.
+However, there is a bug in the catalog as some spectra of QSO cannot be identified.
+Therefore, we are able to get only 629\,512 spectra of all QSOs
+missing 20\,279 spectra of QSOs due to the bug.
+
+Moreover, after cross-matching the general and QSO catalog,
+we were unable to find 55 spectra.
+Afterall, we end up with correctly identified 629\,457 spectra of QSO.
+
+The labels are incomplete and there will be spectra truly QSO
 but not identified in our dataset
 acting againt our objective during learning.
 We hope to find a robust solution.
+
+LAMOST DR5 General Catalog contains 9\,026\,365 spectra
+and its catalog of all QSOs found so far has 42\,552 spectra of QSOs.
+However, we were able to cross-match only 31\,755 spectra of QSOs with the general catalog.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|l|r|r|}
+			\hline
+			Name & QSOs & Total spectra \\ \hline \hline
+			SDSS DR14 & 627\,508 & 4\,816\,713 \\ \hline
+			SDSS training set & 130\,904 & 1\,000\,000 \\ \hline
+			SDSS validation set & 6\,552 & 50\,000 \\ \hline
+			LAMOST DR5 v3 & 31\,755 & 9\,026\,365 \\ \hline
+			LAMOST training set & 3\,517 & 1\,000\,000 \\ \hline
+			LAMOST validation set & 190 & 50\,000 \\ \hline
+		\end{tabular}
+	\end{center}
+	\caption{Size of data}
+\end{table}
 
 Moreover, evaluation on LAMOST data can be biased
 because the QSO identification strategy is different in LAMOST and SDSS.
 Therefore, some QSO might not be identified in LAMOST.
 
-Analysis of wavelength range.
+For neural network training,
+we need to have all spectra in the same wavelength range
+and measured in the same wavelenghts.
+The wavelenght grid is same for both archive.
+The grid is in logarithmic wavalength with 0.0001 spacing.
+Our aim is to find QSO in the LAMOST archive.
+Therefore, we would like to keep as many spectra as possible from the LAMOST archive.
+Figure~\ref{wavemin_wavemax_hist} show historgram of minimal and maximal wavelengths of all LAMOST spectra.
+The maximum from minimal wavelengths 3\,839.7244 \AA{}
+and the minimum from maximal wavelengths 8\,914.597 \AA{}.
 
-Sizes of source and target datasets: number of QSOs.
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/wavemin_wavemax_hist.pdf}
+	\caption{Minimal and maximal wavelength of LAMOST spectra}
+	\label{wavemin_wavemax_hist}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/waves_cumulative_hist.pdf}
+	\caption{Cutting SDSS specta}
+	\label{wavemin_wavemax_hist}
+\end{figure}
+
+Min-max preprocessing in the \([-1; 1]\) range:
+
+\begin{equation}
+	\mathbf{x}_i = 2 \frac{\mathbf{x}_i - \min(\mathbf{x}_i)}{
+		\max(\mathbf{x}_i) - \min(\mathbf{x}_i)} - 1.
+\end{equation}
 
 \section{Dimensionality Reduction}
 
