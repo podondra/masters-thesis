@@ -26,16 +26,16 @@ However, we were able to cross-match only 31\,755 spectra of QSOs with the gener
 
 \begin{table}
 	\begin{center}
-		\begin{tabular}{|l|r|r|}
-			\hline
-			Name & QSOs & Total spectra \\ \hline \hline
-			SDSS DR14 & 627\,508 & 4\,816\,713 \\ \hline
-			SDSS training set & 130\,904 & 1\,000\,000 \\ \hline
-			SDSS validation set & 6\,552 & 50\,000 \\ \hline
-			LAMOST DR5 v3 & 31\,755 & 9\,026\,365 \\ \hline
-			LAMOST training set & 3\,517 & 1\,000\,000 \\ \hline
-			LAMOST validation set & 190 & 50\,000 \\ \hline
-		\end{tabular}
+	\begin{tabular}{|l|r|r|}
+		\hline
+		Name & QSOs & Total spectra \\ \hline \hline
+		SDSS DR14 & 627\,508 & 4\,816\,713 \\ \hline
+		SDSS training set & 130\,904 & 1\,000\,000 \\ \hline
+		SDSS validation set & 6\,552 & 50\,000 \\ \hline
+		LAMOST DR5 v3 & 31\,755 & 9\,026\,365 \\ \hline
+		LAMOST training set & 3\,517 & 1\,000\,000 \\ \hline
+		LAMOST validation set & 190 & 50\,000 \\ \hline
+	\end{tabular}
 	\end{center}
 	\caption{Size of data}
 \end{table}
@@ -85,6 +85,104 @@ Min-max preprocessing in the \([-1; 1]\) range:
 \section{Baseline: Results without Use of Deep DA}
 
 LeNet-5 and DeCAF.
+
+\tikzstyle{layer} = [align=center,draw=black,font=\tiny,rectangle,text centered]
+\begin{figure}
+\begin{center}
+\subfloat[][LeNet]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
+	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+\end{tikzpicture}
+}\\
+\subfloat[][DDC]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
+	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
+	\node (bottleneck) [layer,right of=fc2,fill=red!50] {bottleneck\\?\\ReLU};
+	\node (fc3) [layer,right of=bottleneck] {fc3\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (bottleneck);
+	\draw [->] (bottleneck) -- (fc3);
+\end{tikzpicture}
+}\\
+\subfloat[][DANN]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
+	\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+	\node (grl) [layer,below of=pool2,fill=green!50] {gradient\\reversar\\layer};
+	\node (fc4) [layer,right of=grl,fill=green!50] {fc4\\100\\ReLU};
+	\node (fc5) [layer,right of=fc4,fill=green!50] {fc5\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+	\draw [->] (pool2) -- (grl);
+	\draw [->] (grl) -- (fc4);
+	\draw [->] (fc4) -- (fc5);
+\end{tikzpicture}
+}\\
+\subfloat[][DRCN]{
+\begin{tikzpicture}[node distance=1.5cm]
+	% encoder
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-64\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
+	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+	% feature labelling
+	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+	% decoder
+	\node (fc4) [layer,below of=fc1,fill=green!50] {fc4\\\(48 \cdot 914\)\\ReLU};
+	\node (upsample1) [layer,left of=fc4,fill=green!50] {upsample1\\1829};
+	\node (conv3) [layer,left of=upsample1,fill=green!50] {conv3\\5-64\\ReLU};
+	\node (upsample2) [layer,left of=conv3,fill=green!50] {upsample2\\3659};
+	\node (conv4) [layer,left of=upsample2,fill=green!50] {conv4\\5-32\\None};
+	% connections
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+	\draw [->] (fc1) -- (fc4);
+	\draw [->] (fc4) -- (upsample1);
+	\draw [->] (upsample1) -- (conv3);
+	\draw [->] (conv3) -- (upsample2);
+	\draw [->] (upsample2) -- (conv4);
+\end{tikzpicture}
+}
+\end{center}
+\caption{Architectures}
+\label{lenet_5}
+\end{figure}
 
 \section{Experiments with Deep DA}
 
