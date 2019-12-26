@@ -458,9 +458,64 @@ SDA and mSDA were developed for Amazon reviews benchmark textual data
 while DRCN and DSN for visual data.
 Therefore we focus on DRCN as it is simpler to train than DSN.
 
-Deep Reconstruction-Classification Network (DRCN)~\cite{ghifary2016} is a CNN that learn both
-supervised souce labelled classification
-and unsupervised target data reconstruction.
+Deep Reconstruction-Classification Network (DRCN)~\cite{ghifary2016} is a CNN
+that learn both supervised souce labelled classification and unsupervised target data reconstruction.
 Encoder is shared between both task but decoding parameters are separete.
-The data reconstruction task is a auxiliary task
-supposed to learn good feature representation beneficial for both source and target domain.
+The data reconstruction task is a auxiliary task supposed to learn good feature representation beneficial for both source and target domain.
+
+The intuition behind DRCN is that good represenstation for DA
+should capture both the properties for classification
+and data structure (reconstruct well the target domain).
+DRCN is composed of two pipelines.
+The first one is source label predictor
+and the second is a convolutional autoencoder fro target data reconstruction.
+The model is jointly optimised for classification and reconstruction tasks.
+DRCN hopes that the auxiliary reconstruction task will learn good repreresentation for target classification.
+
+The function \(F_c: X \to Y\) is the label predictor
+and \(F_r: X \to X\) is the data reconstructor.
+The two functions are composed out of three components:
+
+\begin{itemize}
+	\item an encoder feature mapping \(G_e: X \to Z\);
+	\item a decoder \(G_d: Z \to X\); and
+	\item a classificator \(G_l: Z \to Y\);
+\end{itemize}
+
+where \(Z\) is a latent feature space where DRCN encodes data.
+Given the above component,
+\(F_c(\cdot; \theta_c) = G_l(G_e(\cdot; \theta_e); \theta_l)\)
+and \(F_r(\cdot; \theta_r) = G_d(G_e(\cdot; \theta_e); \theta_d)\)
+where \(\theta_c = \{\theta_e, \theta_l\}\)
+and \(\theta_r = \{\theta_d, \theta_e\}\) are parameters of DRCN.
+Note that \(\theta_e\) is shared between the label predictor and the autoencoder.
+
+Therefore, the learning objective of DRCN contains classification and reconstruction loss respectively:
+
+\begin{align}
+	\mathcal{L}_c(S) &= \sum_{i = 1}^{n}
+	l_c(F_c(\mathbf{x}_i; \theta_c), y_i),
+	\label{drcn_classification_loss} \\
+	\mathcal{L}_r(T) &= \sum_{i = n + 1}^{N}
+	l_r(F_r(\mathbf{x}_i; \theta_r), \mathbf{x}_i),
+	\label{drcn_reconstruction_loss}
+\end{align}
+
+wher \(l_c\) is a form of cross entropy loss
+and \(l_r\) is the squared loss:
+
+\begin{equation}
+	l_r = \|\mathbf{x}_i - F_r(\mathbf{x}_i)\|_2^2.
+\end{equation}
+
+By combining the terms~\ref{drcn_classification_loss} and~\ref{drcn_reconstruction_loss},
+DRCN aims to minimise following objective:
+
+\begin{equation}
+	\mathcal{L}_{\mathrm{DDC}}
+	= \lambda \mathcal{L}_c(S) + (1 - \lambda) \mathcal{L}_r(T),
+	\label{drcn_loss}
+\end{equation}
+
+where \(\lambda \in [0; 1]\) is a hyperparameter of the trade-off between the two loss functions.
+The objective~\ref{drcn_loss} can be optimised with SGD.
