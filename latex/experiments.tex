@@ -86,10 +86,16 @@ Min-max preprocessing in the \([-1; 1]\) range:
 
 LeNet-5 and DeCAF.
 
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/lenet_losses.pdf}
+	\caption{Losses of LeNet-5}
+	\label{lenet_losses}
+\end{figure}
+
 \tikzstyle{layer} = [align=center,draw=black,font=\tiny,rectangle,text centered]
 \begin{figure}
 \begin{center}
-\subfloat[][LeNet]{
+\subfloat[][LeNet-5]{
 \begin{tikzpicture}[node distance=1.5cm]
 	\node (conv1) [layer] {conv1\\5-32\\ReLU};
 	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
@@ -188,7 +194,7 @@ LeNet-5 and DeCAF.
 
 Apply domain adaptation to the selected data.
 
-\subsection{Deep CORAL: Correlation Alignment for Deep DA}
+\subsection{DDC: Deep Domain Confusion}
 
 \subsection{DANN: Domain-Adversarial Training of Neural Networks}
 
