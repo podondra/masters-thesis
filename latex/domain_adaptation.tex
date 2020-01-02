@@ -1,11 +1,12 @@
-\chapter{Domain Adaptation (DA)}
+\chapter{Domain Adaptation}
 \label{da_chapter}
 
-Survey the current state of domain adaptation using neural network models in machine learning and with a focus on astronomical applications.
+We survey the current state of domain adaptation using neural network models
+in machine learning and with a focus on astronomical applications.
 
 % TODO include examples from astronomical spectroscopy
 
-\section{DA in Context of Machine and Transfer Learning}
+\section{Domain Adaptation in the Context of Machine Learning}
 
 Now, we introduce the crucial concept of our work: domain adaptation.
 Domain adaptation is a subfield of transfer learning,
@@ -58,7 +59,7 @@ we talk about a positive transfer.~\cite{torrey2010}
 
 TL helps to exploit data or models available in similar domains.~\cite{csurka2017}
 
-\section{Theory and Formalization of DA}
+\section{Theory and Formalization of Domain Adapation}
 
 % TODO define DA
 Domain adaptation (DA) is a particular case of TL
@@ -147,49 +148,7 @@ Still one possibility is to use a neural network as a feature extractor.~\cite{c
 The following section introduces the other category of deep DA
 which takes the advantage of neural networks.
 
-\section{Previous Applications of DA in Astronomy}
-
-% TODO something like: so far shallow but some deep DA not sufficient
-
-As we have shown, domain adaptation is of great interest to astronomers
-because of different instruments, measurements and observation distribution.
-Therefore, we survey the current state of domain adaptation in astronomical applications in this section.
-
-If we have a common set of observed stars in both archives,
-then we can map them and learn a transfer function.
-Ho et al.~\cite{ho2017} did exactly that
-% TODO add APOGEE to acronyms
-because they found a common set of 9\,952 spectra in both APOGEE and LAMOST archive.
-Using that set, they trained the Cannon method~\cite{ness2015},
-and they used the model to transfer some physical parameters from APOGEE to LAMOST.
-
-In the case, when there is no common set Gupta et al. experimented with subspace alignment~\cite{fernando2014} and kernel mean matching~\cite{gretton2009} followed by active learning.~\cite{gupta2016}
-In the case of subspace alignment, the negative transfer occurred while the kernel mean matching seems very promising in the task of supernova classification.
-Then, Vilalta et al.~\cite{vilalta2018} extended the work of Gupta et al.~\cite{gupta2016}.
-Vilalta et al. used a maximum a posteriori (MAP) approach to learn a prior on the model parameters from a spectroscopic source domain
-and then use this prior distribution to learn a model in a photometric target domain.
-Concretely, Vilalta et al. put a prior on the number of layers of a neural network
-and then used active learning.
-Richards et al.~\cite{richards2011} faced a similar situation, as Gupta et al.
-Richards et al. introduce the problem as sample selection bias~\cite{shimodaira2000} or covariate shift~\cite{heckman1979}
-when different distributions generate the source and target data.
-That is precisely the problem we have defined as domain adaptation.
-Richards et al. experimented with random forest in combination with three domain adaptation methods:
-importance weighting~\cite{shimodaira2000}, co-training~\cite{blum1998} and active learning~\cite{settles2009}.
-The result is not surprising from our point of view.
-Active learning works best while importance weighting and co-training achieve negative transfer.
-
-The term transfer learning has been recently used in the context of deep learning.
-However, transfer learning in the context of deep learning means something more concrete than what we defined as transfer learning previously.
-Transfer learning in the context of deep learning is the specific situation
-when a pretrained deep neural network model is taken,
-and its last layers are retrained with the target domain data.
-Ackermann et al.~\cite{ackermann2018} employed with the transfer learning approach in the context of deep learning to detect galaxy merges.
-Ackermann et al. took the Xception convolutional neural network~\cite{chollet2017}
-and retrain its last layers with images of galaxy merger labelled in a citizen science Galaxy Zoo project.
-This transfer learning approach allowed Ackermann et al. to lower the best error rate so far by 15\%.
-
-\section{Neural Networks in DA}
+\section{Neural Networks in Domain Adapation}
 
 Donahue et al. showed in the paper on DeCAF~\cite{donahue2014}
 that deep neural networks learn more transferable features
@@ -265,7 +224,7 @@ We summarize the deep DA methods categorisation in the mind map of Figure~\ref{m
 	\label{mind_map}
 \end{figure}
 
-\subsection{Discrepancy-based DA}
+\subsection{Discrepancy-based Deep Domain Adapation}
 
 Discrepancy-based deep DA uses either labelled or unlabelled target data
 to fine-tune a neural network to diminish the dicrepancy
@@ -308,11 +267,11 @@ that enables to learn a strong classifier.
 Therefore is minimizes a loss that incorporates both domain confusion loss and classification loss:
 
 \begin{equation}
-	\mathcal{L}_{\mathrm{DDC}} = \mathcal{L}_c(S)
+	\mathcal{L}_{\mathrm{DDC}} = \mathcal{L}_C(S)
 	+ \lambda \mathrm{MMD}^2(S, T),
 \end{equation}
 
-where \(\mathcal{L}_c\) stands for classification loss on the labelled source data \(S\).
+where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\).
 To control the stregnth of domain confusion DDC introduces the hyperparameter~\(\lambda\)
 (DCC uses \(\lambda = 0.25\) in its experiments).
 
@@ -325,7 +284,37 @@ The domain confusion loss is placed on the bottleneck adaptation layer.
 % TODO cite Office benchmark and maybe describe?
 DDC was evaluated of the Office benchmark achieving 81.2\% average accuracy on the target domains.
 
-\subsection{Adversarial-based DA}
+% TODO compare to DDC
+Deep CORAL is an extension of Correlation Alignment (CORAL)
+that work with deep neural network by including a differentiable CORAL loss.
+
+CORAL loss is defined as the distance between covatiances of the source and target features extracted from a layer of a deep neural network:
+
+% TODO check punctuation in all equations
+\begin{equation}
+	\mathcal{L}_{\mathrm{CORAL}}(S, T) = \frac{1}{4 d^2} \|C(S) - C(T)\|_F^2,
+\end{equation}
+
+where \(\|\cdot\|_F^2\) is the squated matrix Frobenius norm
+and the fuction \(C(\cdot)\) return a covariance matrix of a given set:
+
+\begin{equation}
+	C(D_A) = \frac{1}{|A| - 1} (D_A^\top D_A
+	- \frac{1}{|A|} (\mathbf{1}^\top D_A)^\top (\mathbf{1}^\top D_A)),
+\end{equation}
+
+where \(A\) is a set of examples
+that are either the source sample \(S\) or the target sample \(T\)
+and \(D_A\) is a design matrix corresponding to the set
+that is a matrix where each row is an example.
+The \(\mathbf{1}\) is a column vector with all elements equal to 1.
+
+\begin{equation}
+	\mathcal{L}_{\mathrm{Deep\,CORAL}}
+	= \mathcal{L}_C(S) + \lambda \mathcal{L}_{\mathrm{CORAL}}(S, T)
+\end{equation}
+
+\subsection{Adversarial-based Deep Domain Adaptation}
 
 Adversarial-based deep DA utilizes a domain discriminator
 that tries to distinguish whether a sample comes from source and target domains.
@@ -442,7 +431,7 @@ to version fully compatible with SGD:
 	\right).
 \end{equation}
 
-\subsection{Reconstruction-based DA}
+\subsection{Reconstruction-based Deep Domain Adapation}
 
 The last group of methods is based on data reconstruction auxialiary task.
 The reconstructor forces to find a shared representation
@@ -519,3 +508,47 @@ DRCN aims to minimise following objective:
 
 where \(\lambda \in [0; 1]\) is a hyperparameter of the trade-off between the two loss functions.
 The objective~\ref{drcn_loss} can be optimised with SGD.
+
+\section{Previous Applications of Domain Adaptation in Astronomy}
+
+% TODO something like: so far shallow but some deep DA not sufficient
+
+As we have shown, domain adaptation is of great interest to astronomers
+because of different instruments, measurements and observation distribution.
+Therefore, we survey the current state of domain adaptation in astronomical applications in this section.
+
+If we have a common set of observed stars in both archives,
+then we can map them and learn a transfer function.
+Ho et al.~\cite{ho2017} did exactly that
+% TODO add APOGEE to acronyms
+because they found a common set of 9\,952 spectra in both APOGEE and LAMOST archive.
+Using that set, they trained the Cannon method~\cite{ness2015},
+and they used the model to transfer some physical parameters from APOGEE to LAMOST.
+
+In the case, when there is no common set Gupta et al. experimented with subspace alignment~\cite{fernando2014} and kernel mean matching~\cite{gretton2009} followed by active learning.~\cite{gupta2016}
+In the case of subspace alignment, the negative transfer occurred while the kernel mean matching seems very promising in the task of supernova classification.
+Then, Vilalta et al.~\cite{vilalta2018} extended the work of Gupta et al.~\cite{gupta2016}.
+Vilalta et al. used a maximum a posteriori (MAP) approach to learn a prior on the model parameters from a spectroscopic source domain
+and then use this prior distribution to learn a model in a photometric target domain.
+Concretely, Vilalta et al. put a prior on the number of layers of a neural network
+and then used active learning.
+Richards et al.~\cite{richards2011} faced a similar situation, as Gupta et al.
+Richards et al. introduce the problem as sample selection bias~\cite{shimodaira2000} or covariate shift~\cite{heckman1979}
+when different distributions generate the source and target data.
+That is precisely the problem we have defined as domain adaptation.
+Richards et al. experimented with random forest in combination with three domain adaptation methods:
+importance weighting~\cite{shimodaira2000}, co-training~\cite{blum1998} and active learning~\cite{settles2009}.
+The result is not surprising from our point of view.
+Active learning works best while importance weighting and co-training achieve negative transfer.
+
+The term transfer learning has been recently used in the context of deep learning.
+However, transfer learning in the context of deep learning means something more concrete than what we defined as transfer learning previously.
+Transfer learning in the context of deep learning is the specific situation
+when a pretrained deep neural network model is taken,
+and its last layers are retrained with the target domain data.
+Ackermann et al.~\cite{ackermann2018} employed with the transfer learning approach in the context of deep learning to detect galaxy merges.
+Ackermann et al. took the Xception convolutional neural network~\cite{chollet2017}
+and retrain its last layers with images of galaxy merger labelled in a citizen science Galaxy Zoo project.
+This transfer learning approach allowed Ackermann et al. to lower the best error rate so far by 15\%.
+
+% TODO write about DVT
