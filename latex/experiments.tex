@@ -13,7 +13,8 @@ and investigate distributions of both the source and target data.
 % TODO CNN abbreviation
 Thirdly, we introude a CNN baseline model
 which serves as benchmark for comparison of deep domain adapation methods.
-Finally, we employ five deep domain adaptation methods
+Finally, we employ four deep domain adaptation methods
+(DDC, Deep CORAL, DANN and DRCN)
 and evaluate the adapted results to see 
 if astronomical spectroscopy can benefit from deep domain adaptation.
 
@@ -166,11 +167,76 @@ leaving us only with the spectrum shape which we are interesting in.
 
 \section{Dimensionality Reduction}
 
-PCA (Principal Component Analysis), 
-t-SNE (t-Distributed Stochastic Neighbor Embedding)
-and UMAP (Uniform Manifold Approximation and Projection).
+In this section, we investigate the structure of joint data space of source and target datasets with three dimensionality reduction methods:
+\textit{principal component analysis},
+\textit{t-Distributed Stochastic Neighbor Embedding}
+and \textit{Unifrom Maniforld Approximation and Projection} (UMAP).
+We would like to get an idea how well are the source and target data mixed together,
+if there are some separate clusters or the data are rather continuos.
 
-\section{Baseline: Results without Use of Deep DA}
+To avoid visualisation overwhelmed with data points,
+we sampled 2\,500 spectra from the source training set
+and 2\,500 spectra from the target traininig set.
+The spectra are min-max scaled not standardized
+because the relation between features are meaningful
+and we do not want to supress the relationship.
+
+\textit{Principal component analysis} (PCA) is a simple linear machine learning algorithm
+that is used either for visualisation or feature extraction by dimensionality reduction.
+PCA learns a representation whose features are uncorrelation with each other
+and selects features will the largest variation.~\cite{goodfellow2016}
+We show the visualisation obtained with PCA in Figure~\ref{pca}.
+The plot shows that source data tent to concenrate in the middle
+while the target data are on the edges.
+However, there are no regions containing only source or target data.
+Moreover, in the middle extending to the right there is a kind of line component.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/pca.pdf}
+	\caption{PCA}
+	\label{pca}
+\end{figure}
+
+\textit{t-Distributed Stochastic Neighbor Embedding} (t-SNE)~\cite{maaten2008, wattenberg2016} is a popular method for visualisation of high-dimensional data.
+The t-SNE method is non-linear, iterative
+and peforms different transformation of different regions.
+A tunable hyperparemeter of t-SNE is \textit{perplexity}
+which is a guess about the number of neighbors of a data point.
+Typically, the optimal value is between 5 and 50.
+
+We reduce dimensionality with t-SNE for perplexities from \(\{5, 10, 30, 50, 100\}\).
+The best result was for the value 30
+and the result is shown in Figure~\ref{tsne}.
+The t-SNE embedding have similar structure to the Figure~\ref{pca} of PCA.
+There are mostly source data in the center and target data around it.
+However the separation between center and edges seems to be bigger.
+Still ther is the line component extending to the right.
+
+t-SNE is often used in the papers presenting a deep domain adaptation methods
+to show how feature extracted from a higher layer in an adapted network
+are better mix when a domain adaptation method is employed.
+On the other hand, we a network is not adapted the source and target data
+can be easily visually separated in a t-SNE visualisation.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/tsne.pdf}
+	\caption{t-SNE}
+	\label{tsne}
+\end{figure}
+
+\textit{Unifrom Manifold Approximation and Projection} (UMAP)~\cite{mcinnes2018}
+is a non-linear dimensionality reduction algortihm based on manifold learning and ideas from topological data analysis.
+It achieves visualisations similar to t-SNE but it is significantly faster.
+Visualisation with UMAP is displayed in Figure~\ref{umap}
+and have very similar structure to t-SNE embedding in Figure~\ref{tsne}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/umap.pdf}
+	\caption{UMAP}
+	\label{umap}
+\end{figure}
+
+\section{Baseline: Results without Deep Domain Adapation}
 
 LeNet-5 and DeCAF.
 
@@ -279,6 +345,8 @@ LeNet-5 and DeCAF.
 Apply domain adaptation to the selected data.
 
 \subsection{DDC: Deep Domain Confusion}
+
+\subsection{Deep CORAL: Deep Correlation Alignment}
 
 \subsection{DANN: Domain-Adversarial Neural Networks}
 
