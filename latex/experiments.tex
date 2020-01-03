@@ -19,6 +19,7 @@ and evaluate the adapted results to see
 if astronomical spectroscopy can benefit from deep domain adaptation.
 
 \section{Data Preparation}
+\label{data_preparation}
 
 % TODO introduction to section
 
@@ -488,7 +489,24 @@ The final architecture of our DDC network is in Figure~\ref{ddc_architecture}. W
 and trained the network in the same way
 as described in previous section~\ref{baseline}.
 
+\begin{figure}
+	\subfloat[][Losses]{
+		\includegraphics[width=0.5\textwidth]{img/ddc_losses.pdf}
+	}
+	\subfloat[][Maximum mean discrepancy]{
+		\includegraphics[width=0.5\textwidth]{img/ddc_mmds.pdf}
+	}
+	\caption{Training of DDC}
+	\label{ddc_training}
+\end{figure}
+
 \subsection{Deep CORAL: Deep Correlation Alignment}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/deep-coral_losses.pdf}
+	\caption{Losses of Deep CORAL}
+	\label{deep_coral_losses}
+\end{figure}
 
 \subsection{DANN: Domain-Adversarial Neural Networks}
 
