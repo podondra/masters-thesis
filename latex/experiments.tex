@@ -1,4 +1,4 @@
-\chapter{Experiments with Deep Domain Adaptation on Spectral Data}
+\chapter{Experiments with Deep Domain Adaptation}
 \label{exp_chapter}
 
 In previous chapters, we have selected suitable astronomical data
@@ -236,115 +236,257 @@ and have very similar structure to t-SNE embedding in Figure~\ref{tsne}.
 	\label{umap}
 \end{figure}
 
-\section{Baseline: Results without Deep Domain Adapation}
+\section{Baseline: Results without Deep Domain Adapatation}
+\label{baseline}
 
-LeNet-5 and DeCAF.
+Now, we are ready for training of neural networks
+but before we will dive into deep domain adapatation
+we will train a classical convulutional network
+which will serve as baseline to
+which we can compare results of networks augumented with deep domain adaptation.
 
-\begin{figure}
-	\includegraphics[width=\textwidth]{img/lenet_losses.pdf}
-	\caption{Losses of LeNet-5}
-	\label{lenet_losses}
-\end{figure}
+As the baseline, we choose LeNet-5~\cite{lecun1998} convolutional neural network
+which was originaly used to recognize hand written digits
+of the MNIST dataset.\footnote{Available from: \url{http://yann.lecun.com/exdb/mnist/}}
+We have choosen the architecture of LeNet-5
+because it is the simplest model used in the DANN paper~\cite{ganin2016}.
+However, the network is design for processing of two-dimensional images
+while spectrum is a one-dimensional image.
+Therefore, we have to substitude the two-dimensional convolutions with one-dimensional convolutions.
+Moreover, we increased the kernel size and stride of pooling layer from 2 to 16
+so that the output of the convolutional layer is reasonably big.
+If we left the original pooling layer
+the input to the first fully connected layer would be of size 43\,872.
+in comparison the original input size 768 for the MNIST dataset.
+The kernel size and stride of 16 will reduce the input size of our network to 672.
+Figure~\ref{lenet} displays the final architecture
+which we implemented in PyTorch~\cite{paszke2019}.
 
 \tikzstyle{layer} = [align=center,draw=black,font=\tiny,rectangle,text centered]
 \begin{figure}
-\begin{center}
-\subfloat[][LeNet-5]{
-\begin{tikzpicture}[node distance=1.5cm]
-	\node (conv1) [layer] {conv1\\5-32\\ReLU};
-	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
-	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
-	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
-	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
-	\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
-	\draw [->] (conv1) -- (pool1);
-	\draw [->] (pool1) -- (conv2);
-	\draw [->] (conv2) -- (pool2);
-	\draw [->] (pool2) -- (fc1);
-	\draw [->] (fc1) -- (fc2);
-	\draw [->] (fc2) -- (fc3);
-\end{tikzpicture}
-}\\
-\subfloat[][DDC]{
-\begin{tikzpicture}[node distance=1.5cm]
-	\node (conv1) [layer] {conv1\\5-32\\ReLU};
-	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
-	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
-	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
-	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
-	\node (bottleneck) [layer,right of=fc2,fill=red!50] {bottleneck\\?\\ReLU};
-	\node (fc3) [layer,right of=bottleneck] {fc3\\1\\sigmoid};
-	\draw [->] (conv1) -- (pool1);
-	\draw [->] (pool1) -- (conv2);
-	\draw [->] (conv2) -- (pool2);
-	\draw [->] (pool2) -- (fc1);
-	\draw [->] (fc1) -- (fc2);
-	\draw [->] (fc2) -- (bottleneck);
-	\draw [->] (bottleneck) -- (fc3);
-\end{tikzpicture}
-}\\
-\subfloat[][DANN]{
-\begin{tikzpicture}[node distance=1.5cm]
-	\node (conv1) [layer] {conv1\\5-32\\ReLU};
-	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
-	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-	\node (pool2) [layer,right of=conv2] {pool2\\2-2};
-	\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
-	\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
-	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
-	\node (grl) [layer,below of=pool2,fill=green!50] {gradient\\reversar\\layer};
-	\node (fc4) [layer,right of=grl,fill=green!50] {fc4\\100\\ReLU};
-	\node (fc5) [layer,right of=fc4,fill=green!50] {fc5\\1\\sigmoid};
-	\draw [->] (conv1) -- (pool1);
-	\draw [->] (pool1) -- (conv2);
-	\draw [->] (conv2) -- (pool2);
-	\draw [->] (pool2) -- (fc1);
-	\draw [->] (fc1) -- (fc2);
-	\draw [->] (fc2) -- (fc3);
-	\draw [->] (pool2) -- (grl);
-	\draw [->] (grl) -- (fc4);
-	\draw [->] (fc4) -- (fc5);
-\end{tikzpicture}
-}\\
-\subfloat[][DRCN]{
-\begin{tikzpicture}[node distance=1.5cm]
-	% encoder
-	\node (conv1) [layer] {conv1\\5-32\\ReLU};
-	\node (pool1) [layer,right of=conv1] {pool1\\2-2};
-	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-	% feature labelling
-	\node (pool2) [layer,right of=conv2,fill=blue!50] {pool2\\2-2};
-	\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
-	\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
-	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
-	% decoder
-	\node (conv3) [layer,below of=conv2,fill=green!50] {conv3\\5-48\\ReLU};
-	\node (upsample1) [layer,left of=conv3,fill=green!50] {upsample1\\3659};
-	\node (conv4) [layer,left of=upsample1,fill=green!50] {conv4\\5-32\\None};
-	% connections
-	\draw [->] (conv1) -- (pool1);
-	\draw [->] (pool1) -- (conv2);
-	\draw [->] (conv2) -- (pool2);
-	\draw [->] (pool2) -- (fc1);
-	\draw [->] (fc1) -- (fc2);
-	\draw [->] (fc2) -- (fc3);
-	\draw [->] (conv2) -- (conv3);
-	\draw [->] (conv3) -- (upsample1);
-	\draw [->] (upsample1) -- (conv4);
-\end{tikzpicture}
-}
-\end{center}
-\caption{Architectures}
-\label{lenet_5}
+	\begin{center}
+		\subfloat[][LeNet-5]{
+			\begin{tikzpicture}[node distance=1.5cm]
+				\node (conv1) [layer] {conv1\\5-32\\ReLU};
+				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+				\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+				\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
+				\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
+				\draw [->] (conv1) -- (pool1);
+				\draw [->] (pool1) -- (conv2);
+				\draw [->] (conv2) -- (pool2);
+				\draw [->] (pool2) -- (fc1);
+				\draw [->] (fc1) -- (fc2);
+				\draw [->] (fc2) -- (fc3);
+			\end{tikzpicture}
+			\label{lenet}
+		}\\
+		\subfloat[][DDC]{
+			\begin{tikzpicture}[node distance=1.5cm]
+				\node (conv1) [layer] {conv1\\5-32\\ReLU};
+				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+				\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+				\node (bottleneck) [layer,right of=fc1,fill=red!50] {bottleneck\\64\\ReLU};
+				\node (fc2) [layer,right of=bottleneck] {fc2\\100\\ReLU};
+				\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
+				\draw [->] (conv1) -- (pool1);
+				\draw [->] (pool1) -- (conv2);
+				\draw [->] (conv2) -- (pool2);
+				\draw [->] (pool2) -- (fc1);
+				\draw [->] (fc1) -- (bottleneck);
+				\draw [->] (bottleneck) -- (fc2);
+				\draw [->] (fc2) -- (fc3);
+			\end{tikzpicture}
+			\label{ddc_architecture}
+		}\\
+		\subfloat[][DANN]{
+			\begin{tikzpicture}[node distance=1.5cm]
+				\node (conv1) [layer] {conv1\\5-32\\ReLU};
+				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+				\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
+				\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
+				\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+				\node (grl) [layer,below of=pool2,fill=green!50] {gradient\\reversar\\layer};
+				\node (fc4) [layer,right of=grl,fill=green!50] {fc4\\100\\ReLU};
+				\node (fc5) [layer,right of=fc4,fill=green!50] {fc5\\1\\sigmoid};
+				\draw [->] (conv1) -- (pool1);
+				\draw [->] (pool1) -- (conv2);
+				\draw [->] (conv2) -- (pool2);
+				\draw [->] (pool2) -- (fc1);
+				\draw [->] (fc1) -- (fc2);
+				\draw [->] (fc2) -- (fc3);
+				\draw [->] (pool2) -- (grl);
+				\draw [->] (grl) -- (fc4);
+				\draw [->] (fc4) -- (fc5);
+			\end{tikzpicture}
+		}\\
+		\subfloat[][DRCN]{
+			\begin{tikzpicture}[node distance=1.5cm]
+				% encoder
+				\node (conv1) [layer] {conv1\\5-32\\ReLU};
+				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+				% feature labelling
+				\node (pool2) [layer,right of=conv2,fill=blue!50] {pool2\\16-16};
+				\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
+				\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
+				\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+				% decoder
+				\node (conv3) [layer,below of=conv2,fill=green!50] {conv3\\5-48\\ReLU};
+				\node (upsample1) [layer,left of=conv3,fill=green!50] {upsample1\\3659};
+				\node (conv4) [layer,left of=upsample1,fill=green!50] {conv4\\5-32\\None};
+				% connections
+				\draw [->] (conv1) -- (pool1);
+				\draw [->] (pool1) -- (conv2);
+				\draw [->] (conv2) -- (pool2);
+				\draw [->] (pool2) -- (fc1);
+				\draw [->] (fc1) -- (fc2);
+				\draw [->] (fc2) -- (fc3);
+				\draw [->] (conv2) -- (conv3);
+				\draw [->] (conv3) -- (upsample1);
+				\draw [->] (upsample1) -- (conv4);
+			\end{tikzpicture}
+		}
+	\end{center}
+	\caption{Architectures}
+	\label{lenet_5}
 \end{figure}
+
+Furthermore, Donahue et al. showed in the DeCAF (\textit{Deep Convolutional Activation Feature}) paper~\cite{donahue2014}
+that features extracted from deep CNN can be repurposed to novel tasks
+if the network were trained on a large fixed set in fully supervised fashion.
+Meaning that it can be used for domain adaptation on its own.
+Therefore, we can expected that our CNN trained on the large SDSS
+will be able to find features beneficial for domain adaptation.
+Still the DeCAF paper showed that
+deep CNN cannnot remove domain bias completelly.
+Therefore, there is a space for improvement with deep domain adaptation
+and DDC, Deep CORAL and DANN build in experiment on result of DeCAF
+because they use AlexNet~\cite{krizhevsky2012} pre-trained on ImageNet dataset.
+
+We trained our adapted LeNet-5 on batches of size 64 for 20 epochs
+with the Adam optimiser~\cite{kingma2014} in its default setting
+and used the \textit{binary cross entropy loss} defined as:
+
+\begin{equation}
+	\mathit{BCE}(\theta) = -\frac{1}{M} \sum_i^M [y_i \log \hat{y}_i + (1 - y_i) \log(1 - \hat{y}_i)],
+\end{equation}
+
+where \(\theta\) are all parameters of a model,
+\(M\) is the batch size,
+\(y_i \in \{0, 1\}\) is the true label
+and \(\hat{y}_i \in [0, 1]\) are the model predictions of the \(i\)-th example in the batch.
+Furthermore, we intialised the weights and biases in accordance with Xavier initialisation~\cite{glorot2010}.
+That is weights of our neural network are sampled from uniform distribution \(\mathcal{U}\):
+
+\begin{equation}
+	\mathcal{U}\left(
+	-\frac{\sqrt{6}}{\sqrt{\mathit{in} + \mathit{out}}},
+	\frac{\sqrt{6}}{\sqrt{\mathit{in} + \mathit{out}}}
+	\right),
+\end{equation}
+
+where \(\mathit{in}\) is the number of input units of a layer
+and \(\mathit{out}\) is the number of output units
+and biases are set to zero.
+
+% TODO training progress
+
+\begin{figure}
+	\subfloat[][Losses]{
+		\includegraphics[width=0.5\textwidth]{img/lenet_losses.pdf}
+	}
+	\subfloat[][\(F_1\) score]{
+		\includegraphics[width=0.5\textwidth]{img/lenet_f1.pdf}
+	}
+	\caption{Training of LeNet-5}
+	\label{lenet_losses}
+\end{figure}
+
+% TODO define recall and precision
+\textit{Recall} \(r\), \textit{precision} \(p\)
+and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \textit{recall}:
+
+\begin{align}
+	r &= \frac{\mathit{TP}}{\mathit{TP} + \mathit{FN}}, \\
+	p &= \frac{\mathit{TP}}{\mathit{TP} + \mathit{FP}}, \\
+	F_1 &= \frac{2}{r^{-1} + p^{-1}} = 2 \frac{r p}{r + p},
+\end{align}
+
+where \(r\) is recall and \(p\) is precision.
+When precision and recall are perfect
+\(F_1\) score reaches its best value one and at worst can be zero.
+
+% TODO result evaluation
+\(F_1\) score of source is 0.9397 and target 0.2294.
+Target precision is is 13.48\% and target recall 76.84\%.
+
+\begin{table}
+	\begin{center}
+	\subfloat[][Source confusion matrix]{
+		\begin{tabular}{|l|r|r|}
+			\hline
+			Predicted class & \multicolumn{2}{c|}{Actual class} \\ \hline \hline
+			& QSO & non-QSO \\ \hline
+			QSO & 6\,278 & 532  \\ \hline
+			non-QSO & 274 & 42\,916 \\ \hline
+		\end{tabular}
+	}
+	\subfloat[][Target confusion matrix]{
+		\begin{tabular}{|l|r|r|}
+			\hline
+			Predicted class & \multicolumn{2}{c|}{Actual class} \\ \hline \hline
+			& QSO & non-QSO \\ \hline
+			QSO & 146 & 937 \\ \hline
+			non-QSO & 44 & 48\,873 \\ \hline
+		\end{tabular}
+	}
+	\end{center}
+\end{table}
+
+% TODO feature t-SNE
 
 \section{Experiments with Deep DA}
 
 Apply domain adaptation to the selected data.
 
 \subsection{DDC: Deep Domain Confusion}
+
+Theory behind DDC is explained in Subsection~\ref{discrepancy_da}.
+We followed the same procedure to choose the placement and width
+of the adaptation layer as in the DDC paper~\cite{tzeng2014}.
+
+Firstly, we took the LeNet-5 trained in previous Section~\ref{baseline}
+and extracted features from the first and second fully-connected layer
+(the last fully-connected layer has a trivial width)
+for all validation examples.
+Then, we computed MMD between the source and target data at each layer with the extracted features.
+The MMD at the first fully-connected layer is 50.70
+while at the second fully-connected layer is 53.33.
+Therefore, we will place the adaptation layer after the first fully-connected layer.
+
+Secondly, we have to optimise the width of the adapataion layer.
+Therefore, we trained the LeNet with the adapation layer of sizes
+from \(\{4, 8, 16, 32, 64\}\) excluding the low width 2,
+not exceeding the output size of previous layer
+and stepping by power of two as in the original paper.
+Figure~\ref{adaptation_layer} plots the resulting MMD values for different setting and shows that the width 64 is the best.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/adaptation_layer_width.pdf}
+	\caption{Width of the adapation layer}
+	\label{adaptation_layer}
+\end{figure}
+
+The final architecture of our DDC network is in Figure~\ref{ddc_architecture}. We set the trade-off parameter between the binary cross entropy loss and the MMD loss \(lambda\) to 0.25 as in the DDC experiments
+and trained the network in the same way
+as described in previous section~\ref{baseline}.
 
 \subsection{Deep CORAL: Deep Correlation Alignment}
 
