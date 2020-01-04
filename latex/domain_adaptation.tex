@@ -133,7 +133,12 @@ and \textit{unlabelled target sample} \(T\) drawn IID from \(\mathcal{D}^X_t\)
 \end{align}
 
 where \(N = n + n'\) is the total number of examples (data points).
-Note that the samples are numbered from 1 to \(N\).
+Note that the examples are numbered from 1 to \(N\).
+Concretely, the input space \(X\) is equal to \(\mathbb{R}^{3659}\),
+\(y_i \in Y\) which is equal to \(\{0, 1\}\) implying \(L = 2\)
+(0 stands for a non-QSO object and 1 for a QSO)
+and a vector \(\mathbf{x}_i\) is an astronomical spectrum
+(its fluxes in specified wavelengths).
 
 Further categorisation of methods of DA
 will help us to methos based on neural networks.
@@ -276,6 +281,7 @@ Therefore is minimizes a loss that incorporates both domain confusion loss and c
 \begin{equation}
 	\mathcal{L}_{\mathrm{DDC}} = \mathcal{L}_C(S)
 	+ \lambda \mathrm{MMD}^2(S, T),
+	\label{ddc_loss}
 \end{equation}
 
 where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\).
@@ -300,6 +306,7 @@ CORAL loss is defined as the distance between covatiances of the source and targ
 % TODO check punctuation in all equations
 \begin{equation}
 	\mathcal{L}_{\mathrm{CORAL}}(S, T) = \frac{1}{4 d^2} \|C(S) - C(T)\|_F^2,
+	\label{coral_loss}
 \end{equation}
 
 where \(\|\cdot\|_F^2\) is the squated matrix Frobenius norm
@@ -308,6 +315,7 @@ and the fuction \(C(\cdot)\) return a covariance matrix of a given set:
 \begin{equation}
 	C(D_A) = \frac{1}{|A| - 1} (D_A^\top D_A
 	- \frac{1}{|A|} (\mathbf{1}^\top D_A)^\top (\mathbf{1}^\top D_A)),
+	\label{deep_coral_loss}
 \end{equation}
 
 where \(A\) is a set of examples
@@ -322,6 +330,7 @@ The \(\mathbf{1}\) is a column vector with all elements equal to 1.
 \end{equation}
 
 \subsection{Adversarial-based Deep Domain Adaptation}
+\label{adversarial_da}
 
 Adversarial-based deep DA utilizes a domain discriminator
 that tries to distinguish whether a sample comes from source and target domains.
@@ -426,6 +435,7 @@ The objective to be optimised with gradient descent:
 	E(\theta_f, \theta_y, \theta_d) &= \frac{1}{n} \sum^{n}_{i = 1} \mathcal{L}_y(G_y(G_f(\mathbf{x}_i; \theta_f), \theta_y), y_i) \nonumber \\
 	&\qquad {} - \lambda \left(\frac{1}{n} \sum^{n}_{i = 1} \mathcal{L}_d(G_d(\mathcal{R}(G_f(\mathbf{x}_i; \theta_f)), \theta_d), d_i) \right. \nonumber \\
 	&\qquad \left. {} + \frac{1}{n'} \sum^{N}_{i = n + 1} \mathcal{L}_d(G_d(\mathcal{R}(G_f(\mathbf{x}_i; \theta_f)), \theta_d), d_i)\right)
+	\label{dann_loss}
 \end{align}
 
 The gradint reversal layer changes the update~\ref{feature_parameters_update}
@@ -439,6 +449,7 @@ to version fully compatible with SGD:
 \end{equation}
 
 \subsection{Reconstruction-based Deep Domain Adapation}
+\label{reconstruction_da}
 
 The last group of methods is based on data reconstruction auxialiary task.
 The reconstructor forces to find a shared representation
