@@ -202,8 +202,9 @@ introduced in next subsections.
 Next, we detail the three categories of DA according to the survey by Wang and Deng~\cite{wang2018}.
 
 \begin{figure}
+	\tikzset{concept/.append style={fill={none}}}
 	\begin{tikzpicture}
-		\path[mindmap, concept color=black, text=white]
+		\path[mindmap, concept color=black]
 		node[concept] {Deep DA}
 		[clockwise from=60]
 		child[concept] {
@@ -331,6 +332,36 @@ where \(\mathcal{L}_C\) stands for classification loss on the labelled source da
 and to control the stregnth of domain confusion DDC introduces a hyperparameter~\(\lambda\)
 (\(\lambda = 0.25\) in experiments of DDC).
 
+\tikzstyle{block} = [align=center,draw=black,font=\tiny,rectangle,text centered]
+\tikzstyle{data} = [align=center,font=\tiny,text centered]
+\tikzstyle{loss} = [align=center,draw=black,font=\tiny,ellipse,text centered]
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+	\node (src) [data] {source\\data};
+	\node (trg) [data, below of=src] {target\\data};
+	\node (fe1) [block,right of=src] {feature\\extractor};
+	\node (fe2) [block,right of=trg] {feature\\extractor};
+	\node (al1) [block,right of=fe1] {adaptation\\layer};
+	\node (al2) [block,right of=fe2] {adaptation\\layer};
+	\node (clf) [block,right of=al1] {classifier};
+	\node (loss) [loss,right of=clf] {classification\\loss};
+	\node (mmd) [loss,right of=al2] {MMD\\loss};
+	\draw [->] (src) -- (fe1);
+	\draw [->] (trg) -- (fe2);
+	\draw [->] (fe1) -- (al1);
+	\draw [->] (fe2) -- (al2);
+	\draw [->] (al1) -- (clf);
+	\draw [dashed] (fe1) -- (fe2);
+	\draw [dashed] (al1) -- (al2);
+	\draw (clf) -- (loss);
+	\draw (al1) -- (mmd);
+	\draw (al2) -- (mmd);
+\end{tikzpicture}
+\end{center}
+\caption{DDC architecture}
+\end{figure}
+
 In comparison with DDC, Deep CORAL is an uses \textit{correlation alignment} (CORAL)
 instead of MMD.
 CORAL aligns the the second order statistic of the source and target distributions.
@@ -373,6 +404,28 @@ where \(lambda\) is a trade-off hyperparameter similar to the one in the DDC los
 Note that Deep CORAL does not introduce an adaptation layer
 but use the a layer that is already in the network.
 The CORAL loss can be even applied to several layers.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+	\node (src) [data] {source\\data};
+	\node (trg) [data, below of=src] {target\\data};
+	\node (fe1) [block,right of=src] {feature\\extractor};
+	\node (fe2) [block,right of=trg] {feature\\extractor};
+	\node (clf) [block,right of=fe1] {classifier};
+	\node (loss) [loss,right of=clf] {classification\\loss};
+	\node (coral) [loss,right of=fe2] {CORAL\\loss};
+	\draw [->] (src) -- (fe1);
+	\draw [->] (trg) -- (fe2);
+	\draw [->] (fe1) -- (clf);
+	\draw [dashed] (fe1) -- (fe2);
+	\draw (clf) -- (loss);
+	\draw (fe1) -- (coral);
+	\draw (fe2) -- (coral);
+\end{tikzpicture}
+\end{center}
+\caption{Deep CORAL architecture}
+\end{figure}
 
 \subsection{Adversarial-based Deep Domain Adaptation}
 \label{adversarial_da}
@@ -507,6 +560,29 @@ to version fully compatible with SGD:
 	\right).
 \end{equation}
 
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+	\node (src) [data] {source\\data};
+	\node (all) [data, below of=src] {all\\data};
+	\node (fe1) [block,right of=src] {feature\\extractor};
+	\node (fe2) [block,right of=all] {feature\\extractor};
+	\node (clf) [block,right of=fe1] {label\\predictor};
+	\node (dom) [block,right of=fe2] {domain\\classifier};
+	\node (clf_loss) [loss,right of=clf] {classification\\loss};
+	\node (dom_loss) [loss,right of=dom] {domain\\loss};
+	\draw [->] (src) -- (fe1);
+	\draw [->] (all) -- (fe2);
+	\draw [->] (fe1) -- (clf);
+	\draw [->] (fe2) -- (dom);
+	\draw [dashed] (fe1) -- (fe2);
+	\draw (clf) -- (clf_loss);
+	\draw (dom) -- (dom_loss);
+\end{tikzpicture}
+\end{center}
+\caption{DANN architecture}
+\end{figure}
+
 \subsection{Reconstruction-based Deep Domain Adaptation}
 \label{reconstruction_da}
 
@@ -598,6 +674,29 @@ DRCN aims to minimise following objective:
 
 where \(\lambda \in [0, 1]\) is a hyperparameter of the trade-off between the two loss functions.
 The objective~\ref{drcn_loss} can be optimised with SGD.
+
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+	\node (src) [data] {source\\data};
+	\node (trg) [data, below of=src] {target\\data};
+	\node (enc1) [block,right of=src] {encoder};
+	\node (enc2) [block,right of=trg] {encoder};
+	\node (clf) [block,right of=enc1] {classifier};
+	\node (dec) [block,right of=enc2] {decoder};
+	\node (clf_loss) [loss,right of=clf] {classification\\loss};
+	\node (rec_loss) [loss,right of=dec] {reconstruction\\loss};
+	\draw [->] (src) -- (enc1);
+	\draw [->] (trg) -- (enc2);
+	\draw [->] (enc1) -- (clf);
+	\draw [->] (enc2) -- (dec);
+	\draw [dashed] (enc1) -- (enc2);
+	\draw (clf) -- (clf_loss);
+	\draw (dec) -- (rec_loss);
+\end{tikzpicture}
+\end{center}
+\caption{DRCN architecture}
+\end{figure}
 
 \section{Previous Applications of Domain Adaptation in Astronomy}
 
