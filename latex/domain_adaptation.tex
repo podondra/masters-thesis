@@ -299,7 +299,8 @@ to be directly applied to the target domain achieving minimal lost in accuracy.
 DDC optimises loss function that includes both prediciton error
 and \textit{domain confusion} loss to learn domain invariant representation.
 The invariant repsentation is achived by incorporating an adaptation layer
-into a deep CNN with a domain confusion loss computed
+into a deep \textit{convolutional neural network} CNN
+with a domain confusion loss computed
 via \textit{maximum mean discrepancy} (MMD).
 MMD is a standard distirbution distance metric witch is empirically approximatedby:
 
@@ -702,42 +703,81 @@ The objective~\ref{drcn_loss} can be optimised with SGD.
 
 % TODO something like: so far shallow but some deep DA not sufficient
 
-As we have shown, domain adaptation is of great interest to astronomers
+As we have shown in Section~\ref{large_spec_surveys},
+DA is of great interest to astronomers
 because of different instruments, measurements and observation distribution.
 Therefore, we survey the current state of domain adaptation in astronomical applications in this section.
 
-If we have a common set of observed stars in both archives,
+If we have a common set of observed stars in both archives (supervised DA),
 then we can map them and learn a transfer function.
 Ho et al.~\cite{ho2017} did exactly that
-% TODO add APOGEE to acronyms
 because they found a common set of 9\,952 spectra in both APOGEE and LAMOST archive.
-Using that set, they trained the Cannon method~\cite{ness2015},
+Using the common set, they trained the Cannon method~\cite{ness2015},
 and they used the model to transfer some physical parameters from APOGEE to LAMOST.
 
-In the case, when there is no common set Gupta et al. experimented with subspace alignment~\cite{fernando2014} and kernel mean matching~\cite{gretton2009} followed by active learning.~\cite{gupta2016}
-In the case of subspace alignment, the negative transfer occurred while the kernel mean matching seems very promising in the task of supernova classification.
+In the case, when there is no common set (unsupervised DA)
+Gupta et al.~\cite{gupta2016} experimented
+with \textit{subspace alignment}~\cite{fernando2014}
+and \textit{kernel mean matching}~\cite{gretton2009}
+followed by \textit{active learning}~\cite{settles2009}.
+In the case of subspace alignment,
+the negative transfer occurred
+while the kernel mean matching seems very promising in the task of supernova classification.
+However, they observed that those shallow methods
+(subspace alignment and kernel mean matching) are not sufficien on their own
+and the acitve learning phase is crucial.
+But active learning requires human expert interaction
+so it is not automatic and depends on domain knowledge.
+
 Then, Vilalta et al.~\cite{vilalta2018} extended the work of Gupta et al.~\cite{gupta2016}.
-Vilalta et al. used a maximum a posteriori (MAP) approach to learn a prior on the model parameters from a spectroscopic source domain
+Vilalta et al. used a supervised \textit{maximum a posteriori} (MAP) approach
+to learn a prior on the model parameters from a spectroscopic source domain
 and then use this prior distribution to learn a model in a photometric target domain.
 Concretely, Vilalta et al. put a prior on the number of layers of a neural network
 and then used active learning.
+
 Richards et al.~\cite{richards2011} faced a similar situation, as Gupta et al.
 Richards et al. introduce the problem as sample selection bias~\cite{shimodaira2000} or covariate shift~\cite{heckman1979}
 when different distributions generate the source and target data.
-That is precisely the problem we have defined as domain adaptation.
+That is precisely the problem we have defined as DA.
 Richards et al. experimented with random forest in combination with three domain adaptation methods:
-importance weighting~\cite{shimodaira2000}, co-training~\cite{blum1998} and active learning~\cite{settles2009}.
-The result is not surprising from our point of view.
+\textit{importance weighting}~\cite{shimodaira2000},
+\textit{co-training}~\cite{blum1998}
+and \textit{active learning}~\cite{settles2009}.
 Active learning works best while importance weighting and co-training achieve negative transfer.
+
+It seems that active learning is crucial
+to achieving good result on astronomical data when using shallow DA methods.
+We speculate that it is the nature of scientific data
+that makes shallow DA method unusable on its own.
+Next, we describe a suprevided deep DA  approach
+that shown to work well on astronomical data.
+Therefore, we think neural network DA methods should be promising in astronomy.
 
 The term transfer learning has been recently used in the context of deep learning.
 However, transfer learning in the context of deep learning means something more concrete than what we defined as transfer learning previously.
 Transfer learning in the context of deep learning is the specific situation
 when a pretrained deep neural network model is taken,
 and its last layers are retrained with the target domain data.
-Ackermann et al.~\cite{ackermann2018} employed with the transfer learning approach in the context of deep learning to detect galaxy merges.
-Ackermann et al. took the Xception convolutional neural network~\cite{chollet2017}
-and retrain its last layers with images of galaxy merger labelled in a citizen science Galaxy Zoo project.
-This transfer learning approach allowed Ackermann et al. to lower the best error rate so far by 15\%.
+According to our categorisation it is a supervised homogeneous DA setting
+which is very similar to DeCAF~\cite{donahue2014}.
 
-% TODO write about DVT
+Ackermann et al.~\cite{ackermann2018} employed a deep CNN
+with the transfer learning approach
+in the context of deep learning to detect galaxy merges
+from two-dimensional images.
+They took the pre-trained Xception CNN~\cite{chollet2017}
+and fine-tuned its last layers with images of galaxy merger labelled
+in a citizen science Galaxy Zoo project~\cite{lintott2010}.
+This transfer learning approach allowed them to lower the best error rate so far by 15\%.
+
+Next application of deep DA method in astronomy is \textit{Deep Variational Transfer} (DVT)~\cite{belhaj2018}.
+DVT is a semisupervised model based on variational autoencoders~\cite{kingma2014a} and mixture models.
+They encode the source and target data into a shared latent space
+and identify clusters with the labelled target data.
+They experimented with ligth curvers (time series of light intensity) of stars.
+
+This section shows that applications of deep DA in astronomy are very limited.
+Therefore, our work will be almost the first to explore the ideas
+of deep DA in astronomy with huge potencial to discover
+either new tool for astronomy or a new challenge for deep DA.
