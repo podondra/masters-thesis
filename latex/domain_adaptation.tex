@@ -2,8 +2,14 @@
 \label{da_chapter}
 
 % TODO chapter intro
-We survey the current state of domain adaptation using neural network models
-in machine learning and with a focus on astronomical applications.
+In this chapeter, we survey the current state of domain adaptation using neural network models
+in the context of machine ond transfer learning.
+We formally define domain adapation scenario
+and categorise it according to recent surveys
+by Wang and Deng~\cite{wang2018} and Csurka~\cite{csurka2017}.
+From each category we select a representative method for our experiments.
+Then, we introduce in detail selected methods.
+We conclude the chapter with a survey of applications of domain adaptation in astronomy.
 
 \section{Domain Adaptation in the Context of Machine Learning}
 
@@ -68,7 +74,7 @@ the situation is called \textit{negative transfer}.
 On the other side, when the performance is improved,
 we talk about a positive transfer.
 
-\section{Theory and Formalization of Domain Adapation}
+\section{Theory and Formalization of Domain Adaptation}
 
 Now, we introduce the crucial concept of our work: \textit{domain adaptation} (DA).
 DA is a particular case of transfer learning
@@ -161,33 +167,39 @@ Still one possibility is to use a neural network as a feature extractor.~\cite{c
 The following section introduces the other category of deep DA
 which takes the advantage of neural networks.
 
-\section{Neural Networks in Domain Adapation}
+\section{Neural Networks in Domain Adaptation}
 
-Donahue et al. showed in the paper on DeCAF~\cite{donahue2014}
+Already, Donahue et al. states in the paper on DeCAF~\cite{donahue2014}
 that deep neural networks learn more transferable features
-but the performance is still affected by the domain shift.
-
-% TODO write about DeCAF
+that can help with DA.
+However, the DeCAF paper also shows
+that the performance is still affected by the domain shift.
+Therefore, there is enough space for special deep architectures for DA.
 
 The group of DA methods using neural networks is called \textit{deep DA}
-and Wang \& Deng define it in~\cite{wang2018}:
-
-% TODO broad and narrow sense
-Deep DA is a method that utilizes a deep network to enhance the performance of DA.
+and Wang \& Deng define it in~\cite{wang2018}
+as methods that utilizes deep neural networks to enhance the performance of DA.
+Such architectures can be trained with backpropagation
+learning domain invariant representation discriminative for a common task.
+For example, a network is extended with a special loss, a domain classifier
+or a autoencoder as we will see next.
 
 Approaches to deep DA were originally divided by Csurka in~\cite{csurka2017}
 into three categories according to training loss.
-Then, Wang and Deng further improve and detail the categorisation in~\cite{wang2018}:
+Then, Wang and Deng further improve and detail the categorisation into~\cite{wang2018}:
 
 \begin{itemize}
 	\item \textit{discrepancy-based} DA fine-tunes the neural network
 		with target data to diminish the domain shift;
 	\item \textit{adversarial-based} DA encorage domain confusion
 		by using discriminators with adversarial objective; and
-	\item \textit{reconstruction-based} DA uses data reconstruction auxialiary task to learn domain invariant features.
+	\item \textit{reconstruction-based} DA uses data reconstruction auxiliary task to learn domain invariant features.
 \end{itemize}
 
 We summarize the deep DA methods categorisation in the mind map of Figure~\ref{mind_map}.
+The mind map also gives further subcategories with some example methods
+introduced in next subsections.
+Next, we detail the three categories of DA according to the survey by Wang and Deng~\cite{wang2018}.
 
 \begin{figure}
 	\begin{tikzpicture}
@@ -235,31 +247,60 @@ We summarize the deep DA methods categorisation in the mind map of Figure~\ref{m
 	\label{mind_map}
 \end{figure}
 
-\subsection{Discrepancy-based Deep Domain Adapation}
+\subsection{Discrepancy-based Deep Domain Adaptation}
 \label{discrepancy_da}
 
-Discrepancy-based deep DA uses either labelled or unlabelled target data
-to fine-tune a neural network to diminish the dicrepancy
+The first category are discrepancy-based deep DA method
+that use either labelled or unlabelled target data
+to fine-tune a deep neural network to diminish the dicrepancy
 between the source and target domains.
 
-The discrepancy-based method divided based on
+The discrepancy-based DA methods are subdivided based on
 \textit{class}, \textit{statistic}, \textit{architecture} and \textit{geometric}
 criterion by~\cite{wang2018}.
+\textit{Class criterion} methods uses label infromation to do information transfer.
+For example, the information is transfered in form of soft labels
+or pseudo labels.
+\textit{Statistic criterion} methods align some statistic of the source and target distribution.
+The most used methods reduce domain shift with maximum mean discrepancy,
+correlation alignment or Kullback-Leibler divergence.
+Methods with \textit{architecture criterion} adjust the network topology
+in order to learn more transferable features.
+Last subcategory are \textit{geometric criterion} methods
+which want to diminish the difference between source and target disctibution
+based on their geometrical properties.
 
-DDC~\cite{tzeng2014}, DAN~\cite{long2015}, JAN~\cite{long2017}
-and Deep CORAL~\cite{sun2016}.
+We choose to focus on statistic criterion category in this work
+because its methods can be used in unsupervised fashion,
+focus straight on the different source and target distributions
+and very effective on two-dimensional images.
+Class criterion subcategory and architecture criteion subcategories are unsuitable because they focus mostly on supervised DA
+and the geometric criterion gives much worst results in comparison to methods based on statistic criterion.
 
-The essence of Deep Domain Confusion (DCC)~\cite{tzeng2014} is finding domain invariant representation
+The most successful statistic criterion methods are
+Deep Domain Confusion (DDC)~\cite{tzeng2014},
+Deep Adaptation Network (DAN)~\cite{long2015},
+Joint Adaptation Network (JAN)~\cite{long2017}
+and Deep Correlation Alignment (Deep CORAL)~\cite{sun2016}.
+DDC is the basic method of the subcategory
+and both DAN and JAN are its extensions.
+Deep CORAL is very similar to DDC but it aligns the second order statistics.
+To keep things simple, we selected to experiment with DDC and Deep CORAL
+and we describe the theory behind them next.
+
+DDC~\cite{tzeng2014} finds domain invariant representation
 while learning to predict class labels.
 The intuition behind DDC is that learning represenation
 that minimises the distance between source and target distributions
-then a classifier trains on source labelled data
-can be directly applied to the target domain achieving minimal loss in accuracy.
-DDC optimises loss function that includes both prediciton error and \textit{domain confusion} loss to learn deep representation.
-The invariant deep repsentation is achived by incorporating an adaptation layer
-into a deep CNN with a domain confusion loss computed via \textit{maximum mean discrepancy} (MMD).
-MMS is a standard distirbution distance metric
-witch is empirically approximated as follows:
+will help a classifier trained on source labelled data
+to be directly applied to the target domain achieving minimal lost in accuracy.
+
+DDC optimises loss function that includes both prediciton error
+and \textit{domain confusion} loss to learn domain invariant representation.
+The invariant repsentation is achived by incorporating an adaptation layer
+into a deep CNN with a domain confusion loss computed
+via \textit{maximum mean discrepancy} (MMD).
+MMD is a standard distirbution distance metric witch is empirically approximatedby:
 
 \begin{equation}
 	\mathrm{MMD}(S, T) = \left\|
@@ -269,14 +310,16 @@ witch is empirically approximated as follows:
 	\label{maximam_mean_discrepancy}
 \end{equation}
 
-where \(\phi(\cdot)\) is a represenation
-that operates on both source \(\mathbf{s}_i \in S\) and target \(\mathbf{t}_i \in T\) data points.
+where \(\phi: X \to Z)\) is a feature extractor
+from the data space \(X\) to a feature space \(Z\)
+that operates on both source and target \(\mathbf{x}_i \in X\) data points.
+
 Using the adaptation layer with the domain loss function DDC claims
 to learn representation that is both domain invariant
-but still offers strong semantic separation.
-However, DDC also want to learn representation
-that enables to learn a strong classifier.
-Therefore is minimizes a loss that incorporates both domain confusion loss and classification loss:
+but still offers strong semantic separation
+enabling to learn a strong label classifier.
+Therefore, the goal of DDC is to minimise a loss that incorporates
+both domain confusion loss and classification loss:
 
 \begin{equation}
 	\mathcal{L}_{\mathrm{DDC}} = \mathcal{L}_C(S)
@@ -284,22 +327,15 @@ Therefore is minimizes a loss that incorporates both domain confusion loss and c
 	\label{ddc_loss}
 \end{equation}
 
-where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\).
-To control the stregnth of domain confusion DDC introduces the hyperparameter~\(\lambda\)
-(DCC uses \(\lambda = 0.25\) in its experiments).
+where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\)
+and to control the stregnth of domain confusion DDC introduces a hyperparameter~\(\lambda\)
+(\(\lambda = 0.25\) in experiments of DDC).
 
-% TODO cite AlexNet and explain what is pre-trained (cite ImageNet)
-In experiments DDC, uses \textit{pre-trained} AlexNet with a lower dimensional \textit{bottleneck} adaptation layer
-which should regularise the training
-and prevent overfitting the source distribution.
-The domain confusion loss is placed on the bottleneck adaptation layer.
-
-% TODO cite Office benchmark and maybe describe?
-DDC was evaluated of the Office benchmark achieving 81.2\% average accuracy on the target domains.
-
-% TODO compare to DDC
-Deep CORAL is an extension of Correlation Alignment (CORAL)
-that work with deep neural network by including a differentiable CORAL loss.
+In comparison with DDC, Deep CORAL is an uses \textit{correlation alignment} (CORAL)
+instead of MMD.
+CORAL aligns the the second order statistic of the source and target distributions.
+Then, Deep CORAL is a deep neural network
+that incorporates a differentiable CORAL loss.
 
 CORAL loss is defined as the distance between covatiances of the source and target features extracted from a layer of a deep neural network:
 
@@ -310,7 +346,7 @@ CORAL loss is defined as the distance between covatiances of the source and targ
 \end{equation}
 
 where \(\|\cdot\|_F^2\) is the squated matrix Frobenius norm
-and the fuction \(C(\cdot)\) return a covariance matrix of a given set:
+and the fuction \(C\) return a covariance matrix of a given set:
 
 \begin{equation}
 	C(D_A) = \frac{1}{|A| - 1} (D_A^\top D_A
@@ -324,10 +360,19 @@ and \(D_A\) is a design matrix corresponding to the set
 that is a matrix where each row is an example.
 The \(\mathbf{1}\) is a column vector with all elements equal to 1.
 
+The final composed loss consist of a classification loss \(\mathcal{L}_C\)
+and the CORAL loss:
+
 \begin{equation}
 	\mathcal{L}_{\mathrm{Deep\,CORAL}}
-	= \mathcal{L}_C(S) + \lambda \mathcal{L}_{\mathrm{CORAL}}(S, T)
+	= \mathcal{L}_C(S) + \lambda \mathcal{L}_{\mathrm{CORAL}}(S, T),
 \end{equation}
+
+where \(lambda\) is a trade-off hyperparameter similar to the one in the DDC loss in Equation~\ref{ddc_loss}.
+
+Note that Deep CORAL does not introduce an adaptation layer
+but use the a layer that is already in the network.
+The CORAL loss can be even applied to several layers.
 
 \subsection{Adversarial-based Deep Domain Adaptation}
 \label{adversarial_da}
@@ -337,34 +382,47 @@ that tries to distinguish whether a sample comes from source and target domains.
 If we are able to confuse the discriminator
 we will also achieve domain confusion through the adversarial objective.
 
-The methods are divided into \textit{generative} and \textit{non-generative}
-models by~\cite{wang2018}
+The adversaial deep DA methods are divided into \textit{generative} and \textit{non-generative} models by~\cite{wang2018}.
+\textit{Generative models} create syntetic target data according to source data
+while keeping source data labels.
+These models are usually based on Generative Adversarial Network (GAN)~\cite{goodfellow2014}.
+Rather than generating syntetic examples \textit{non-generative models}
+learn via an adversial objective a feature extractor
+that produces domain invariant representation of an example.
 
-DANN~\cite{ganin2016} and ADDA~\cite{tzeng2017}.
+We explore the second non-generative subcategory
+because we think that good representation is satisfactory
+and we see syntetic data generation as overkill for our task.
 
-% TODO cite http://sites.skoltech.ru/compvision/projects/grl/files/paper.pdf
-Domain-Adversarial Training of Neural Neural Networks (DANN)~\cite{ganin2016}
-is a representation learning approach for domain adaptation.
-DANN is based on idea that features for domain adaptation
+The fundamental algorithm of non-generative adversarial deep DA is
+Domain-Adversarial Neural Network (DANN)~\cite{ganin2016}.
+Other methods like Adversarial Discriminative Domain Adaptation (ADDA)~\cite{tzeng2017} built on the idea of DANN.
+Therefore, we are convinced DANN is the right model to try to our problem in hands.
+
+DANN~\cite{ganin2016} is an adversarial representation learning approach for domain adaptation.
+It is based on idea that good features for domain adaptation
 cannot discriminate between source and target domains
 while maintaining discriminative properties for a classification task.
-DANN proposes a \textit{gradient reversal layer} (GRL)
-that can be incorporated in almost any feed-forward neural network.
-Therefore, DANN jointly optimises feature extractor
-and two discrimivative classifier.
-The first is a label predictor that predicts classes
-and a domain classifier tath discriminates between source and target domains.
-The feature extractor is trained to minimise the loss of the label classifier
-and maximise the loss of the domain classifier.
-Thus, domain classifier and feature extractor are learning in adversarial fashion and encourage domain invariant features.
+
 DANN combines feature extractor, label predictor and domain classifier is a single architecture
 and can be trained with standard backpropagation learning algorithm.
+Because of that DANN proposes a \textit{gradient reversal layer} (GRL)
+that can be incorporated in almost any feed-forward neural network.
+Using the GRL DANN jointly optimises feature extractor
+and two discrimivative classifiers.
+The first discriminative classifier is a label predictor that predicts classes
+and the second is a domain classifier
+that discriminates between source and target domains.
 
-Let \(G_f(\cdot; \theta_f)\) be the \(D\)-dimensional neural network feature extractor, with parameters \(\theta_f\),
+The feature extractor is trained jointly to minimise a classification loss
+and maximise the loss of the domain classifier.
+Thus, domain classifier and feature extractor are learning in adversarial fashion to encourage domain invariant features.
+
+To define the learning objective let
+\(G_f(\cdot; \theta_f)\) be the \(D\)-dimensional neural network feature extractor with parameters \(\theta_f\),
 \(G_y(\cdot; \theta_y)\) be the label predictor with parameters \(\theta_y\)
 that takes features from \(G_f\) as inputs and output class probabilities
-and \(G_d(\cdot; \theta_d)\) be the domain classifier with parameters \(\theta_d\).
-
+and \(G_d(\cdot; \theta_d)\) be the domain classifier with parameters \(\theta_d\). 
 Training DANN is optimising prediction loss and domain loss:
 
 \begin{align}
@@ -385,7 +443,7 @@ by finding the saddle point \(\hat{\theta}_f\), \(\hat{\theta}_y\), \(\hat{\thet
 where \(\mathcal{L}_y\) is a classification loss,
 \(\mathcal{L}_d\) is a domain loss,
 \(\lambda\) is a trade-off hyperparameter
-and \(d_i\) is a binary variable:
+and \(d_i\) is a binary variable (a domain label):
 
 \begin{equation}
 	d_i =
@@ -395,7 +453,8 @@ and \(d_i\) is a binary variable:
 	\end{cases}
 \end{equation}
 
-The saddle points can be found using gradient updates:
+The DANN paper shows that saddle points can be found using gradient updates
+similar to \textit{stochastic gradient descent} (SGD):
 
 \begin{align}
 	\theta_f &\gets \theta_f - \mu \left(
@@ -409,36 +468,36 @@ The saddle points can be found using gradient updates:
 	\frac{\partial \mathcal{L}_d^i}{\partial \theta_d}.
 \end{align}
 
-The previous updates are very similar to SGD.
-However, the update~\ref{feature_parameters_update} has substraction in it instead of addition.
-
-DANN overcomes the substruction by incorporating a gradient reversal layer \(\mathcal{R}(\mathbf{x})\) between the feature extrator and domain classifier.
-Now, DANN seamlesly works with SGD.
-The gradient reversal layer has no parameters
+However, the update in Equation~\ref{feature_parameters_update} has substraction in it instead of addition.
+DANN overcomes the substruction by incorporating the GRL
+\(\mathcal{R}(\mathbf{z})\) between the feature extrator and domain classifier.
+The GRL has no parameters
 and during forward propagation the GRL acts as identity:
 
 \begin{equation}
-	\mathcal{R}(\mathbf{x}) = \mathbf{x}.
+	\mathcal{R}(\mathbf{z}) = \mathbf{z}.
 \end{equation}
 
 However, in backpropagation it negates the gradient:
 
 \begin{equation}
-	\frac{d \mathcal{R}}{d \mathbf{x}} = -\mathbf{I},
+	\frac{d \mathcal{R}}{d \mathbf{z}} = -\mathbf{I},
 \end{equation}
 
-where \(\mathbf{I}\) is identity matrix.
-
-The objective to be optimised with gradient descent:
+where \(\mathbf{I}\) is identity matrix
+and \(\mathbf{z}\) is the represantation produced by the feature extractor
+\(G_f(\cdot, \theta_f)\).
+Now, DANN can seamlesly work with SGD
+because the objective to be optimised with gradient descent is tranformed into:
 
 \begin{align}
 	E(\theta_f, \theta_y, \theta_d) &= \frac{1}{n} \sum^{n}_{i = 1} \mathcal{L}_y(G_y(G_f(\mathbf{x}_i; \theta_f), \theta_y), y_i) \nonumber \\
 	&\qquad {} - \lambda \left(\frac{1}{n} \sum^{n}_{i = 1} \mathcal{L}_d(G_d(\mathcal{R}(G_f(\mathbf{x}_i; \theta_f)), \theta_d), d_i) \right. \nonumber \\
-	&\qquad \left. {} + \frac{1}{n'} \sum^{N}_{i = n + 1} \mathcal{L}_d(G_d(\mathcal{R}(G_f(\mathbf{x}_i; \theta_f)), \theta_d), d_i)\right)
+	&\qquad \left. {} + \frac{1}{n'} \sum^{N}_{i = n + 1} \mathcal{L}_d(G_d(\mathcal{R}(G_f(\mathbf{x}_i; \theta_f)), \theta_d), d_i)\right).
 	\label{dann_loss}
 \end{align}
 
-The gradint reversal layer changes the update~\ref{feature_parameters_update}
+The GRL changes the update~\ref{feature_parameters_update}
 to version fully compatible with SGD:
 
 \begin{equation}
@@ -448,38 +507,50 @@ to version fully compatible with SGD:
 	\right).
 \end{equation}
 
-\subsection{Reconstruction-based Deep Domain Adapation}
+\subsection{Reconstruction-based Deep Domain Adaptation}
 \label{reconstruction_da}
 
-The last group of methods is based on data reconstruction auxialiary task.
+The last group of methods is based on data reconstruction auxiliary task.
 The reconstructor forces to find a shared representation
 of a source and target domains.
 
-According to~\cite{wang2018} subgroups are \textit{encoder-decoder} and
+According to~\cite{wang2018} subcategories are \textit{encoder-decoder} and
 \textit{adversarial} reconstruction.
+The simpler \textit{encoder-decoder} category exploits stacked autoencoders~\cite{vincent2008} or stacked convolutional autoencoders~\cite{masci2011}
+to do the reconstruction task.
+On the other hand the methods based on \textit{adversarial reconstruction}
+use cyclic mapping obteined via a GAN discriminator~\cite{goodfellow2014}.
 
-SDA~\cite{vincent2008, glorot2011}, mSDA~\cite{chen2012}, DRCN~\cite{ghifary2016} and DSN~\cite{bousmalis2016}.
+Furthermore, we explore the \textit{encoder-decoder} methods
+that are good fit for our problem
+because they are not that complicated
+as GAN-based method of the second subcategory.
 
-% TODO check and verify
-SDA and mSDA were developed for Amazon reviews benchmark textual data
-while DRCN and DSN for visual data.
-Therefore we focus on DRCN as it is simpler to train than DSN.
+It all started with Stacked Denoinsing Autoencoder (SDA)~\cite{glorot2011}
+and it extension marginalised SDA (mSDA)~\cite{chen2012}
+for domain adaptation on text sentiment analysis data.
+While SDA and mSDA are base on fully-connected network,
+Deep Reconstruction-Classification Network (DRCN)~\cite{ghifary2016}
+uses stacked convolutional autoencoder for the reconstruction task on images
+Moreover, Domain Separaion Networks (DSN)~\cite{bousmalis2016} is based on the same idea as DRCN
+but it uses there separate encoder to model shared representation and also privete specific features of source and target data.
+We choose to experiment with DRCN
+because it is design for image data while being simpler than DSN.
 
-Deep Reconstruction-Classification Network (DRCN)~\cite{ghifary2016} is a CNN
-that learn both supervised souce labelled classification and unsupervised target data reconstruction.
+DRCN~\cite{ghifary2016} is a CNN
+that learn both supervised souce labelled classification
+and unsupervised target data reconstruction.
 Encoder is shared between both task but decoding parameters are separete.
-The data reconstruction task is a auxiliary task supposed to learn good feature representation beneficial for both source and target domain.
-
+The data reconstruction task is an auxiliary task
+supposed to help to learn good feature representation
+beneficial for DA scenario.
 The intuition behind DRCN is that good represenstation for DA
 should capture both the properties for classification
 and data structure (reconstruct well the target domain).
-DRCN is composed of two pipelines.
-The first one is source label predictor
-and the second is a convolutional autoencoder fro target data reconstruction.
-The model is jointly optimised for classification and reconstruction tasks.
-DRCN hopes that the auxiliary reconstruction task will learn good repreresentation for target classification.
 
-The function \(F_c: X \to Y\) is the label predictor
+DRCN is composed of a label predictor for classification
+and a convolutional autoencoder for target data reconstruction.
+Let define \(F_c: X \to Y\) as the label predictor
 and \(F_r: X \to X\) is the data reconstructor.
 The two functions are composed out of three components:
 
@@ -489,14 +560,15 @@ The two functions are composed out of three components:
 	\item a classificator \(G_l: Z \to Y\);
 \end{itemize}
 
-where \(Z\) is a latent feature space where DRCN encodes data.
+where \(Z\) is a latent feature space to which DRCN encodes data.
 Given the above component,
-\(F_c(\cdot; \theta_c) = G_l(G_e(\cdot; \theta_e); \theta_l)\)
-and \(F_r(\cdot; \theta_r) = G_d(G_e(\cdot; \theta_e); \theta_d)\)
-where \(\theta_c = \{\theta_e, \theta_l\}\)
-and \(\theta_r = \{\theta_d, \theta_e\}\) are parameters of DRCN.
+the classification pipeline is \(F_c(\cdot; \theta_c) = G_l(G_e(\cdot; \theta_e); \theta_l)\)
+and the reconsctruction pipeline is \(F_r(\cdot; \theta_r) = G_d(G_e(\cdot; \theta_e); \theta_d)\)
+where \(\theta_c = \{\theta_e, \theta_l\}\) are parameters of the classificator
+and \(\theta_r = \{\theta_d, \theta_e\}\) are parameters of the reconstructor.
 Note that \(\theta_e\) is shared between the label predictor and the autoencoder.
 
+The model is jointly optimised for classification and reconstruction tasks.
 Therefore, the learning objective of DRCN contains classification and reconstruction loss respectively:
 
 \begin{align}
@@ -508,8 +580,8 @@ Therefore, the learning objective of DRCN contains classification and reconstruc
 	\label{drcn_reconstruction_loss}
 \end{align}
 
-wher \(l_c\) is a form of cross entropy loss
-and \(l_r\) is the squared loss:
+wher \(l_c\) is a form of classification loss
+and \(l_r\) is a reconsctruction loss, for example, the squared loss:
 
 \begin{equation}
 	l_r = \|\mathbf{x}_i - F_r(\mathbf{x}_i)\|_2^2.
@@ -519,12 +591,12 @@ By combining the terms~\ref{drcn_classification_loss} and~\ref{drcn_reconstructi
 DRCN aims to minimise following objective:
 
 \begin{equation}
-	\mathcal{L}_{\mathrm{DDC}}
+	\mathcal{L}_{\mathrm{DRCN}}
 	= \lambda \mathcal{L}_c(S) + (1 - \lambda) \mathcal{L}_r(T),
 	\label{drcn_loss}
 \end{equation}
 
-where \(\lambda \in [0; 1]\) is a hyperparameter of the trade-off between the two loss functions.
+where \(\lambda \in [0, 1]\) is a hyperparameter of the trade-off between the two loss functions.
 The objective~\ref{drcn_loss} can be optimised with SGD.
 
 \section{Previous Applications of Domain Adaptation in Astronomy}
