@@ -1,14 +1,14 @@
 \chapter{Domain Adaptation}
 \label{da_chapter}
 
-In this chapeter, we survey the current state of domain adaptation using neural network models
-in the context of machine ond transfer learning.
-We formally define domain adapation scenario
+In this chapter, we survey the current state of domain adaptation using neural network models
+in the context of the machine and transfer learning.
+We formally define the domain adaptation scenario
 and categorise it according to recent surveys
 by Wang and Deng~\cite{wang2018} and Csurka~\cite{csurka2017}.
-From each category we select a representative method for our experiments.
+From each category, we select a representative method for our experiments.
 Then, we introduce in detail selected methods.
-We conclude the chapter with a survey of applications of domain adaptation in astronomy.
+We conclude the chapter with applications of domain adaptation in astronomy.
 
 \section{Domain Adaptation in the Context of Machine Learning}
 
@@ -17,23 +17,23 @@ which is part of machine learning.
 Machine learning has a common assumption that training and test data are
 \textit{independent and identically distributed} (IID)
 that means data are drawn from the same feature space and the same distribution.~\cite{daume2006}
-When this assumption does not hold transfer learning and domain adaptation come into play.
-Moreover, from the biological point of the assumption seems limiting
+When this assumption does not hold transfer learning or domain adaptation come into play.
+Moreover, from the biological point of the assumption seems to limit
 because humans seem to have natural ways to transfer knowledge from previous experience to new challenges.~\cite{torrey2010}
 
 Transfer learning is defined in most papers regarding the survey by Pan and Yang~\cite{pan2010}.
 However, there is a more recent survey by Weiss et al.~\cite{weiss2016}
-that has the benefit of containing newer methods than the survey by Pan and Yang~\cite{pan2010},
-but its definition of transfer learning and domain adaptation is the same.
+that has the benefit of containing newer methods than the survey by Pan and Yang~\cite{pan2010}.
+However, its definition of transfer learning and domain adaptation is the same.
 
 Pan and Yang~\cite{pan2010} define transfer learning
 as the ability of a system to recognise and apply knowledge and skill
-learned in previous tasks to novel tasks
+learned in previous problems to novel problems,
 and they introduce the notion of a \textit{domain} and a \textit{task}.
 
 A domain consists of a \textit{feature space} \(X\) and a marginal probability distribution \(P(X)\)
-(marginal express the it is summed over a label space \(Y\)).
-Therefore, a domain is a tuple \(\mathcal{D} = [X, P(X)]\)
+(marginal express that it is summed over a label space \(Y\)).
+Therefore, a domain is as a tuple \(\mathcal{D} = [X, P(X)]\)
 of a~\(d\)-dimensional feature space \(X \subset \mathbb{R}^d\)
 and a~marginal probability distribution \(P(X)\).
 
@@ -49,11 +49,27 @@ When we are given a transfer learning problem,
 we have to identify a source domain and a source learning task,
 a target domain and a target learning task.
 Then, transfer learning aims to help improve the learning of the target predictive function in the target domain
-using knowledge in the source domain and the source task,
+using knowledge from the source domain and the source task,
 where the domains are different or the tasks are different.
-As we will see domain adaptation is the case
-when source and target domains are different
-while source and target tasks are the same.~\cite{pan2010}
+As we will see, domain adaptation is the case
+when the source and target domains are different,
+while the source and target tasks are the same.~\cite{pan2010}
+
+\begin{figure}
+\begin{center}
+\tikzstyle{dom} = [circle, draw=black, align=center]
+\begin{tikzpicture}[node distance=4cm]
+	\node (src) [dom] {source\\domain};
+	\node (trg) [dom, right of=src] {target\\domain};
+	\node (knowledge) [ellipse, draw=black, below of=src] {knowledge};
+	\node (model) [rectangle, draw=black, align=center, below of=trg] {learning\\system};
+	\draw [->] (src) -- (knowledge);
+	\draw [->] (knowledge) -- (model);
+	\draw [->] (trg) -- (model);
+\end{tikzpicture}
+\end{center}
+\caption{Schematic depiction of domain adaptation}
+\end{figure}
 
 For example, we have introduced in previous Chapter~\ref{data_chapter}
 two domains.
@@ -65,46 +81,46 @@ as we defined it.
 
 Lastly, Torrey and Shavlik in~\cite{torrey2010} warn
 that sometimes transfer learning can be harmful.
-A performance of our machine learning algorithm might suffer
-when source and target domains or tasks need to be sufficiently related
+Performance of our machine learning algorithm might suffer
+when the source and target domains or tasks need to be sufficiently related
 else negative transfer may occur.
-When the usage of source data degrades the performance
+When the usage of source data degrades the performance,
 the situation is called \textit{negative transfer}.
 On the other side, when the performance is improved,
-we talk about a positive transfer.
+we talk about a \textit{positive transfer}.
 
 \section{Theory and Formalization of Domain Adaptation}
 
 Now, we introduce the crucial concept of our work: \textit{domain adaptation} (DA).
 DA is a particular case of transfer learning
-that leverages data from source domain to learn a classifier for a target domain while the tasks are the same.
+that leverages data from the source domain to learn a classifier for a target domain while the tasks are the same.
 It is assumed that source and target domains are not identical but related.
-If the domains were identical it would be a standard machine learning problem.
+If the domains were identical, it would be a standard machine learning problem.
 Therefore, there is a distribution discrepancy between the source and target domains.~\cite{csurka2017}
 
 More formally DA is the scenario of transfer learning
 when the source \(\mathcal{D}^s = [X^s, P(X^s)]\)
 and target \(\mathcal{D}^t = [X^t, P(X^t)]\) domains
-are different (\(\mathcal{D}^s \ne \mathcal{D}^t\))
+are different (\(\mathcal{D}^s \ne \mathcal{D}^t\)),
 but the source \(\mathcal{T}^s\) and target \(\mathcal{T}^t\)
 tasks are the same (\(\mathcal{T}^s = \mathcal{T}^t\)).
 The first condition implies
 that \(X^s \ne X^t\), \(P(X^s) \ne P(X^t)\) or both are true.~\cite{pan2010}
 In our case, the domains are different
-because the two archive have different target selection strategies
-and the instrument are different (see Section~\ref{large_spec_surveys}).
+because the two archives have different target selection strategies,
+and the instruments are different (see Section~\ref{large_spec_surveys}).
 
 Based on the condition \(\mathcal{D}^s \ne \mathcal{D}^t\)
 we categorise DA into \textit{homogeneous} and \textit{heterogeneous}.
 Homogeneous DA is setting in which the source \(X^s\)
 and target \(X^t\) feature spaces are the same (\(X^s = X^t\))
-while in \textit{heterogeneous} the source and target spaces are different
+while in \textit{heterogeneous} DA, the source and target spaces are different
 (\(X^s \ne X^t\)).~\cite{csurka2017}
 
-Our case is the homogeneous DA
-where the feature spaces are identical (\(X^s = X^t\))
-still the source and target data are have different distributions (\(P(X^s) \ne P(X^t)\)).
-Therefore, further we focus on homogeneous DA.
+Our case is the homogeneous DA,
+where the feature spaces are identical (\(X^s = X^t\)).
+Still, the source and target data have different distributions (\(P(X^s) \ne P(X^t)\)).
+Therefore, further, we focus on homogeneous DA
 because our spectra can be prepared into the same feature space \(\mathbb{R}^{3659}\)
 (see Section~\ref{data_preparation}).
 
@@ -112,21 +128,21 @@ The second categorisation of DA is according to availability of labels in the ta
 Wang and Deng~\cite{wang2018} distinguish \textit{supervised}, \textit{semi-supervised} and \textit{unsupervised} DA:
 
 \begin{itemize}
-	\item superivesed DA: labelled data in the target domain are present;
-	\item semi-supervised DA: we have only very limited amount of labelled data in the target domain while most of the data is unlabelled;
+	\item supervised DA: labelled data in the target domain are present;
+	\item semi-supervised DA: we have only a minimal amount of labelled data in the target domain while most of the data is unlabelled;
 	\item unsupervised DA: no labelled data are available in the target domain.
 \end{itemize}
 
-We phrase out problem as \textit{unsupervised DA}
-because we have no reliable labelled data in the target domain
+We phrase our problem as \textit{unsupervised DA}
+because the LAMOST survey uses different criteria for identification of QSOs than SDSS
 (see Section~\ref{large_spec_surveys}).
 
 Now, we have all the tools to define our homogeneous unsupervised DA problem.
-In corespondence with~\cite{ganin2016},
+In correspondence with~\cite{ganin2016},
 we consider a classification problem within an input space \(X\)
 with \(L\) possible labels from a set \(Y = {0, \dots, L - 1}\).
 The source \(\mathcal{D}_s\) and target \(\mathcal{D}_t\) domains
-have different distibutions over \(X \times Y\).
+have different distributions over \(X \times Y\).
 From the source and target domains
 we have \textit{labelled source sample} \(S\) drawn IID from \(\mathcal{D}_s\)
 and \textit{unlabelled target sample} \(T\) drawn IID from \(\mathcal{D}^X_t\) 
@@ -137,34 +153,32 @@ and \textit{unlabelled target sample} \(T\) drawn IID from \(\mathcal{D}^X_t\)
 	T &= \{\mathbf{x}_i\}^N_{i = n + 1} \sim (\mathcal{D}^X_t)^{n'},
 \end{align}
 
-where \(N = n + n'\) is the total number of examples (data points).
-Note that the examples are numbered from 1 to \(N\).
+where \(N = n + n'\) is the total number of examples
+(note that the examples are numbered from 1 to \(N\)).
 Concretely, the input space \(X\) is equal to \(\mathbb{R}^{3659}\),
 \(y_i \in Y\) which is equal to \(\{0, 1\}\) implying \(L = 2\)
 (0 stands for a non-QSO object and 1 for a QSO)
 and a vector \(\mathbf{x}_i\) is an astronomical spectrum
 (its fluxes in specified wavelengths).
 
-Further categorisation of methods of DA
-will help us to methos based on neural networks.
-Generally, DA is distinguished into two categories
+Further categorisation of methods of DA will help us to separate methods based on neural networks.
+Csurka in~\cite{csurka2017} divides DA into two categories:
 \textit{shallow DA} methods and \textit{deep DA}.
-Shallow DA can be applied to extracted vectors of features
-while \textit{deep DA} methods are based on neural networks
-augemented for domain adapation.~\cite{csurka2017}
+Shallow DA methods are not based on neural networks but rather on statistical theory.
+Deep DA methods are based on neural networks augmented for domain adaptation.
 
-According to Wang and Deng~\cite{wang2018} shallow DA methods
-can be categorised into two classes:
-\textit{instance-based DA}
-(the discrepancy is reduces by reweighting the source instances)
-and \textit{feature-based DA}
+Furthermore, according to Wang and Deng~\cite{wang2018},
+shallow DA methods can be categorised into two classes.
+The first class is \textit{instance-based} DA
+(the discrepancy is reduced by reweighting the source instances)
+and the second is \textit{feature-based} DA
 (tries to learn a common shared space in which the discrepancy diminishes).
 However, shallow DA methods are not interesting for us
-because they do not utilize neural network.
-Still one possibility is to use a neural network as a feature extractor.~\cite{csurka2017}
+because they do not utilise neural networks directly.
+Still, one possibility is to use a neural network as a feature extractor.~\cite{csurka2017}
 
-The following section introduces the other category of deep DA
-which takes the advantage of neural networks.
+The following section introduces the other category of deep DA,
+which takes advantage of neural networks.
 
 \section{Neural Networks in Domain Adaptation}
 
