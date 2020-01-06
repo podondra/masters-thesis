@@ -10,7 +10,6 @@ Firstly, we create source and target datasets for experiments.
 Then, we reduce the data to two-dimensions
 so we are able to visualise the data
 and investigate distributions of both the source and target data.
-% TODO CNN abbreviation
 Thirdly, we introude a CNN baseline model
 which serves as benchmark for comparison of deep domain adapation methods.
 Finally, we employ four deep domain adaptation methods
@@ -20,8 +19,6 @@ if astronomical spectroscopy can benefit from deep domain adaptation.
 
 \section{Data Preparation}
 \label{data_preparation}
-
-% TODO introduction to section
 
 Our data of source domain consists of 4\,851\,200 optical spectra from the SDSS DR14 catalog
 and the corresponding SDSS DR14Q catalog of 649\,791 spectra of 526\,356 QSO objects
@@ -33,9 +30,6 @@ However, 20\,279 spectra of QSOs cannot be idenfified
 % TODO describe the bug in SDSS DR14Q catalog
 because there is a bug in the SDSS DR14Q catalog.
 Therefore, we are able to identify only 629\,512 spectra of all QSOs.
-% TODO describe that spectra are stored in individual FITS
-% TODO spectra are downloaded according to SDSS DR14 catalog
-% TODO lite versions extracted COADD
 Next, we need to cross-match the SDSS DR14 and DR14Q catalogs
 to merge the data stored in individual FITS files with QSO labels.
 The cross-matching is based on triplet of
@@ -68,7 +62,6 @@ not yet identified by LAMOST cripling our performance measurement
 that will be biased.
 
 Having assigned labels of QSOs to individual spectra,
-% TODO footnote what is FITS file?
 we need to extract the spectra from individual FITS files
 because learning of neural networks requires datasets to be in form of design matrices.
 A design matrix contains a different example (a spectrum) in each row
@@ -90,9 +83,20 @@ The selection gives us a wavelength grid of 3659 logarithmically-spaced waveleng
 (each spectrum is a real vector of~\(\mathbb{R}^{3659}\)).
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/wavemin_wavemax_hist.pdf}
-	\caption{Minimal and maximal wavelengths of all LAMOST spectra.}
-	\label{wavemin_wavemax_hist}
+\includegraphics[width=\textwidth]{img/wavemin_wavemax_hist.pdf}
+\caption[Minimal and maximal wavelength of LAMOST DR5]{
+	Two plots showing histograms of minimal and maximal wavelengths
+	of all LAMOST spectra.
+	The maximal wavelength from all the minimal wavelengths
+	is 3\,839.7244~\AA{}.
+	Cutting in lower wavelength
+	would mean a lost of almost 100\,000 spectra.
+	The situation is very similar for maximal wavelengths
+	where the minimum is 8\,914.597~\AA{}.
+	Therefore, the most suitable range of wavelength is to choose
+	these two wavelengths as starting and ending points.
+	}
+\label{wavemin_wavemax_hist}
 \end{figure}
 
 Given the selected grid of wavelength we will lose some SDSS spectra
@@ -105,10 +109,15 @@ including 1\,949 spectra of QSO.
 Therefore, the source dataset has 4\,816\,713 spectra with 627\,508 spectra of QSOs that can enter a learing of a neural network.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/waves_cumulative_hist.pdf}
-	% TODO captions of all figures and tables
-	\caption{Cutting SDSS specta.}
-	\label{waves_cumulative_hist}
+\includegraphics[width=\textwidth]{img/waves_cumulative_hist.pdf}
+\caption[Losts in SDSS DR14 spectra due to wavelength range]{
+	The selected wavelength range will inevitably
+	cause a lost of some SDSS DR14 spectra.
+	This figure show cumulative histograms of number of spectra
+	and its dependence of minimal and maximal wavelengths.
+	We see that both cuts are prior to big drop is count of spectra.
+	}
+\label{waves_cumulative_hist}
 \end{figure}
 
 The original sizes of data are unnecessary for experimenting with deep domain adataption on astronomical spectra.
@@ -133,21 +142,31 @@ Table~\ref{datasets_sizes} shows a significant class imbalance in the LAMOST DR5
 where QSOs are very rare (less then 0.4\%).
 
 \begin{table}
-	\begin{center}
-	\begin{tabular}{|l|r|r|}
-		\hline
-		Name & QSOs & Total spectra \\ \hline \hline
-		SDSS DR14 & 629\,457 (12.98\%) & 4\,851\,200 \\ \hline
-		usable SDSS DR14 & 627\,508 (13.03\%) & 4\,816\,713 \\ \hline
-		SDSS training set & 130\,904 (13.09\%) & 1\,000\,000 \\ \hline
-		SDSS validation set & 6\,552 (13.10\%) & 50\,000 \\ \hline
-		LAMOST DR5 v3 & 31\,755 (0.35\%) & 9\,026\,365 \\ \hline
-		LAMOST training set & 3\,517 (0.35\%) & 1\,000\,000 \\ \hline
-		LAMOST validation set & 190 (0.38\%) & 50\,000 \\ \hline
-	\end{tabular}
-	\end{center}
-	\caption{Sizes of datasets.}
-	\label{datasets_sizes}
+\begin{center}
+\begin{tabular}{|l|r|r|}
+	\hline
+	Name & QSOs & Total spectra \\
+	\hline \hline
+	SDSS DR14 & 629\,457 (12.98\%) & 4\,851\,200 \\ \hline
+	usable SDSS DR14 & 627\,508 (13.03\%) & 4\,816\,713 \\ \hline
+	SDSS training set & 130\,904 (13.09\%) & 1\,000\,000 \\ \hline
+	SDSS validation set & 6\,552 (13.10\%) & 50\,000 \\ \hline
+	LAMOST DR5 v3 & 31\,755 (0.35\%) & 9\,026\,365 \\ \hline
+	LAMOST training set & 3\,517 (0.35\%) & 1\,000\,000 \\ \hline
+	LAMOST validation set & 190 (0.38\%) & 50\,000 \\ \hline
+\end{tabular}
+\end{center}
+\caption[Sizes of source and target datasets]{
+	Summary table of sizes of source and target dataset
+	together with train and validation splits.
+	The validation splits serve for models comparison
+	and hyperparameter optimisation.
+	The second row "usable SDSS DR14" show the number of spectra
+	after the cut into a unified range of wavelengths.
+	The table shows the imbalance of the LAMOST target data
+	that contains only tiny amount of identified QSOs.
+	}
+\label{datasets_sizes}
 \end{table}
 
 The last step of data preparation is min-max scaling of each spectrum into the \([-1; 1]\) range:
@@ -193,15 +212,20 @@ However, there are no regions containing only source or target data.
 Moreover, in the middle extending to the right there is a kind of line component.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/pca.pdf}
-	\caption{PCA}
-	\label{pca}
+\includegraphics[width=\textwidth]{img/pca.pdf}
+\caption[PCA visualisation of source and target data distributions]{
+	The first two principal component of 2\,500 source
+	and 2\,500 target data points.
+	The projection shows that source data concentrate more in the middle
+	whlie the target data seem to cluster on the edges.
+	}
+\label{pca}
 \end{figure}
 
 \textit{t-Distributed Stochastic Neighbor Embedding} (t-SNE)~\cite{maaten2008, wattenberg2016} is a popular method for visualisation of high-dimensional data.
 The t-SNE method is non-linear, iterative
 and peforms different transformation of different regions.
-A tunable hyperparemeter of t-SNE is \textit{perplexity}
+A tunable hyperparameter of t-SNE is \textit{perplexity}
 which is a guess about the number of neighbors of a data point.
 Typically, the optimal value is between 5 and 50.
 
@@ -220,9 +244,14 @@ On the other hand, we a network is not adapted the source and target data
 can be easily visually separated in a t-SNE visualisation.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/tsne.pdf}
-	\caption{t-SNE}
-	\label{tsne}
+\includegraphics[width=\textwidth]{img/tsne.pdf}
+\caption[t-SNE visualisation of source and target data distributions]{
+	Embedding of t-SNE of the same data
+	as in the reduction with PCA shows very similar result as PCA.
+	However, there is more notable central sort of line component
+	extending to the rigth.
+	}
+\label{tsne}
 \end{figure}
 
 \textit{Unifrom Manifold Approximation and Projection} (UMAP)~\cite{mcinnes2018}
@@ -232,9 +261,15 @@ Visualisation with UMAP is displayed in Figure~\ref{umap}
 and have very similar structure to t-SNE embedding in Figure~\ref{tsne}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/umap.pdf}
-	\caption{UMAP}
-	\label{umap}
+\includegraphics[width=\textwidth]{img/umap.pdf}
+\caption[UMAP visualisation of source and target data distributions]{
+	UMAP projection to two-dimensions confirm the previous visualisation
+	with PCA and t-SNE.
+	The source data tend to concentrate in the midlle
+	while the target data are mostly out of center
+	and there is the line component extending away from the center.
+	}
+\label{umap}
 \end{figure}
 
 \section{Baseline: Results without Deep Domain Adapatation}
@@ -265,99 +300,101 @@ which we implemented in PyTorch~\cite{paszke2019}.
 
 \tikzstyle{layer} = [align=center,draw=black,font=\tiny,rectangle,text centered]
 \begin{figure}
-	\begin{center}
-		\subfloat[][LeNet-5]{
-			\begin{tikzpicture}[node distance=1.5cm]
-				\node (conv1) [layer] {conv1\\5-32\\ReLU};
-				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
-				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
-				\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
-				\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
-				\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
-				\draw [->] (conv1) -- (pool1);
-				\draw [->] (pool1) -- (conv2);
-				\draw [->] (conv2) -- (pool2);
-				\draw [->] (pool2) -- (fc1);
-				\draw [->] (fc1) -- (fc2);
-				\draw [->] (fc2) -- (fc3);
-			\end{tikzpicture}
-			\label{lenet_5}
-		}\\
-		\subfloat[][DDC]{
-			\begin{tikzpicture}[node distance=1.5cm]
-				\node (conv1) [layer] {conv1\\5-32\\ReLU};
-				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
-				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
-				\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
-				\node (bottleneck) [layer,right of=fc1,fill=red!50] {bottleneck\\64\\ReLU};
-				\node (fc2) [layer,right of=bottleneck] {fc2\\100\\ReLU};
-				\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
-				\draw [->] (conv1) -- (pool1);
-				\draw [->] (pool1) -- (conv2);
-				\draw [->] (conv2) -- (pool2);
-				\draw [->] (pool2) -- (fc1);
-				\draw [->] (fc1) -- (bottleneck);
-				\draw [->] (bottleneck) -- (fc2);
-				\draw [->] (fc2) -- (fc3);
-			\end{tikzpicture}
-			\label{ddc_architecture}
-		}\\
-		\subfloat[][DANN]{
-			\begin{tikzpicture}[node distance=1.5cm]
-				\node (conv1) [layer] {conv1\\5-32\\ReLU};
-				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
-				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-				\node (pool2) [layer,right of=conv2] {pool2\\16-16};
-				\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
-				\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
-				\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
-				\node (grl) [layer,below of=pool2,fill=green!50] {gradient\\reversar\\layer};
-				\node (fc4) [layer,right of=grl,fill=green!50] {fc4\\100\\ReLU};
-				\node (fc5) [layer,right of=fc4,fill=green!50] {fc5\\1\\sigmoid};
-				\draw [->] (conv1) -- (pool1);
-				\draw [->] (pool1) -- (conv2);
-				\draw [->] (conv2) -- (pool2);
-				\draw [->] (pool2) -- (fc1);
-				\draw [->] (fc1) -- (fc2);
-				\draw [->] (fc2) -- (fc3);
-				\draw [->] (pool2) -- (grl);
-				\draw [->] (grl) -- (fc4);
-				\draw [->] (fc4) -- (fc5);
-			\end{tikzpicture}
-			\label{dann_architecture}
-		}\\
-		\subfloat[][DRCN]{
-			\begin{tikzpicture}[node distance=1.5cm]
-				% encoder
-				\node (conv1) [layer] {conv1\\5-32\\ReLU};
-				\node (pool1) [layer,right of=conv1] {pool1\\16-16};
-				\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
-				% feature labelling
-				\node (pool2) [layer,right of=conv2,fill=blue!50] {pool2\\16-16};
-				\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
-				\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
-				\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
-				% decoder
-				\node (conv3) [layer,below of=conv2,fill=green!50] {conv3\\5-48\\ReLU};
-				\node (upsample1) [layer,left of=conv3,fill=green!50] {upsample1\\3659};
-				\node (conv4) [layer,left of=upsample1,fill=green!50] {conv4\\5-32\\None};
-				% connections
-				\draw [->] (conv1) -- (pool1);
-				\draw [->] (pool1) -- (conv2);
-				\draw [->] (conv2) -- (pool2);
-				\draw [->] (pool2) -- (fc1);
-				\draw [->] (fc1) -- (fc2);
-				\draw [->] (fc2) -- (fc3);
-				\draw [->] (conv2) -- (conv3);
-				\draw [->] (conv3) -- (upsample1);
-				\draw [->] (upsample1) -- (conv4);
-			\end{tikzpicture}
-			\label{drcn_architecture}
-		}
-	\end{center}
-	\caption{Architectures}
+\begin{center}
+\subfloat[][LeNet-5]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+\end{tikzpicture}
+\label{lenet_5}
+}\\
+\subfloat[][DDC]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+	\node (fc1) [layer,right of=pool2] {fc1\\100\\ReLU};
+	\node (bottleneck) [layer,right of=fc1,fill=red!50] {bottleneck\\64\\ReLU};
+	\node (fc2) [layer,right of=bottleneck] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2] {fc3\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (bottleneck);
+	\draw [->] (bottleneck) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+\end{tikzpicture}
+\label{ddc_architecture}
+}\\
+\subfloat[][DANN]{
+\begin{tikzpicture}[node distance=1.5cm]
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	\node (pool2) [layer,right of=conv2] {pool2\\16-16};
+	\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+	\node (grl) [layer,below of=pool2,fill=green!50] {gradient\\reversar\\layer};
+	\node (fc4) [layer,right of=grl,fill=green!50] {fc4\\100\\ReLU};
+	\node (fc5) [layer,right of=fc4,fill=green!50] {fc5\\1\\sigmoid};
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+	\draw [->] (pool2) -- (grl);
+	\draw [->] (grl) -- (fc4);
+	\draw [->] (fc4) -- (fc5);
+\end{tikzpicture}
+\label{dann_architecture}
+}\\
+\subfloat[][DRCN]{
+\begin{tikzpicture}[node distance=1.5cm]
+	% encoder
+	\node (conv1) [layer] {conv1\\5-32\\ReLU};
+	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
+	\node (conv2) [layer,right of=pool1] {conv2\\5-48\\ReLU};
+	% feature labelling
+	\node (pool2) [layer,right of=conv2,fill=blue!50] {pool2\\16-16};
+	\node (fc1) [layer,right of=pool2,fill=blue!50] {fc1\\100\\ReLU};
+	\node (fc2) [layer,right of=fc1,fill=blue!50] {fc2\\100\\ReLU};
+	\node (fc3) [layer,right of=fc2,fill=blue!50] {fc3\\1\\sigmoid};
+	% decoder
+	\node (conv3) [layer,below of=conv2,fill=green!50] {conv3\\5-48\\ReLU};
+	\node (upsample1) [layer,left of=conv3,fill=green!50] {upsample1\\3659};
+	\node (conv4) [layer,left of=upsample1,fill=green!50] {conv4\\5-32\\None};
+	% connections
+	\draw [->] (conv1) -- (pool1);
+	\draw [->] (pool1) -- (conv2);
+	\draw [->] (conv2) -- (pool2);
+	\draw [->] (pool2) -- (fc1);
+	\draw [->] (fc1) -- (fc2);
+	\draw [->] (fc2) -- (fc3);
+	\draw [->] (conv2) -- (conv3);
+	\draw [->] (conv3) -- (upsample1);
+	\draw [->] (upsample1) -- (conv4);
+\end{tikzpicture}
+\label{drcn_architecture}
+}
+\end{center}
+\caption[Architectures of deep domain adaptation model from experiments]{
+	Diagrams of all architectures used in our experiments.
+	}
 \end{figure}
 
 Furthermore, Donahue et al. showed in the DeCAF (\textit{Deep Convolutional Activation Feature}) paper~\cite{donahue2014}
@@ -411,7 +448,6 @@ and biases are set to zero.
 	\label{lenet_losses}
 \end{figure}
 
-% TODO define recall and precision
 \textit{Recall} \(r\), \textit{precision} \(p\)
 and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \textit{recall}:
 
@@ -421,40 +457,42 @@ and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \
 	F_1 &= \frac{2}{r^{-1} + p^{-1}} = 2 \frac{r p}{r + p},
 \end{align}
 
-where \(r\) is recall and \(p\) is precision.
+where \(r\) is recall, \(p\) is precision,
+\(\mathit{TP}\) is the number of correctly classified QSOs,
+\(\mathit{FN}\) is the number of QSOs incorrectly classified as non-QSOs
+and \(\mathit{FP}\) is the number of non-QSOs classified as QSOs.
 When precision and recall are perfect
 \(F_1\) score reaches its best value one and at worst can be zero.
 
-% TODO result evaluation
-\(F_1\) score of source is 0.9397 and target 0.2294.
-Target precision is is 13.48\% and target recall 76.84\%.
+Validation \(F_1\) score of source is 0.9397 and target 0.2294
+(target precision is is 13.48\% and target recall 76.84\%).
+That is a very poor result for the target data.
+Therefore, we see that there probably is a huge domain discrepancy.
 
 \begin{table}
 \begin{center}
 \subfloat[][Source confusion matrix]{
-\begin{tabular}{|l|r|r|}
-	\hline
-	Predicted class & \multicolumn{2}{c|}{Actual class} \\
-	\hline \hline
-	& QSO & non-QSO \\ \hline
-	QSO & 6\,278 & 532 \\ \hline
-	non-QSO & 274 & 42\,916 \\ \hline
-\end{tabular}
+	\begin{tabular}{|l|r|r|}
+		\hline
+		Predicted class & \multicolumn{2}{c|}{Actual class} \\
+		\hline \hline
+		& QSO & non-QSO \\ \hline
+		QSO & 6\,278 & 532 \\ \hline
+		non-QSO & 274 & 42\,916 \\ \hline
+	\end{tabular}
 }
 \subfloat[][Target confusion matrix]{
-\begin{tabular}{|l|r|r|}
-	\hline
-	Predicted class & \multicolumn{2}{c|}{Actual class} \\
-	\hline \hline
-	& QSO & non-QSO \\ \hline
-	QSO & 146 & 937 \\ \hline
-	non-QSO & 44 & 48\,873 \\ \hline
-\end{tabular}
+	\begin{tabular}{|l|r|r|}
+		\hline
+		Predicted class & \multicolumn{2}{c|}{Actual class} \\
+		\hline \hline
+		& QSO & non-QSO \\ \hline
+		QSO & 146 & 937 \\ \hline
+		non-QSO & 44 & 48\,873 \\ \hline
+	\end{tabular}
 }
 \end{center}
 \end{table}
-
-% TODO feature t-SNE
 
 \section{Experiments with Deep Domain Adapation}
 
