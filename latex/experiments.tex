@@ -747,15 +747,15 @@ good representation that can supress noise
 while maitaining important spectral lines.
 
 \begin{figure}
-	\subfloat[][Validation reconstruction loss of DRCN]{
-		\includegraphics[width=.5\textwidth]{img/drcn_rec-loss.pdf}
-	}
-	\subfloat[][\(F_1\) score of DRCN and our LeNet-5]{
-		\includegraphics[width=.5\textwidth]{img/drcn_f1.pdf}
-		\label{drcn_f1}
-	}
-	\caption{Training of DRCN}
-	\label{drcn_training}
+\subfloat[][Validation reconstruction loss of DRCN]{
+	\includegraphics[width=.5\textwidth]{img/drcn_rec-loss.pdf}
+}
+\subfloat[][\(F_1\) score of DRCN and our LeNet-5]{
+	\includegraphics[width=.5\textwidth]{img/drcn_f1.pdf}
+	\label{drcn_f1}
+}
+\caption{Training of DRCN}
+\label{drcn_training}
 \end{figure}
 
 \begin{figure}
@@ -788,8 +788,6 @@ but target recall 74.74\% is the worst.
 
 \section{Evaluation of Experiments}
 
-Prepare visualisation of results.
-
 \begin{table}
 \begin{center}
 \begin{tabular}{|l|r|r|r|r|}
@@ -804,3 +802,25 @@ Prepare visualisation of results.
 \end{center}
 \caption{Summary table}
 \end{table}
+
+Prepare visualisation of results.
+
+\begin{figure}
+\subfloat[][]{
+	\includegraphics[width=.5\textwidth]{img/source_fn.pdf}
+}
+\subfloat[][]{
+	\includegraphics[width=.5\textwidth]{img/source_fp.pdf}
+}
+\caption{Source FN and FP}
+\end{figure}
+
+\begin{figure}
+\subfloat[][]{
+	\includegraphics[width=.5\textwidth]{img/target_fn.pdf}
+}
+\subfloat[][]{
+	\includegraphics[width=.5\textwidth]{img/target_fp.pdf}
+}
+\caption{Target FN and FP}
+\end{figure}
