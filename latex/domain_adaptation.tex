@@ -182,140 +182,127 @@ which takes advantage of neural networks.
 
 \section{Neural Networks in Domain Adaptation}
 
-Already, Donahue et al. states in the paper on DeCAF~\cite{donahue2014}
+Already, Donahue et al. state in the paper on DeCAF~\cite{donahue2014}
 that deep neural networks learn more transferable features
-that can help with DA.
+that can help with transfer learning.
 However, the DeCAF paper also shows
 that the performance is still affected by the domain shift.
-Therefore, there is enough space for special deep architectures for DA.
+Therefore, there is enough space for specialised deep architectures for DA.
 
-The group of DA methods using neural networks is called \textit{deep DA}
-and Wang \& Deng define it in~\cite{wang2018}
-as methods that utilizes deep neural networks to enhance the performance of DA.
+The group of DA methods using neural networks is called \textit{deep DA}.
+Wang \& Deng define it in~\cite{wang2018} as methods that utilise deep neural networks to enhance the performance of DA.
+Deep DA architectures can be trained with \textit{backpropagation}.
+The idea is that they will learn domain invariant representation
+which is also discriminative for a common task.
 Such architectures can be trained with backpropagation
 learning domain invariant representation discriminative for a common task.
-For example, a network is extended with a special loss, a domain classifier
-or a autoencoder as we will see next.
+For example, a network is extended with a particular loss, a domain classifier or an autoencoder as we will see next.
 
-Approaches to deep DA were originally divided by Csurka in~\cite{csurka2017}
-into three categories according to training loss.
+Approaches to deep DA were initially divided by Csurka in~\cite{csurka2017} into three categories according to training loss.
 Then, Wang and Deng further improve and detail the categorisation into~\cite{wang2018}:
 
 \begin{itemize}
 	\item \textit{discrepancy-based} DA fine-tunes the neural network
 		with target data to diminish the domain shift;
-	\item \textit{adversarial-based} DA encorage domain confusion
-		by using discriminators with adversarial objective; and
+	\item \textit{adversarial-based} DA encourage domain confusion
+		by using discriminators with an adversarial objective; and
 	\item \textit{reconstruction-based} DA uses data reconstruction auxiliary task to learn domain invariant features.
 \end{itemize}
 
-We summarize the deep DA methods categorisation in the mind map of Figure~\ref{mind_map}.
-The mind map also gives further subcategories with some example methods
-introduced in next subsections.
+We summarise the deep DA methods categorisation in the mind map of Figure~\ref{mind_map}.
+The mind map also gives further subcategories with some example methods.
 Next, we detail the three categories of DA according to the survey by Wang and Deng~\cite{wang2018}.
 
 \begin{figure}
-	\tikzset{concept/.append style={fill={none}}}
-	\begin{tikzpicture}
-		\path[mindmap, concept color=black]
-		node[concept] {Deep DA}
-		[clockwise from=60]
-		child[concept] {
-			node[concept] {Adversarial}
-			[clockwise from=75]
-			child {node[concept] {generative model}}
-			child {
-				node[concept] {non-generative model}
-				child {node[concept] {DANN}}
-				child {node[concept] {ADDA}}
-				}
+\tikzset{concept/.append style={fill={none}}}
+\begin{tikzpicture}
+	\path[mindmap, concept color=black]
+	node[concept] {Deep DA}
+	[clockwise from=60]
+	child[concept] {
+		node[concept] {Adversarial}
+		[clockwise from=75]
+		child {node[concept] {generative model}}
+		child {
+			node[concept] {non-generative model}
+			child {node[concept] {DANN}}
+			child {node[concept] {ADDA}}
 			}
-		child[concept] {
-			node[concept] {Recon\-struction}
-			[clockwise from=30]
-			child {node[concept] {adversarial model}}
-			child {
-				node[concept] {encoder-decoder model}
-				child {node[concept] {SDA}}
-				child {node[concept] {mSDA}}
-				child {node[concept] {DRCN}}
-				child {node[concept] {DSN}}
-				}
+		}
+	child[concept] {
+		node[concept] {Recon\-struction}
+		[clockwise from=30]
+		child {node[concept] {adversarial model}}
+		child {
+			node[concept] {encoder-decoder model}
+			child {node[concept] {SDA}}
+			child {node[concept] {mSDA}}
+			child {node[concept] {DRCN}}
+			child {node[concept] {DSN}}
 			}
-		child[concept] {
-			node[concept] {Discrepancy}
-			[clockwise from=30]
-			child {node[concept] {class criterion}}
-			child {
-				node[concept] {statistic criterion}
-				child {node[concept] {DDC}}
-				child {node[concept] {DAN}}
-				child {node[concept] {JAN}}
-				child {node[concept] {Deep CORAL}}
-				}
-			child {node[concept] {archi\-tecture criterion}}
-			child {node[concept] {geometric criterion}}
-			};
-	\end{tikzpicture}
-	\caption{Mind map of deep DA}
-	\label{mind_map}
+		}
+	child[concept] {
+		node[concept] {Discrepancy}
+		[clockwise from=30]
+		child {node[concept] {class criterion}}
+		child {
+			node[concept] {statistic criterion}
+			child {node[concept] {DDC}}
+			child {node[concept] {DAN}}
+			child {node[concept] {JAN}}
+			child {node[concept] {Deep CORAL}}
+			}
+		child {node[concept] {archi\-tecture criterion}}
+		child {node[concept] {geometric criterion}}
+		};
+\end{tikzpicture}
+\caption{Mind map of deep domain adaptation}
+\label{mind_map}
 \end{figure}
 
 \subsection{Discrepancy-based Deep Domain Adaptation}
 \label{discrepancy_da}
 
-The first category are discrepancy-based deep DA method
+The first category is discrepancy-based deep DA methods
 that use either labelled or unlabelled target data
-to fine-tune a deep neural network to diminish the dicrepancy
+to fine-tune a deep neural network to diminish the discrepancy
 between the source and target domains.
 
-The discrepancy-based DA methods are subdivided based on
-\textit{class}, \textit{statistic}, \textit{architecture} and \textit{geometric}
-criterion by~\cite{wang2018}.
-\textit{Class criterion} methods uses label infromation to do information transfer.
-For example, the information is transfered in form of soft labels
-or pseudo labels.
+The discrepancy-based DA methods are subdivided based on \textit{class}, \textit{statistic}, \textit{architecture} and \textit{geometric} criterion by~\cite{wang2018}.
+\textit{Class criterion} methods use label information to do DA.
+For example, the knowledge is transferred in the form of soft labels or pseudo labels.
 \textit{Statistic criterion} methods align some statistic of the source and target distribution.
-The most used methods reduce domain shift with maximum mean discrepancy,
-correlation alignment or Kullback-Leibler divergence.
-Methods with \textit{architecture criterion} adjust the network topology
-in order to learn more transferable features.
-Last subcategory are \textit{geometric criterion} methods
-which want to diminish the difference between source and target disctibution
-based on their geometrical properties.
+The most used methods reduce domain shift with the maximum mean discrepancy, correlation alignment or Kullback-Leibler divergence.
+Methods with \textit{architecture criterion} adjust the network topology in order to learn more transferable features.
+The last subcategory is \textit{geometric criterion} methods
+which want to diminish the difference between the source and target distributions based on their geometrical properties.
 
-We choose to focus on statistic criterion category in this work
-because its methods can be used in unsupervised fashion,
+We choose to focus on the statistic criterion category in this work
+because its methods can be used in an unsupervised fashion,
 focus straight on the different source and target distributions
-and very effective on two-dimensional images.
-Class criterion subcategory and architecture criteion subcategories are unsuitable because they focus mostly on supervised DA
-and the geometric criterion gives much worst results in comparison to methods based on statistic criterion.
+and perform very well on two-dimensional images.
+We think class criterion subcategory and architecture criterion subcategories are unsuitable.
+They focus mostly on supervised DA, and the geometric criterion gives much worst result in comparison to methods based on statistic criterion.
 
-The most successful statistic criterion methods are
-Deep Domain Confusion (DDC)~\cite{tzeng2014},
-Deep Adaptation Network (DAN)~\cite{long2015},
-Joint Adaptation Network (JAN)~\cite{long2017}
-and Deep Correlation Alignment (Deep CORAL)~\cite{sun2016}.
-DDC is the basic method of the subcategory
+The most successful statistic criterion methods are Deep Domain Confusion (DDC)~\cite{tzeng2014}, Deep Adaptation Network (DAN)~\cite{long2015}, Joint Adaptation Network (JAN)~\cite{long2017} and Deep Correlation Alignment (Deep CORAL)~\cite{sun2016}.
+DDC is the fundamental method of the statistic criterion subcategory,
 and both DAN and JAN are its extensions.
-Deep CORAL is very similar to DDC but it aligns the second order statistics.
-To keep things simple, we selected to experiment with DDC and Deep CORAL
-and we describe the theory behind them next.
+Deep CORAL is very similar to DDC, but it aligns the second-order statistics.
+To keep things simple, we selected to experiment with DDC and Deep CORAL.
+We describe the theory behind them next.
 
-DDC~\cite{tzeng2014} finds domain invariant representation
+% TODO do this term intro everywhere
+\textit{Deep Domain Confusion} (DDC)~\cite{tzeng2014} finds domain invariant representation
 while learning to predict class labels.
-The intuition behind DDC is that learning represenation
-that minimises the distance between source and target distributions
+The intuition behind DDC is that learning representation
+that minimises the distance between the source and target distributions
 will help a classifier trained on source labelled data
-to be directly applied to the target domain achieving minimal lost in accuracy.
+to be directly applied to the target domain.
 
-DDC optimises loss function that includes both prediciton error
-and \textit{domain confusion} loss to learn domain invariant representation.
-The invariant repsentation is achived by incorporating an adaptation layer
-into a deep \textit{convolutional neural network} CNN
-with a domain confusion loss computed
-via \textit{maximum mean discrepancy} (MMD).
-MMD is a standard distirbution distance metric witch is empirically approximatedby:
+DDC optimises loss function that includes both prediction error and \textit{domain confusion} loss to learn domain invariant representation.
+The invariant representation is achieved by incorporating an \textit{adaptation layer} into a deep \textit{convolutional neural network} (CNN)
+with a domain confusion loss computed via \textit{maximum mean discrepancy} (MMD).
+MMD is a standard distribution distance metric which is empirically approximated by:
 
 \begin{equation}
 	\mathrm{MMD}(S, T) = \left\|
@@ -329,12 +316,9 @@ where \(\phi: X \to Z)\) is a feature extractor
 from the data space \(X\) to a feature space \(Z\)
 that operates on both source and target \(\mathbf{x}_i \in X\) data points.
 
-Using the adaptation layer with the domain loss function DDC claims
-to learn representation that is both domain invariant
-but still offers strong semantic separation
-enabling to learn a strong label classifier.
-Therefore, the goal of DDC is to minimise a loss that incorporates
-both domain confusion loss and classification loss:
+Using the adaptation layer with the domain loss function DDC claims to learn a representation
+that is both domain invariant but still offers strong semantic separation enabling to learn a robust label classifier.
+Therefore, the goal of DDC is to minimise a loss that incorporates both domain confusion loss and classification loss:
 
 \begin{equation}
 	\mathcal{L}_{\mathrm{DDC}} = \mathcal{L}_C(S)
@@ -342,8 +326,8 @@ both domain confusion loss and classification loss:
 	\label{ddc_loss}
 \end{equation}
 
-where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\)
-and to control the stregnth of domain confusion DDC introduces a hyperparameter~\(\lambda\)
+where \(\mathcal{L}_C\) stands for classification loss on the labelled source data \(S\) and to control the strength of domain confusion,
+DDC introduces a hyperparameter~\(\lambda\)
 (\(\lambda = 0.25\) in experiments of DDC).
 
 \tikzstyle{block} = [align=center,draw=black,font=\tiny,rectangle,text centered]
@@ -376,9 +360,8 @@ and to control the stregnth of domain confusion DDC introduces a hyperparameter~
 \caption{DDC architecture}
 \end{figure}
 
-In comparison with DDC, Deep CORAL is an uses \textit{correlation alignment} (CORAL)
-instead of MMD.
-CORAL aligns the the second order statistic of the source and target distributions.
+In comparison with DDC, Deep CORAL uses \textit{correlation alignment} (CORAL) instead of MMD.
+CORAL aligns the second-order statistic of the source and target distributions.
 Then, Deep CORAL is a deep neural network
 that incorporates a differentiable CORAL loss.
 
@@ -413,7 +396,7 @@ and the CORAL loss:
 	= \mathcal{L}_C(S) + \lambda \mathcal{L}_{\mathrm{CORAL}}(S, T),
 \end{equation}
 
-where \(lambda\) is a trade-off hyperparameter similar to the one in the DDC loss in Equation~\ref{ddc_loss}.
+where \(\lambda\) is a trade-off hyperparameter similar to the one in the DDC loss in Equation~\ref{ddc_loss}.
 
 Note that Deep CORAL does not introduce an adaptation layer
 but use the a layer that is already in the network.
@@ -515,8 +498,8 @@ and \(d_i\) is a binary variable (a domain label):
 \begin{equation}
 	d_i =
 	\begin{cases}
-		0 & \quad \text{if } i \in \{1, \dots, n\} \\
-		1 & \quad \text{if } i \in \{n + 1, \dots, N\}
+		0 & \quad \text{if } i \in \{1, \dots, n\}, \\
+		1 & \quad \text{if } i \in \{n + 1, \dots, N\}.
 	\end{cases}
 \end{equation}
 
@@ -724,7 +707,7 @@ then we can map them and learn a transfer function.
 Ho et al.~\cite{ho2017} did exactly that
 because they found a common set of 9\,952 spectra in both APOGEE and LAMOST archive.
 Using the common set, they trained the Cannon method~\cite{ness2015},
-and they used the model to transfer some physical parameters from APOGEE to LAMOST.
+and they used the model to transfer some stellar physical parameters from APOGEE to LAMOST.
 
 In the case, when there is no common set (unsupervised DA)
 Gupta et al.~\cite{gupta2016} experimented

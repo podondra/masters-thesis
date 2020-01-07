@@ -50,38 +50,47 @@
 
 \chapter{Introduction}
 
-How to use neural network based domain adaptation to extract knowledge from the source domain of astronomical spectral data
-and apply it to the target astronomical spectral data?
+The thesis we put forward ask the question of what is the impact of domain adaptation based on neural networks in astronomical spectroscopy.
+Having two different spectroscopic sky surveys are we able to extract knowledge from one and apply it to another with a neural network.
+To be concrete, we will experiment with the identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey with quasars identified in the Sloan Digital Sky Survey.
 
-In this work, we would like to prove that astronomical spectroscopy can benefit from domain adapatation (DA).
-Previous research has shown that DA can overcome the problem of analysis data from different distribution in one experiment.
-In the first chapter~\ref{da_chapter}, we provide a summary of theory of DA, neural networks in DA and DA in astronomy.
-Then, in chapter~\ref{data_chapter}, we describe current spectroscopic sky surveys
-which might be source of suitable astronomical spectral data.
-In experiments~\ref{exp_chapter}, we try to show the benefits of neural DA in astronomy.
-Consider that our work is limited to astronomical spectroscopy and neural models.
-Having said that, we will apply these methods\dots{}
+Previous research in machine learning has shown
+that domain adaptation can overcome the problem of analysing data from different distributions in one experiment
+while having a sufficient amount of data.
+Nowadays, astronomy is facing an avalanche of data,
+and exponential growth of data transforms science in general.
+The vast data sources provide immense potential for discoveries.
+However, we need to adapt existing methods or develop new sophisticated automatic approaches for data analysis.
+Therefore, we see potential in domain adaptation by exploiting knowledge extracted in previous problems.
 
-\section{Problem Definition and Motivation}
+To explore the potential of domain adaptation based on neural networks,
+we set the goal of this thesis to be the analysis of the impact of domain adaptation
+using data from the Sloan Digital Sky Survey for identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey.
 
-The goal of this thesis is the analysis of the impact of domain adaptation in astronomical archives with a focus on neural networks
-that would allow using labelled data from one ground-based telescope or space mission archive to discover knowledge in another archive.
-Current astronomy has been the primary customer of scalable Big data handling and analysis requirements due to its petabyte-scale archives,
-where an advanced machine learning is an indispensable part of workflows leading to new discoveries.
+Therefore, in the next chapter~\ref{data_chapter},
+we firstly describe the two spectroscopic surveys,
+and we demonstrate why they are suitable for or problem.
+Then, in chapter~\ref{da_chapter},
+we provide a summary of the theory of domain adaptation in the context of the machine and transfer learning,
+survey domain adaptation based on neural network
+and give an overview of applications of domain adaptation in astronomy.
+In the chapter with experiments~\ref{exp_chapter},
+we analyse the impact of domain adaptation with four models based on neural networks.
+We suggest future improvements and conclude this thesis in the last chapter~\ref{conclusion}.
 
 \include{spec_sky_surveys}
 \include{domain_adaptation}
 \include{experiments}
 
 \chapter{Conclusion}
+\label{conclusion}
 
-\section{Discussion of Performance}
-
-Discuss the precision performance and scalability of various solutions.
+%TODO shrnutí výsledků, hodnocení splnění cíle práce.
 
 \section{Future Plans}
 
-Suggest future improvements.
+Investigate what exactly caused problems
+and suggest new architectures or training algorithms.
 
 \bibliographystyle{iso690}
 \bibliography{references}
@@ -108,7 +117,7 @@ Suggest future improvements.
 	\item[GPU] Graphics processing unit
 	\item[GRL] Gradient reversal layer
 	\item[IID] Independent and identically distributed 
-	\item[LAMOST] Large Sky Area Multi-Object Fiber Spectroscopis Telescope
+	\item[LAMOST] Large Sky Area Multi-Object Fiber Spectroscopic Telescope
 	\item[QSO] Quasar, Quasi-stellar object
 	\item[SDSS] Sloan Digital Sky Survey
 	\item[SGD] Stochastic gradient descent
