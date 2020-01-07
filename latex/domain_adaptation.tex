@@ -165,7 +165,7 @@ Further categorisation of methods of DA will help us to separate methods based o
 Csurka in~\cite{csurka2017} divides DA into two categories:
 \textit{shallow DA} methods and \textit{deep DA}.
 Shallow DA methods are not based on neural networks but rather on statistical theory.
-Deep DA methods are based on neural networks augmented for domain adaptation.
+Deep DA methods are based on neural networks augmented for DA.
 
 Furthermore, according to Wang and Deng~\cite{wang2018},
 shallow DA methods can be categorised into two classes.
@@ -365,7 +365,7 @@ CORAL aligns the second-order statistic of the source and target distributions.
 Then, Deep CORAL is a deep neural network
 that incorporates a differentiable CORAL loss.
 
-CORAL loss is defined as the distance between covatiances of the source and target features extracted from a layer of a deep neural network:
+CORAL loss is defined as the distance between covariances of the source and target features extracted from a layer of a deep neural network:
 
 % TODO check punctuation in all equations
 \begin{equation}
@@ -373,8 +373,8 @@ CORAL loss is defined as the distance between covatiances of the source and targ
 	\label{coral_loss}
 \end{equation}
 
-where \(\|\cdot\|_F^2\) is the squated matrix Frobenius norm
-and the fuction \(C\) return a covariance matrix of a given set:
+where \(\|\cdot\|_F^2\) is the squared matrix Frobenius norm
+and the function \(C\) return a covariance matrix of a given set:
 
 \begin{equation}
 	C(D_A) = \frac{1}{|A| - 1} (D_A^\top D_A
@@ -399,7 +399,7 @@ and the CORAL loss:
 where \(\lambda\) is a trade-off hyperparameter similar to the one in the DDC loss in Equation~\ref{ddc_loss}.
 
 Note that Deep CORAL does not introduce an adaptation layer
-but use the a layer that is already in the network.
+but uses a layer that is already in the network.
 The CORAL loss can be even applied to several layers.
 
 \begin{figure}
@@ -427,41 +427,38 @@ The CORAL loss can be even applied to several layers.
 \subsection{Adversarial-based Deep Domain Adaptation}
 \label{adversarial_da}
 
-Adversarial-based deep DA utilizes a domain discriminator
-that tries to distinguish whether a sample comes from source and target domains.
-If we are able to confuse the discriminator
+Adversarial-based deep DA utilises a domain discriminator
+that tries to distinguish whether a sample comes from the source or target domain.
+If we can confuse the discriminator,
 we will also achieve domain confusion through the adversarial objective.
 
-The adversaial deep DA methods are divided into \textit{generative} and \textit{non-generative} models by~\cite{wang2018}.
-\textit{Generative models} create syntetic target data according to source data
-while keeping source data labels.
+The adversarial deep DA methods are divided into \textit{generative} and \textit{non-generative} models by~\cite{wang2018}.
+\textit{Generative models} create synthetic target data according to source data while keeping source data labels.
 These models are usually based on Generative Adversarial Network (GAN)~\cite{goodfellow2014}.
-Rather than generating syntetic examples \textit{non-generative models}
-learn via an adversial objective a feature extractor
+Rather than generating synthetic examples,
+\textit{non-generative models} learn via an adversarial objective a feature extractor
 that produces domain invariant representation of an example.
 
 We explore the second non-generative subcategory
-because we think that good representation is satisfactory
-and we see syntetic data generation as overkill for our task.
+because we think that proper representation is satisfactory,
+and we consider synthetic data generation as overkill for our task.
 
 The fundamental algorithm of non-generative adversarial deep DA is
 Domain-Adversarial Neural Network (DANN)~\cite{ganin2016}.
 Other methods like Adversarial Discriminative Domain Adaptation (ADDA)~\cite{tzeng2017} built on the idea of DANN.
-Therefore, we are convinced DANN is the right model to try to our problem in hands.
+Therefore, we are convinced that DANN is the right model to try to our problem in our hands.
 
 DANN~\cite{ganin2016} is an adversarial representation learning approach for domain adaptation.
-It is based on idea that good features for domain adaptation
+It is based on the idea that useful features for DA
 cannot discriminate between source and target domains
 while maintaining discriminative properties for a classification task.
 
 DANN combines feature extractor, label predictor and domain classifier is a single architecture
-and can be trained with standard backpropagation learning algorithm.
-Because of that DANN proposes a \textit{gradient reversal layer} (GRL)
+and can be trained with a standard backpropagation learning algorithm.
+Because of that, DANN proposes a \textit{gradient reversal layer} (GRL)
 that can be incorporated in almost any feed-forward neural network.
-Using the GRL DANN jointly optimises feature extractor
-and two discrimivative classifiers.
-The first discriminative classifier is a label predictor that predicts classes
-and the second is a domain classifier
+Using the GRL DANN jointly optimises feature extractor and two discriminative classifiers.
+The first discriminative classifier is a label predictor that predicts classes and the second is a domain classifier
 that discriminates between source and target domains.
 
 The feature extractor is trained jointly to minimise a classification loss
@@ -469,9 +466,9 @@ and maximise the loss of the domain classifier.
 Thus, domain classifier and feature extractor are learning in adversarial fashion to encourage domain invariant features.
 
 To define the learning objective let
-\(G_f(\cdot; \theta_f)\) be the \(D\)-dimensional neural network feature extractor with parameters \(\theta_f\),
+\(G_f(\cdot; \theta_f)\) be the neural network feature extractor with parameters \(\theta_f\),
 \(G_y(\cdot; \theta_y)\) be the label predictor with parameters \(\theta_y\)
-that takes features from \(G_f\) as inputs and output class probabilities
+that takes features from \(G_f\) as inputs and output class probabilities,
 and \(G_d(\cdot; \theta_d)\) be the domain classifier with parameters \(\theta_d\). 
 Training DANN is optimising prediction loss and domain loss:
 
@@ -518,27 +515,25 @@ similar to \textit{stochastic gradient descent} (SGD):
 	\frac{\partial \mathcal{L}_d^i}{\partial \theta_d}.
 \end{align}
 
-However, the update in Equation~\ref{feature_parameters_update} has substraction in it instead of addition.
-DANN overcomes the substruction by incorporating the GRL
-\(\mathcal{R}(\mathbf{z})\) between the feature extrator and domain classifier.
-The GRL has no parameters
-and during forward propagation the GRL acts as identity:
+However, the update in Equation~\ref{feature_parameters_update} has subtraction in it instead of addition.
+DANN overcomes the substruction by incorporating the GRL \(\mathcal{R}(\mathbf{z})\) between the feature extractor and domain classifier.
+The GRL has no parameters, and during forward propagation, the GRL acts as identity:
 
 \begin{equation}
 	\mathcal{R}(\mathbf{z}) = \mathbf{z}.
 \end{equation}
 
-However, in backpropagation it negates the gradient:
+However, in backpropagation, it negates the gradient:
 
 \begin{equation}
 	\frac{d \mathcal{R}}{d \mathbf{z}} = -\mathbf{I},
 \end{equation}
 
-where \(\mathbf{I}\) is identity matrix
-and \(\mathbf{z}\) is the represantation produced by the feature extractor
+where \(\mathbf{I}\) is the identity matrix,
+and \(\mathbf{z}\) is the representation produced by the feature extractor
 \(G_f(\cdot, \theta_f)\).
-Now, DANN can seamlesly work with SGD
-because the objective to be optimised with gradient descent is tranformed into:
+Now, DANN can seamlessly work with SGD
+because the objective to be optimised with gradient descent is transformed into:
 
 \begin{align}
 	E(\theta_f, \theta_y, \theta_d) &= \frac{1}{n} \sum^{n}_{i = 1} \mathcal{L}_y(G_y(G_f(\mathbf{x}_i; \theta_f), \theta_y), y_i) \nonumber \\
@@ -583,49 +578,41 @@ to version fully compatible with SGD:
 \subsection{Reconstruction-based Deep Domain Adaptation}
 \label{reconstruction_da}
 
-The last group of methods is based on data reconstruction auxiliary task.
-The reconstructor forces to find a shared representation
-of a source and target domains.
+The last group of methods is based on a data reconstruction auxiliary task.
+The reconstructor forces to find a shared representation of a source and target domains.
 
-According to~\cite{wang2018} subcategories are \textit{encoder-decoder} and
+According to~\cite{wang2018}, subcategories are \textit{encoder-decoder} and
 \textit{adversarial} reconstruction.
-The simpler \textit{encoder-decoder} category exploits stacked autoencoders~\cite{vincent2008} or stacked convolutional autoencoders~\cite{masci2011}
+The more uncomplicated \textit{encoder-decoder} category exploits stacked autoencoders~\cite{vincent2008} or stacked convolutional autoencoders~\cite{masci2011}
 to do the reconstruction task.
-On the other hand the methods based on \textit{adversarial reconstruction}
-use cyclic mapping obteined via a GAN discriminator~\cite{goodfellow2014}.
+On the other hand, the methods based on \textit{adversarial reconstruction} use cyclic mapping obtained via a GAN discriminator~\cite{goodfellow2014}.
 
-Furthermore, we explore the \textit{encoder-decoder} methods
-that are good fit for our problem
-because they are not that complicated
-as GAN-based method of the second subcategory.
+Furthermore, we explore the \textit{encoder-decoder} methods that are a good fit for our problem
+because they are not that complicated as GAN-based method of the second subcategory.
 
-It all started with Stacked Denoinsing Autoencoder (SDA)~\cite{glorot2011}
-and it extension marginalised SDA (mSDA)~\cite{chen2012}
-for domain adaptation on text sentiment analysis data.
-While SDA and mSDA are base on fully-connected network,
+It all started with Stacked Denoising Autoencoder (SDA)~\cite{glorot2011}
+and it extension marginalised SDA (mSDA)~\cite{chen2012} for DA on text sentiment analysis data.
+While SDA and mSDA are base on fully-connected networks,
 Deep Reconstruction-Classification Network (DRCN)~\cite{ghifary2016}
-uses stacked convolutional autoencoder for the reconstruction task on images
-Moreover, Domain Separaion Networks (DSN)~\cite{bousmalis2016} is based on the same idea as DRCN
-but it uses there separate encoder to model shared representation and also privete specific features of source and target data.
+uses stacked convolutional autoencoder for the reconstruction task on images.
+Moreover, Domain Separation Networks (DSN)~\cite{bousmalis2016} is based on the same idea as DRCN.
+However, it uses three separate encoders to model shared representation
+and also private specific representations of the source and target data.
 We choose to experiment with DRCN
-because it is design for image data while being simpler than DSN.
+because it is designed for image data while being more straightforward than DSN.
 
-DRCN~\cite{ghifary2016} is a CNN
-that learn both supervised souce labelled classification
-and unsupervised target data reconstruction.
-Encoder is shared between both task but decoding parameters are separete.
-The data reconstruction task is an auxiliary task
-supposed to help to learn good feature representation
-beneficial for DA scenario.
-The intuition behind DRCN is that good represenstation for DA
-should capture both the properties for classification
-and data structure (reconstruct well the target domain).
+DRCN~\cite{ghifary2016} is a CNN that learn both supervised source labelled classification and unsupervised target data reconstruction.
+The encoder is shared between both task, but decoding parameters are separate.
+The data reconstruction task is an auxiliary task supposed to help to learn good feature representation beneficial for DA scenario.
+The intuition behind DRCN is
+that good representation for DA should capture both the properties for classification and data structure
+(reconstruct well the target domain).
 
 DRCN is composed of a label predictor for classification
 and a convolutional autoencoder for target data reconstruction.
 Let define \(F_c: X \to Y\) as the label predictor
 and \(F_r: X \to X\) is the data reconstructor.
-The two functions are composed out of three components:
+The two functions are composed of three components:
 
 \begin{itemize}
 	\item an encoder feature mapping \(G_e: X \to Z\);
@@ -635,14 +622,14 @@ The two functions are composed out of three components:
 
 where \(Z\) is a latent feature space to which DRCN encodes data.
 Given the above component,
-the classification pipeline is \(F_c(\cdot; \theta_c) = G_l(G_e(\cdot; \theta_e); \theta_l)\)
-and the reconsctruction pipeline is \(F_r(\cdot; \theta_r) = G_d(G_e(\cdot; \theta_e); \theta_d)\)
+the classification pipeline is \(F_c(\cdot; \theta_c) = G_l(G_e(\cdot; \theta_e); \theta_l)\),
+and the reconstruction pipeline is \(F_r(\cdot; \theta_r) = G_d(G_e(\cdot; \theta_e); \theta_d)\)
 where \(\theta_c = \{\theta_e, \theta_l\}\) are parameters of the classificator
 and \(\theta_r = \{\theta_d, \theta_e\}\) are parameters of the reconstructor.
 Note that \(\theta_e\) is shared between the label predictor and the autoencoder.
 
 The model is jointly optimised for classification and reconstruction tasks.
-Therefore, the learning objective of DRCN contains classification and reconstruction loss respectively:
+Therefore, the learning objective of DRCN contains classification and reconstruction loss, respectively:
 
 \begin{align}
 	\mathcal{L}_c(S) &= \sum_{i = 1}^{n}
@@ -653,15 +640,15 @@ Therefore, the learning objective of DRCN contains classification and reconstruc
 	\label{drcn_reconstruction_loss}
 \end{align}
 
-wher \(l_c\) is a form of classification loss
-and \(l_r\) is a reconsctruction loss, for example, the squared loss:
+where \(l_c\) is a form of classification loss
+and \(l_r\) is a reconstruction loss, for example, the squared loss:
 
 \begin{equation}
 	l_r = \|\mathbf{x}_i - F_r(\mathbf{x}_i)\|_2^2.
 \end{equation}
 
 By combining the terms~\ref{drcn_classification_loss} and~\ref{drcn_reconstruction_loss},
-DRCN aims to minimise following objective:
+DRCN aims to minimise the following objective:
 
 \begin{equation}
 	\mathcal{L}_{\mathrm{DRCN}}
@@ -700,7 +687,7 @@ The objective~\ref{drcn_loss} can be optimised with SGD.
 As we have shown in Section~\ref{large_spec_surveys},
 DA is of great interest to astronomers
 because of different instruments, measurements and observation distribution.
-Therefore, we survey the current state of domain adaptation in astronomical applications in this section.
+Therefore, we survey the current state of DA in astronomical applications in this section.
 
 If we have a common set of observed stars in both archives (supervised DA),
 then we can map them and learn a transfer function.
@@ -718,14 +705,14 @@ In the case of subspace alignment,
 the negative transfer occurred
 while the kernel mean matching seems very promising in the task of supernova classification.
 However, they observed that those shallow methods
-(subspace alignment and kernel mean matching) are not sufficien on their own
-and the acitve learning phase is crucial.
-But active learning requires human expert interaction
+(subspace alignment and kernel mean matching) are not sufficient on their own,
+and the active learning phase is crucial.
+Nevertheless, active learning requires human expert interaction,
 so it is not automatic and depends on domain knowledge.
 
 Then, Vilalta et al.~\cite{vilalta2018} extended the work of Gupta et al.~\cite{gupta2016}.
-Vilalta et al. used a supervised \textit{maximum a posteriori} (MAP) approach
-to learn a prior on the model parameters from a spectroscopic source domain
+Vilalta et al. used a supervised \textit{maximum a~posteriori} (MAP) approach
+to learning a~prior on the model parameters from a spectroscopic source domain
 and then use this prior distribution to learn a model in a photometric target domain.
 Concretely, Vilalta et al. put a prior on the number of layers of a neural network
 and then used active learning.
@@ -734,7 +721,7 @@ Richards et al.~\cite{richards2011} faced a similar situation, as Gupta et al.
 Richards et al. introduce the problem as sample selection bias~\cite{shimodaira2000} or covariate shift~\cite{heckman1979}
 when different distributions generate the source and target data.
 That is precisely the problem we have defined as DA.
-Richards et al. experimented with random forest in combination with three domain adaptation methods:
+Richards et al. experimented with random forest in combination with three DA methods:
 \textit{importance weighting}~\cite{shimodaira2000},
 \textit{co-training}~\cite{blum1998}
 and \textit{active learning}~\cite{settles2009}.
@@ -744,17 +731,15 @@ It seems that active learning is crucial
 to achieving good result on astronomical data when using shallow DA methods.
 We speculate that it is the nature of scientific data
 that makes shallow DA method unusable on its own.
-Next, we describe a suprevided deep DA  approach
+Next, we describe a supervised deep DA  approach
 that shown to work well on astronomical data.
 Therefore, we think neural network DA methods should be promising in astronomy.
 
 The term transfer learning has been recently used in the context of deep learning.
 However, transfer learning in the context of deep learning means something more concrete than what we defined as transfer learning previously.
 Transfer learning in the context of deep learning is the specific situation
-when a pretrained deep neural network model is taken,
+when a pre-trained deep neural network model is taken,
 and its last layers are retrained with the target domain data.
-According to our categorisation it is a supervised homogeneous DA setting
-which is very similar to DeCAF~\cite{donahue2014}.
 
 Ackermann et al.~\cite{ackermann2018} employed a deep CNN
 with the transfer learning approach
@@ -769,9 +754,9 @@ Next application of deep DA method in astronomy is \textit{Deep Variational Tran
 DVT is a semisupervised model based on variational autoencoders~\cite{kingma2014a} and mixture models.
 They encode the source and target data into a shared latent space
 and identify clusters with the labelled target data.
-They experimented with ligth curvers (time series of light intensity) of stars.
+They experimented with light curves (time series of light intensity) of stars.
 
-This section shows that applications of deep DA in astronomy are very limited.
+This section shows that applications of deep DA in astronomy are minimal.
 Therefore, our work will be almost the first to explore the ideas
-of deep DA in astronomy with huge potencial to discover
+of deep DA in astronomy with huge potential to discover
 either new tool for astronomy or a new challenge for deep DA.
