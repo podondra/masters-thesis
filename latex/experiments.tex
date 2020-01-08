@@ -1,77 +1,63 @@
 \chapter{Experiments with Deep Domain Adaptation}
 \label{exp_chapter}
 
-In previous chapters, we have selected suitable astronomical data
-and surveyed and choosen suitable deep domain adaptaion methods.
-Now, we carry out experiments with the selected methods
-on astronomical spectra from the SDSS and LAMOST spectroscopic sky surveys.
+In previous chapters, we have selected suitable astronomical data, surveyed and chosen suitable deep domain adaptation methods. Now, we carry out experiments with the DDC, Deep CORAL, DANN and DRCN on astronomical spectra from the SDSS and LAMOST spectroscopic sky surveys.
 
-Firstly, we create source and target datasets for experiments.
-Then, we reduce the data to two-dimensions
-so we are able to visualise the data
-and investigate distributions of both the source and target data.
-Thirdly, we introude a CNN baseline model
-which serves as benchmark for comparison of deep domain adapation methods.
-Finally, we employ four deep domain adaptation methods
-(DDC, Deep CORAL, DANN and DRCN)
-and evaluate the adapted results to see 
-if astronomical spectroscopy can benefit from deep domain adaptation.
+Firstly, we create the source and target datasets for experiments. Then, we use PCA, t-SNE and UMAP to reduce the data to two-dimensions, so we can visualise the data and investigate distributions of both the source and target data. Thirdly, we introduce a CNN baseline model which serves as a benchmark for comparison of the performance of the deep domain adaptation methods. Finally, we employ four deep domain adaptation methods and evaluate the adapted results to see if astronomical spectroscopy can benefit from deep domain adaptation.
 
 \section{Data Preparation}
 \label{data_preparation}
 
-Our data of source domain consists of 4\,851\,200 optical spectra from the SDSS DR14 catalog
-and the corresponding SDSS DR14Q catalog of 649\,791 spectra of 526\,356 QSO objects
+Our data of source domain consists of 4\,851\,200 optical spectra from the SDSS DR14 catalogue
+and the corresponding SDSS DR14Q catalogue of 649\,791 spectra of 526\,356 QSO objects
 (we have to distinguish an object and a spectrum
-because each astronomical object could be observed multiple times
-having more spectra).
-Both catalogs are introduced in~Subsection~\ref{sdss}.
-However, 20\,279 spectra of QSOs cannot be idenfified
-% TODO describe the bug in SDSS DR14Q catalog
-because there is a bug in the SDSS DR14Q catalog.
-Therefore, we are able to identify only 629\,512 spectra of all QSOs.
-Next, we need to cross-match the SDSS DR14 and DR14Q catalogs
+because each astronomical object could be observed multiple times having multiple spectra).
+Both catalogues are introduced in~Subsection~\ref{sdss}.
+However, 20\,279 spectra of QSOs cannot be identified
+% TODO describe the bug in SDSS DR14Q catalogue
+because there is a bug in the SDSS DR14Q catalogue.
+Therefore, we can identify only 629\,512 spectra of all QSOs.
+Next, we need to cross-match the SDSS DR14 and DR14Q catalogues
 to merge the data stored in individual FITS files with QSO labels.
-The cross-matching is based on triplet of
-\textit{plate number}, \textit{Modified Julian Date of obesrvation} and \textit{fiber number} that is unique to each spectrum.
-Additionally to the 20\,279 spectra of QSOs lost due to the bug in the DR14Q catalog,
-we were unable to cross-match 55 QSOs with the SDSS DR14 catalog.
-Therefore, totally we have 629\,457 spectra of QSOs
-for which we have actual data in FITS files and not only metadata in catalogs.
+The cross-matching is based on a triplet of a \textit{plate number}, a \textit{Modified Julian Date of observation} and a \textit{fibre number}
+that is unique to each spectrum.
+Additionally to the 20\,279 spectra of QSOs lost due to the bug in the DR14Q catalogue,
+we were unable to cross-match 55 QSOs with the SDSS DR14 catalogue.
+Therefore, we have 629\,457 spectra of QSOs
+for which we have actual data in FITS files and not only metadata in catalogues.
 
-Complement to the source domain in domain adapation is the target domain.
+The complement to the source domain in domain adaptation is the target domain.
 We selected data from LAMOST DR5 to be target domain data
 for reasons described in Subsection~\ref{lamost}.
-The LAMOST DR5 general catalog contains 9\,026\,365 spectra
-and the most complete catalog of QSOs has 42\,552 spectra.
-Again, we cross-matched the LAMOST DR5 catalog and the catalog of QSOs
-according to quartet of \textit{plan identifier}, \textit{local Modified Julian Date} (one less the Modified Julian Date), \textit{spectrograph identifier} and \textit{identifier of fiber}.
-We were able to cross-match 31\,755 spectra of QSOs with the general catalog
+The LAMOST DR5 general catalogue contains 9\,026\,365 spectra
+and the most complete catalogue of QSOs has 42\,552 spectra.
+Again, we cross-matched the LAMOST DR5 catalogue and the catalogue of QSOs
+according to a quartet of a \textit{plan identifier}, a \textit{local Modified Julian Date} (one less the Modified Julian Date), a \textit{spectrograph identifier} and an \textit{identifier of fibre}.
+We were able to cross-match 31\,755 spectra of QSOs with the general catalogue
 effectively losing 10\,797 spectra of QSOs.
-We believe that LAMOST has good reasons for not including those spectra in the LAMOST DR5 catalog.
+We believe that LAMOST has good reasons for not including those spectra in the LAMOST DR5 catalogue.
 
 However, the labels of QSOs from LAMOST are incompatible with labels from SDSS
 because the criteria of what is a QSO are different in SDSS and LAMOST
 (see Section~\ref{large_spec_surveys}).
-For us the ground truth are labels of SDSS DR14Q catalog
-while the labels of LAMOST serves only for evaluation purposes
+For us, the ground truths are labels of SDSS DR14Q catalogue
+while the labels of LAMOST serves only for evaluation purposes,
 not for training.
-% TODO infer impact of performace measurement
+% TODO discuss performace metrics
 Therefore, there might be spectra truly QSOs in LAMOST
-not yet identified by LAMOST cripling our performance measurement
-that will be biased.
+not yet identified by LAMOST biasing our performance metrics.
 
 Having assigned labels of QSOs to individual spectra,
 we need to extract the spectra from individual FITS files
-because learning of neural networks requires datasets to be in form of design matrices.
-A design matrix contains a different example (a spectrum) in each row
-whereas each column of the design matrix corresponds to a different feature
+because learning of neural networks requires datasets to be in the form of design matrices.
+A design matrix contains a different example (a spectrum) in each row.
+In contrast, each column of the design matrix corresponds to a different feature
 (a measurement of flux in a specific wavelength).~\cite{goodfellow2016}
 
-Fortunately, SDSS and LAMOST spectra have common wavelength grid in logarithmic wavelengths evenly space by 0.0001.
+Fortunately, SDSS and LAMOST spectra have a common wavelength grid in logarithmic wavelengths evenly space by 0.0001.
 Although all spectra have a common wavelength grid,
 the minimal and maximal wavelengths are different for each spectrum.
-The Figure~\ref{wavemin_wavemax_hist} displays histograms of minimal and maximal wavelengths of all LAMOST spectra.
+Figure~\ref{wavemin_wavemax_hist} displays histograms of minimal and maximal wavelengths of all LAMOST spectra.
 In this work, we aim to find QSOs in the LAMOST DR5.
 Therefore, we would like to keep as many spectra as possible from the LAMOST~DR5.
 To keep all spectra from the LAMOST~DR5,
@@ -99,14 +85,14 @@ The selection gives us a wavelength grid of 3659 logarithmically-spaced waveleng
 \label{wavemin_wavemax_hist}
 \end{figure}
 
-Given the selected grid of wavelength we will lose some SDSS spectra
-because not all of them have all mesurement in the range.
-Figure~\ref{waves_cumulative_hist} shows cumulative histogram of how many spectra we will keep for cuts in different wavelengths.
-We see that major drop are behind the selected minimal and maximal wavelengths
-that means we will keep most of the spectra.
+Given the selected grid of wavelengths,
+we will lose some SDSS spectra because not all of them have all measurements in the range.
+Figure~\ref{waves_cumulative_hist} shows the cumulative histogram of how many spectra we will keep for cuts in different wavelengths.
+We see that significant drops are behind the selected minimal and maximal wavelengths
+that mean we will keep most of the spectra.
 Precisely, the cut will drop 34\,487 spectra from our source dataset
 including 1\,949 spectra of QSO.
-Therefore, the source dataset has 4\,816\,713 spectra with 627\,508 spectra of QSOs that can enter a learing of a neural network.
+Therefore, the source dataset has 4\,816\,713 spectra with 627\,508 spectra of QSOs that can enter learning of a neural network.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{img/waves_cumulative_hist.pdf}
@@ -120,7 +106,7 @@ Therefore, the source dataset has 4\,816\,713 spectra with 627\,508 spectra of Q
 \label{waves_cumulative_hist}
 \end{figure}
 
-The original sizes of data are unnecessary for experimenting with deep domain adataption on astronomical spectra.
+The original sizes of data are unnecessary for experimenting with deep domain adaptation on astronomical spectra.
 We store each spectrum as a vector of 3\,659 single-precision floating-point number (4 bytes).
 The storage setting gives that the SDSS source dataset has about 70.5~GB
 and the LAMOST target dataset 132.1~GB.
@@ -129,17 +115,16 @@ and access to a disk significantly slows learning on a GPU.
 
 Therefore, we have subsampled the data to the size of ImageNet~\cite{russakovsky2015}.
 We believe that the size of ImageNet is more than reasonable
-because ImageNet is the dataset
-that enable the superiority of deep neural network in computer vision.
+because ImageNet is the dataset that enables the superiority of deep neural network in computer vision.
 ImageNet has 1 million training examples, 50 thousand validation examples
 and 100 thousand testing examples.
 Accordingly, we randomly subsampled of source and target datasets
 obtaining training sets of size 1 million
-and validation sets of size 50 thousand
-while the rest of the data serves as testing sets.
+and validation sets of size 50 thousand.
+At the same time, the rest of the data would serve as testing sets.
 We summarise sizes of datasets with corresponding number of QSOs in Table~\ref{datasets_sizes}.
-Table~\ref{datasets_sizes} shows a significant class imbalance in the LAMOST DR5
-where QSOs are very rare (less then 0.4\%).
+Table~\ref{datasets_sizes} shows a significant class imbalance in the LAMOST DR5,
+where QSOs are very rare (less than 0.4\%).
 
 \begin{table}
 \begin{center}
@@ -176,13 +161,14 @@ The last step of data preparation is min-max scaling of each spectrum into the \
 \end{equation}
 
 where \(\mathbf{x}_i \in \mathbb{R}^{3659}\) is a spectrum as defined in Chapter~\ref{da_chapter}
-and functions \(\min(\cdot)\) and \(\max(\cdot)\) returns the smallest and the largest element of a given vectore respectively.
+and functions \(\min(\cdot)\) and \(\max(\cdot)\) returns the smallest and the largest element of a given vector, respectively.
 
 There are two benefits of the min-max scaling.
-Firstly, the data will be in a suitable range for learning of neural networks
+Firstly, the data will be in a suitable range for the learning of neural networks
 which will stabilise learning.
-Secondly, the scaling will remove intensity properties of spectra
-leaving us only with the spectrum shape which we are interesting in.
+Secondly, the scaling will remove intensity properties of spectra,
+leaving us only with the spectrum shape
+which we want to use for identification of QSOs.
 
 \section{Dimensionality Reduction}
 
@@ -637,15 +623,16 @@ and obtained the training progress in Figure~\ref{deep_coral_losses}.
 However, the result are unsatisfactory as in the case of DDC.
 
 \begin{figure}
-	\subfloat[][Training of Deep CORAL]{
-		\includegraphics[width=.5\textwidth]{img/deep-coral_losses.pdf}
-		\label{deep_coral_losses}
-	}
-	\subfloat[][CORAL with using CORAL loss]{
-		\includegraphics[width=.5\textwidth]{img/deep-coral_coral.pdf}
-		\label{deep_coral_coral}
-	}
-	\caption{Losses of Deep CORAL}
+\subfloat[][Training of Deep CORAL]{
+	\includegraphics[width=.5\textwidth]{img/deep-coral_losses.pdf}
+	\label{deep_coral_losses}
+}
+\subfloat[][CORAL with using CORAL loss]{
+	\includegraphics[width=.5\textwidth]{img/deep-coral_coral.pdf}
+	\label{deep_coral_coral}
+}
+\caption{Losses of Deep CORAL}
+\label{deep_coral_training}
 \end{figure}
 
 Source data \(F_1\) score is of value 0.9396
@@ -793,20 +780,13 @@ but target recall 74.74\% is the worst.
 
 \section{Discussion of Experiments}
 
-Discuss the precision performance and scalability of various solutions.
-
-Neural network based domain adaptation does not work probably because of the astonomical data complexity.
-
-The original deep domain adaptation methods are based on well-prepared and clean data.
-That is a big issue for application of such method to scientific data.
-As we have shown astronomy provides such volume of data
-that is impossible to make clean.
-Therefore, we need either robust machine learning algorithms
-or great procedures that clean data possibly also based on machine learning.
-However, by cleaning the data we might lost some very interesting obejcts with starnge physical properties.
-
-Previous application of domain adaptation used active learning (a human expert)
-to overcome the imperfect data problem.
+We summarise the results of baseline and deep domain adaptation methods in Table~\ref{summary}
+We do not include the performance of DANN
+because we were not able to trained it correctly
+even though we did hyperparameter optimisation.
+Table~\ref{summary} clearly shows that neural network based domain adaptation does cannot significantly improve performance in comparison to baseline
+when applied to astonomical data.
+We would except an increase in a metric of at least 5\% as in the original paper of the deep domain methods on standard academical datasets.
 
 \begin{table}
 \begin{center}
@@ -821,26 +801,75 @@ to overcome the imperfect data problem.
 \end{tabular}
 \end{center}
 \caption{Summary table}
+\label{summary}
 \end{table}
 
-Prepare visualisation of results.
+Domain adaptation did not succeed in spite of the fact
+that the distributions of the source and target domain are different.
+We prove the difference in Subsection~\ref{comparison}
+where we compare the two surveys.
+Furthermore, we confirmed the discrepancy with dimensionality reduction techniques.
+All three PCA, t-SNE and UMAP shows
+that the data does not occupy a single cluster
+but the SDSS spectra concentra in the center and LAMOST spectra on the edges
+(see Figures~\ref{pca}, \ref{tsne} and \ref{umap}).
+
+Also the deep domain adaptation method behaved correclty.
+DDC kept the MMD between the source an target distributions low as shown in~Figure~\ref{ddc_mmds}.
+Deep CORAL achived the same with the CORAL metric for distribution difference
+(see Figure~\ref{deep_coral_training}),
+and DRCN learnt the auxiliary reconstruction task
+that is supposed to support domain adapataion
+(see Figure~\ref{reconstruction}).
+Moreover, even, hyperparameter optimisation cannot improve performance of the deep domain adaptation methods.
+
+Having that the problem has to be in the data.
+Therefore, we visualise the incorect classification of the baseline
+because the error were almost the same for all the methods.
+In Figure~\ref{src_fp} and Figure~\ref{src_fn}, we display source false positives and soure false negatives, respectively.
+At the same time, we display target false positives and target false negatives in Figure~\ref{trg_fp} and Figure~\ref{trg_fn}, respectively.
+% TODO other examples are in the Appendix
+
+We believe the misclassification are evidence for our conclusion
+that the problem is in our imperfect datasets.
+The incorrectly classified examples are QSOs not yet identified by a catalogue of the surveys.
+There are also spectra incorrectly classified as a QSO by the official catalogues.
+Moreover, there are spectra with artefacts
+(for example, missing measurements at certain wavelength, bad extraction from CCD chip). 
+However, the original deep domain adaptation methods are trained on well-prepared and clean data
+For example, all data in the MNIST~\cite{lecun1998} or USPS~\cite{hull1994} are well-defined digits
+and the same applies to the Office dataset~\cite{saenko2010}.
+Such well-formed dataset provide comfortable environment for basic research.
+On the other side, they do not resemble the real world or scientific situation.
+That is a big issue for application of such method to scientific data.
+As we have shown astronomy provides such volume of data that is impossible to make clean.
+Therefore, we need either robust machine learning algorithms
+or great procedures that clean data possibly also based on machine learning.
+However, by cleaning the data we might lost some very interesting obejcts with starnge physical properties.
+Maybe, the imperfect data problem is the reaseon
+why previous application of domain adaptation used active learning (a human expert)
+after domain adaptation (see Section~\ref{da_astronomy}).
 
 \begin{figure}
-\subfloat[][]{
-	\includegraphics[width=.5\textwidth]{img/source_fn.pdf}
-}
-\subfloat[][]{
-	\includegraphics[width=.5\textwidth]{img/source_fp.pdf}
-}
-\caption{Source FN and FP}
+\includegraphics[width=\textwidth]{img/source_fp.pdf}
+\caption{Source FP}
+\label{src_fp}
 \end{figure}
 
 \begin{figure}
-\subfloat[][]{
-	\includegraphics[width=.5\textwidth]{img/target_fn.pdf}
-}
-\subfloat[][]{
-	\includegraphics[width=.5\textwidth]{img/target_fp.pdf}
-}
-\caption{Target FN and FP}
+\includegraphics[width=\textwidth]{img/source_fn.pdf}
+\caption{Source FN}
+\label{src_fn}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{img/target_fp.pdf}
+\caption{Target FP}
+\label{src_fp}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{img/target_fn.pdf}
+\caption{Target FN}
+\label{src_fn}
 \end{figure}
