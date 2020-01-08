@@ -22,10 +22,29 @@
 \author{Ondřej Podsztavek}
 \authorWithDegrees{Bc. Ondřej Podsztavek}
 \supervisor{RNDr. Petr Škoda, CSc.}
-% TODO acknowledgements
-\acknowledgements{}
-% TODO english abstract
-\abstractEN{}
+\acknowledgements{
+	I would like to thank Dr. Petr Škoda for his enthusiasm, domain expertise and encouragemenent throughout my research.
+	This project would have been impossible without the support of Professor Tvrdík.
+	Thanks to my girlfriend Kateřina. You supported me greatly.
+	Thanks to Petr and Vojtěch for their friendship in the lab.
+
+	Furthermore, I would like to acknowledge the Sloan Digital Sky Survey and the Large Sky Area Multi-Object Fiber Spectroscopic Telescope for providing their data.
+
+	Funding for the Sloan Digital Sky Survey IV has been provided by the Alfred P. Sloan Foundation, the U.S. Department of Energy Office of Science, and the Participating Institutions. SDSS-IV acknowledges
+support and resources from the Center for High-Performance Computing at
+the University of Utah. The SDSS web site is \url{www.sdss.org}.
+
+Guoshoujing Telescope (the Large Sky Area Multi-Object Fiber Spectroscopic Telescope) is a National Major Scientific Project built by the Chinese Academy of Sciences. Funding for the project has been provided by the National Development and Reform Commission. LAMOST is operated and managed by the National Astronomical Observatories, Chinese Academy of Sciences.
+}
+\abstractEN{
+	We present an analysis of the impact of domain adaptation based on neural network in astronomical spectroscopy.
+	Domain adaptation addresses the problem of using knowledge from a prior problem to be applied to data of interest.
+	Therefore, we selected a problem of quasar identification in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey using labelled data from the Sloan Digital Sky Survey.
+	We choose to experiment with four neural models for domain adaptation:
+	Deep Domain Confusion, Deep Correlation Alignment, Domain-Adversarial Network and Deep Reconstruction-Classification Network.
+	However, our experiments reveal that these model cannot improve classification performance in comparison to a model that does not consider domain adaptation.
+	Using dimensionality reduction, statistics of the selected methods and misclassifications, we show that the domain adaptation methods are not robust enough to be applied to the complex and dirty astronomical data.
+}
 % TODO czech abstract
 \abstractCS{}
 \placeForDeclarationOfAuthenticity{Prague}
@@ -56,8 +75,9 @@ Previous research in machine learning has shown that domain adaptation can overc
 
 To explore the potential of domain adaptation based on neural networks, we set the goal of this thesis to be the analysis of the impact of domain adaptation using data from the Sloan Digital Sky Survey for identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey.
 
-In the first chapter~\ref{data_chapter}, we firstly describe the aforementioned spectroscopic surveys, and we demonstrate why they are suitable for or problem.
-In chapter~\ref{da_chapter}, we provide a summary of the theory of domain adaptation in the context of the machine and transfer learning,  survey domain adaptation based on neural network and give an overview of applications of domain adaptation in astronomy. In the chapter with experiments~\ref{exp_chapter}, we analyse the impact of domain adaptation on four models based on neural networks. We suggest future improvements and conclude this thesis in the last chapter~\ref{conclusion}.
+In the second chapter~\ref{data_chapter}, we firstly introduce astronomical spectroscopy, describe the aforementioned spectroscopic surveys, and we demonstrate why they are suitable for our problem.
+In chapter~\ref{da_chapter}, we provide a summary of the theory of domain adaptation in the context of the machine and transfer learning,  survey domain adaptation based on neural network and give an overview of applications of domain adaptation in astronomy.
+In the chapter~\ref{exp_chapter} with experiments, we analyse the impact of domain adaptation on four models based on neural networks. We suggest future improvements and conclude this thesis in the last chapter~\ref{conclusion}.
 
 \include{spec_sky_surveys}
 \include{domain_adaptation}

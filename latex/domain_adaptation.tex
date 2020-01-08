@@ -68,7 +68,11 @@ while the source and target tasks are the same.~\cite{pan2010}
 	\draw [->] (trg) -- (model);
 \end{tikzpicture}
 \end{center}
-\caption{Schematic depiction of domain adaptation}
+\caption[Schematic depiction of domain adaptation]{
+	Schematic diagram of domain adaptation depicts the fundamental intuition behind it.
+	A domain adaptation model has to extract as much knowledge as possible from the source domain,
+	and apply it to the target data.
+	}
 \end{figure}
 
 For example, we have introduced in previous Chapter~\ref{data_chapter}
@@ -256,7 +260,11 @@ Next, we detail the three categories of DA according to the survey by Wang and D
 		child {node[concept] {geometric criterion}}
 		};
 \end{tikzpicture}
-\caption{Mind map of deep domain adaptation}
+\caption[Mind map of deep domain adaptation]{
+	This mind map present categorisation of deep DA divided as we described it.
+	Moreover, we also show concrete deep DA method
+	that we have mentioned.
+}
 \label{mind_map}
 \end{figure}
 
@@ -291,7 +299,6 @@ Deep CORAL is very similar to DDC, but it aligns the second-order statistics.
 To keep things simple, we selected to experiment with DDC and Deep CORAL.
 We describe the theory behind them next.
 
-% TODO do this term intro everywhere
 \textit{Deep Domain Confusion} (DDC)~\cite{tzeng2014} finds domain invariant representation
 while learning to predict class labels.
 The intuition behind DDC is that learning representation
@@ -357,17 +364,16 @@ DDC introduces a hyperparameter~\(\lambda\)
 	\draw (al2) -- (mmd);
 \end{tikzpicture}
 \end{center}
-\caption{DDC architecture}
+\caption{Schema of Deep Domain Confusion}
 \end{figure}
 
-In comparison with DDC, Deep CORAL uses \textit{correlation alignment} (CORAL) instead of MMD.
+In comparison with DDC, \textit{Deep Correlation Alignment} (Deep CORAL) uses \textit{correlation alignment} (CORAL) instead of MMD.
 CORAL aligns the second-order statistic of the source and target distributions.
 Then, Deep CORAL is a deep neural network
 that incorporates a differentiable CORAL loss.
 
 CORAL loss is defined as the distance between covariances of the source and target features extracted from a layer of a deep neural network:
 
-% TODO check punctuation in all equations
 \begin{equation}
 	\mathcal{L}_{\mathrm{CORAL}}(S, T) = \frac{1}{4 d^2} \|C(S) - C(T)\|_F^2,
 	\label{coral_loss}
@@ -421,7 +427,7 @@ The CORAL loss can be even applied to several layers.
 	\draw (fe2) -- (coral);
 \end{tikzpicture}
 \end{center}
-\caption{Deep CORAL architecture}
+\caption{Schema of Deep Correlation Alignment}
 \end{figure}
 
 \subsection{Adversarial-based Deep Domain Adaptation}
@@ -448,7 +454,7 @@ Domain-Adversarial Neural Network (DANN)~\cite{ganin2016}.
 Other methods like Adversarial Discriminative Domain Adaptation (ADDA)~\cite{tzeng2017} built on the idea of DANN.
 Therefore, we are convinced that DANN is the right model to try to our problem in our hands.
 
-DANN~\cite{ganin2016} is an adversarial representation learning approach for domain adaptation.
+\textit{Domain-Adversarial Neural Network} (DANN)~\cite{ganin2016} is an adversarial representation learning approach for domain adaptation.
 It is based on the idea that useful features for DA
 cannot discriminate between source and target domains
 while maintaining discriminative properties for a classification task.
@@ -572,7 +578,7 @@ to version fully compatible with SGD:
 	\draw (dom) -- (dom_loss);
 \end{tikzpicture}
 \end{center}
-\caption{DANN architecture}
+\caption{Schema of Domain-Adversarial Neural Network}
 \end{figure}
 
 \subsection{Reconstruction-based Deep Domain Adaptation}
@@ -601,7 +607,7 @@ and also private specific representations of the source and target data.
 We choose to experiment with DRCN
 because it is designed for image data while being more straightforward than DSN.
 
-DRCN~\cite{ghifary2016} is a CNN that learn both supervised source labelled classification and unsupervised target data reconstruction.
+\textit{Deep Reconstruction-Classification Network} (DRCN)~\cite{ghifary2016} is a CNN that learn both supervised source labelled classification and unsupervised target data reconstruction.
 The encoder is shared between both task, but decoding parameters are separate.
 The data reconstruction task is an auxiliary task supposed to help to learn good feature representation beneficial for DA scenario.
 The intuition behind DRCN is
@@ -679,7 +685,7 @@ The objective~\ref{drcn_loss} can be optimised with SGD.
 	\draw (dec) -- (rec_loss);
 \end{tikzpicture}
 \end{center}
-\caption{DRCN architecture}
+\caption{Schema of Deep Reconstruction-Classification Network}
 \end{figure}
 
 \section{Previous Applications of Domain Adaptation in Astronomy}
