@@ -50,33 +50,14 @@
 
 \chapter{Introduction}
 
-The thesis we put forward ask the question of what is the impact of domain adaptation based on neural networks in astronomical spectroscopy.
-Having two different spectroscopic sky surveys are we able to extract knowledge from one and apply it to another with a neural network.
-To be concrete, we will experiment with the identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey with quasars identified in the Sloan Digital Sky Survey.
+In this thesis, we ask the question of what is the impact of domain adaptation based on neural networks in astronomical spectroscopy. Having two different spectroscopic sky surveys, are we able to extract knowledge from one and apply it to another with a neural network. To be concrete, we will experiment with the identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey with quasars identified in the Sloan Digital Sky Survey.
 
-Previous research in machine learning has shown
-that domain adaptation can overcome the problem of analysing data from different distributions in one experiment
-while having a sufficient amount of data.
-Nowadays, astronomy is facing an avalanche of data,
-and exponential growth of data transforms science in general.
-The vast data sources provide immense potential for discoveries.
-However, we need to adapt existing methods or develop new sophisticated automatic approaches for data analysis.
-Therefore, we see potential in domain adaptation by exploiting knowledge extracted in previous problems.
+Previous research in machine learning has shown that domain adaptation can overcome the problem of analysing data from different distributions in one experiment while having a sufficient amount of data. Nowadays, astronomy is facing an avalanche of data, and exponential growth of data transforms science in general. The vast data sources provide immense potential for discoveries. However, we need to adapt existing methods or develop new sophisticated automatic approaches for data analysis. Therefore, we see potential in domain adaptation by exploiting knowledge extracted in previous problems.
 
-To explore the potential of domain adaptation based on neural networks,
-we set the goal of this thesis to be the analysis of the impact of domain adaptation
-using data from the Sloan Digital Sky Survey for identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey.
+To explore the potential of domain adaptation based on neural networks, we set the goal of this thesis to be the analysis of the impact of domain adaptation using data from the Sloan Digital Sky Survey for identification of quasars in the Large Sky Area Multi-Object Fiber Spectroscopic Telescope survey.
 
-Therefore, in the next chapter~\ref{data_chapter},
-we firstly describe the two spectroscopic surveys,
-and we demonstrate why they are suitable for or problem.
-Then, in chapter~\ref{da_chapter},
-we provide a summary of the theory of domain adaptation in the context of the machine and transfer learning,
-survey domain adaptation based on neural network
-and give an overview of applications of domain adaptation in astronomy.
-In the chapter with experiments~\ref{exp_chapter},
-we analyse the impact of domain adaptation with four models based on neural networks.
-We suggest future improvements and conclude this thesis in the last chapter~\ref{conclusion}.
+In the first chapter~\ref{data_chapter}, we firstly describe the aforementioned spectroscopic surveys, and we demonstrate why they are suitable for or problem.
+In chapter~\ref{da_chapter}, we provide a summary of the theory of domain adaptation in the context of the machine and transfer learning,  survey domain adaptation based on neural network and give an overview of applications of domain adaptation in astronomy. In the chapter with experiments~\ref{exp_chapter}, we analyse the impact of domain adaptation on four models based on neural networks. We suggest future improvements and conclude this thesis in the last chapter~\ref{conclusion}.
 
 \include{spec_sky_surveys}
 \include{domain_adaptation}
@@ -85,12 +66,57 @@ We suggest future improvements and conclude this thesis in the last chapter~\ref
 \chapter{Conclusion}
 \label{conclusion}
 
-%TODO shrnutí výsledků, hodnocení splnění cíle práce.
+Our goal was to analyse the impact of domain adaptation based on neural networks in spectroscopic sky surveys.
+Therefore, we firstly introduced astronomical spectroscopy.
+Then, we defined quasars because their identification is the task of our domain adaptation setting.
+To have the domain adaptation setting complete,
+we introduced the SDSS as the source domain and the LAMOST survey as the target domain.
+We showed that these two domains are suitable for domain adaptation
+because of their different instrument and distribution of observations.
+
+Next, we surveyed domain adaptation.
+Firstly, we put it into the context of the machine and transfer learning,
+and we formally defined it.
+Secondly, we distinguished the shallow and deep domain adaptation.
+The deep domain adaptation category is based on neural networks,
+thus, further, we focused on it, and we presented its three subcategories:
+discrepancy-based, adversarial-based and reconstruction-based domain adaptation.
+We selected four appropriate methods DDC, Deep CORAL, DANN and DRCN.
+DDC and Deep CORAL are representatives of the discrepancy-based category, DANN of adversarial-based methods and DRCN is based on reconstruction.
+We explained why we think they are fundamental to experiment with
+and give the intuition and mathematics behind them.
+
+The thing left was to explore their impact of the quasar identification task from astronomical spectra.
+Therefore, we briefly introduced data preparation
+(actually we spend a significant amount of time with data preparation).
+We followed with dimensionality reduction using PCA, t-SNE and UMAP
+that demonstrated a visually notable distribution discrepancy between the source and target domain.
+To have a baseline model to compare the deep domain adaptation methods to,
+we used the LeNet-5 CNN trained only on the source domain.
+Its result states that it can be robust classifier on the source domain
+but is not able to classify well on the target domain as we expected due to distribution difference.
+We continued with the central experimental part of our thesis.
+We applied the four deep domain adaptation methods to the data using both the source and target data.
+However, the experiments proved that none of DDC, Deep CORAL, DANN and DRCN could achieve a significant improvement on the target data.
+That happens, even though dimensionality reduction indicate domain discrepancy
+and, for example, the training of DDC keeps MMD of the two distribution low in comparison when the MMD loss is not enforced.
+Therefore, we investigated the data in order to analyse
+what causes the inability of deep domain adaptation methods to improve performance.
+Our astronomical dataset contains a lot of problematic sampled
+(for example, not identified quasars or bad spectra).
+On the other hand, the original deep domain adaptation methods are based on well-prepared and clean data.
+
+That is a big issue for the application of such method to scientific data.
+As we have shown, astronomy provides such a volume of data that is impossible to make clean.
+Therefore, we need either robust machine learning algorithms or precise procedures
+that clean data possibly also based on machine learning.
+However, by cleaning the data, we might lose some interesting objects with strange physical properties.
 
 \section{Future Plans}
 
-Investigate what exactly caused problems
-and suggest new architectures or training algorithms.
+From the research point of view, the result is positive because it opens discovery opportunities because algorithms verified on the well-formed academical dataset like MNIST cannot be directly applied to complex and dirty scientific data. However, we see the future as full of such complex data that we are unable to clean.
+
+Therefore, in future, we plan to make a more detailed statistical analysis of our results and try to make direct consequences for deep domain adaptation methods. The improvements can be either in the form of new robust architectures or novel learning algorithms. Another possibility is to focus on automatic preprocessing algorithms based on machine learning that will be able to filter the data so that they can work will the original deep domain adaptation methods.
 
 \bibliographystyle{iso690}
 \bibliography{references}
