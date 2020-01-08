@@ -1,6 +1,6 @@
 NAME = thesis
 
-$(NAME).pdf: $(NAME).tex spec_sky_surveys.tex domain_adaptation.tex experiments.tex references.bib
+$(NAME).pdf: $(NAME).tex spec_sky_surveys.tex domain_adaptation.tex experiments.tex references.bib spectra_appendix.tex
 	xelatex $(NAME)
 	bibtex $(NAME)
 	xelatex $(NAME)
