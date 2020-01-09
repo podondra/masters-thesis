@@ -3,7 +3,7 @@
 
 In previous chapters, we have selected suitable astronomical data, surveyed and chosen suitable deep domain adaptation methods. Now, we carry out experiments with the DDC, Deep CORAL, DANN and DRCN on astronomical spectra from the SDSS and LAMOST spectroscopic sky surveys.
 
-Firstly, we create the source and target datasets for experiments. Then, we use PCA, t-SNE and UMAP to reduce the data to two-dimensions, so we can visualise the data and investigate distributions of both the source and target data. Thirdly, we introduce a CNN baseline model which serves as a benchmark for comparison of the performance of the deep domain adaptation methods. Finally, we employ four deep domain adaptation methods and evaluate the adapted results to see if astronomical spectroscopy can benefit from deep domain adaptation.
+Firstly, we create the source and target datasets for experiments. Then, we use PCA, t-SNE and UMAP to reduce the data to two-dimensions, so we can visualise the data and investigate distributions of both the source and~target data. Thirdly, we introduce a CNN baseline model which serves as a~benchmark for comparison of the performance of the deep domain adaptation methods. Finally, we employ four deep domain adaptation methods and~evaluate the adapted results to see if astronomical spectroscopy can benefit from deep domain adaptation.
 
 \section{Data Preparation}
 \label{data_preparation}
@@ -28,37 +28,36 @@ for which we have actual data in FITS files and not only metadata in catalogues.
 
 The complement to the source domain in domain adaptation is the target domain.
 We selected data from LAMOST DR5 to be target domain data
-for reasons described in Subsection~\ref{lamost}.
+for~reasons described in Subsection~\ref{lamost}.
 The LAMOST DR5 general catalogue contains 9\,026\,365 spectra,
 and the complete catalogue of QSOs has 42\,552 spectra.
-Again, we cross-matched the LAMOST DR5 catalogue and the catalogue of QSOs
+Again, we cross-matched the LAMOST DR5 catalogue and~the~catalogue of QSOs
 according to a quartet of a \textit{plan identifier}, a \textit{local Modified Julian Date} (one less the Modified Julian Date), a \textit{spectrograph identifier} and an \textit{identifier of fibre}.
 We were able to cross-match 31\,755 spectra of QSOs with the general catalogue
 effectively losing 10\,797 spectra of QSOs.
-We believe that LAMOST has sound reasons for not including those spectra in the LAMOST DR5 catalogue.
+We believe that LAMOST has sound reasons for not including those spectra in~the~LAMOST DR5 catalogue.
 
 However, the labels of QSOs from LAMOST are incompatible with labels from SDSS
-because the criteria of what is a QSO are different in SDSS and LAMOST
+because the criteria of what is a QSO are different in SDSS and~LAMOST
 (see Section~\ref{large_spec_surveys}).
 For us, the ground truths are labels of SDSS DR14Q catalogue
 while the labels of LAMOST serves only for evaluation purposes,
 not for training.
-% TODO discuss performace metrics
-Therefore, there might be spectra truly QSOs in LAMOST
+Therefore, there might be spectra truly QSOs in~LAMOST
 not yet identified by LAMOST biasing our performance metrics.
 
 Having assigned labels of QSOs to individual spectra,
 we need to extract the spectra from individual FITS files
 because learning of neural networks requires datasets to be in the form of design matrices.
 A design matrix contains a different example (a spectrum) in each row.
-In contrast, each column of the design matrix corresponds to a different feature
-(a measurement of flux in a specific wavelength).~\cite{goodfellow2016}
+In contrast, each column of~the~design matrix corresponds to a different feature
+(a measurement of flux in~a~specific wavelength).~\cite{goodfellow2016}
 
 Fortunately, SDSS and LAMOST spectra have a common wavelength grid in logarithmic wavelengths evenly space by 0.0001.
 Although all spectra have a common wavelength grid,
 the minimal and maximal wavelengths are different for each spectrum.
 Figure~\ref{wavemin_wavemax_hist} displays histograms of minimal and maximal wavelengths of all LAMOST spectra.
-In this work, we aim to find QSOs in the LAMOST DR5.
+In this work, we aim to find QSOs in~the~LAMOST DR5.
 Therefore, we would like to keep as many spectra as possible from the LAMOST~DR5.
 To keep all spectra from the LAMOST~DR5,
 we have to select wavelength range starting at 3\,839.7244~\AA{} (3.5843 in logarithmic wavelength)
@@ -92,7 +91,7 @@ We see that significant drops are behind the selected minimal and maximal wavele
 that mean we will keep most of the spectra.
 Precisely, the cut will drop 34\,487 spectra from our source dataset
 including 1\,949 spectra of QSO.
-Therefore, the source dataset has 4\,816\,713 spectra with 627\,508 spectra of QSOs that can enter learning of a neural network.
+Therefore, the source dataset has 4\,816\,713 spectra with~627\,508 spectra of QSOs that can enter learning of a neural network.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{img/waves_cumulative_hist.pdf}
@@ -115,10 +114,10 @@ and access to a disk significantly slows learning on a GPU.
 
 Therefore, we have subsampled the data to the size of ImageNet~\cite{russakovsky2015}.
 We believe that the size of ImageNet is reasonable
-because ImageNet is the dataset that enables the superiority of deep neural network in computer vision.
+because ImageNet is the~dataset that enables the superiority of deep neural network in computer vision.
 ImageNet has 1 million training examples, 50 thousand validation examples
-and 100 thousand testing examples.
-Accordingly, we randomly subsampled of source and target datasets
+and~100 thousand testing examples.
+Accordingly, we randomly subsampled of~source and target datasets
 obtaining training sets of size 1 million
 and validation sets of size 50 thousand.
 At the same time, the rest of the data would serve as testing sets.
@@ -153,7 +152,7 @@ where QSOs are very rare (less than 0.4\%).
 \label{datasets_sizes}
 \end{table}
 
-The last step of data preparation is min-max scaling of each spectrum into the \([-1; 1]\) range:
+The last step of data preparation is min-max scaling of each spectrum into~the~\([-1; 1]\) range:
 
 \begin{equation}
 	\mathbf{x}_i = 2 \frac{\mathbf{x}_i - \min(\mathbf{x}_i)}{
@@ -172,7 +171,7 @@ which we want to use for identification of QSOs.
 
 \section{Dimensionality Reduction}
 
-In this section, we investigate the structure of joint data space of source and target datasets with three dimensionality reduction methods:
+In this section, we investigate the structure of joint data space of source and~target datasets with three dimensionality reduction methods:
 \textit{principal component analysis},
 \textit{t-Distributed Stochastic Neighbor Embedding}
 and \textit{Uniform Manifold Approximation and Projection} (UMAP).
@@ -190,7 +189,7 @@ and we do not want to suppress the relationship.
 that is used either for visualisation or feature extraction by dimensionality reduction.
 PCA learns a representation whose features are uncorrelated with each other
 and selects features with the largest variation.~\cite{goodfellow2016}
-We show the visualisation obtained with PCA in Figure~\ref{pca}.
+We show the visualisation obtained with~PCA in Figure~\ref{pca}.
 The plot shows that source data tent to concentrate in the middle
 while the target data are on the edges.
 However, no regions are containing only the source or target data.
@@ -201,7 +200,7 @@ Moreover, in the middle extending to the right, there is a kind of line componen
 \caption[PCA visualisation of source and target data distributions]{
 	The first two principal components of 2\,500 source
 	and 2\,500 target data points.
-	The projection shows that source data concentrate more in the middle
+	The projection shows that source data concentrate more in~the~middle
 	while the target data seem to cluster on the edges.
 	}
 \label{pca}
@@ -211,28 +210,28 @@ Moreover, in the middle extending to the right, there is a kind of line componen
 The t-SNE method is non-linear, iterative
 and performs different transformations of different regions.
 A tunable hyperparameter of t-SNE is \textit{perplexity}
-which is a guess about the number of neighbours of a data point.
+which is a guess about~the~number of neighbours of a data point.
 Typically, the optimal value is between 5 and 50.
 
-We reduce dimensionality with t-SNE for perplexities from \(\{5, 10, 30, 50, 100\}\).
-The best result was for the value 50,
+We reduce dimensionality for perplexities from \(\{5, 10, 30, 50, 100\}\).
+The~best result was for the value 50,
 and the result is shown in Figure~\ref{tsne}.
 The t-SNE embedding has a similar structure as Figure~\ref{pca} of PCA.
 There are mostly source data in the centre and target data around it.
-However, the separation between the centre and edges seems to be larger.
+However, the~separation between the centre and edges seems to be larger.
 Still, there is the line component extending downward this time.
 
 t-SNE is often used in the papers presenting a deep domain adaptation methods
 to show how feature extracted from a higher layer in an adapted network
 are better mix when a domain adaptation method is employed.
-On the other hand, when a network is not adapted the source and target data
+But, when a network is not adapted the source and target data
 can be easily visually separated in a t-SNE visualisation.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{img/tsne.pdf}
 \caption[t-SNE visualisation of source and target data distributions]{
 	Embedding of t-SNE of the same data
-	as in the reduction with PCA shows the very similar result as PCA.
+	as in the reduction with~PCA shows the very similar result as PCA.
 	However, there is more notable central sort of line component
 	extending downward.
 	}
@@ -242,15 +241,15 @@ can be easily visually separated in a t-SNE visualisation.
 \textit{Uniform Manifold Approximation and Projection} (UMAP)~\cite{mcinnes2018}
 is a non-linear dimensionality reduction algorithm based on manifold learning and ideas from topological data analysis.
 It achieves visualisations similar to t-SNE, but it is significantly faster.
-Visualisation with UMAP is displayed in Figure~\ref{umap}
+Visualisation with UMAP is displayed in~Figure~\ref{umap}
 and has a very similar structure to t-SNE embedding in Figure~\ref{tsne}.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{img/umap.pdf}
 \caption[UMAP visualisation of source and target data distributions]{
 	UMAP projection to two-dimensions confirms the previous visualisation
-	with PCA and t-SNE.
-	The source data tend to concentrate in the middle
+	with~PCA and t-SNE.
+	The source data tend to concentrate in~the~middle
 	while the target data are mostly out of the centre,
 	and there is the line component extending away from the centre.
 	}
@@ -266,7 +265,7 @@ we will train a classical convolutional network
 which will serve as a baseline to which we can compare results of networks augmented for deep domain adaptation.
 
 As the baseline, we choose LeNet-5~\cite{lecun1998} convolutional neural network,
-which was initially used to recognise handwritten digits of the MNIST dataset~\cite{lecun1998}.
+which was initially used to recognise handwritten digits of MNIST~\cite{lecun1998}.
 We have chosen the architecture of LeNet-5
 because it is the simplest model used in the DANN paper~\cite{ganin2016}.
 Thus, we will not need to create our architecture for the DANN experiment.
@@ -433,8 +432,8 @@ and used the \textit{binary cross entropy loss} defined as:
 
 where \(\theta\) are parameters of a model,
 \(M\) is the batch size,
-\(y_i \in \{0, 1\}\) is the true label,
-and \(\hat{y}_i \in [0, 1]\) are the model predictions of the \(i\)th example in the batch.
+\(y_i \in \{0, 1\}\) is the~true label,
+and \(\hat{y}_i \in [0, 1]\) are the model predictions of the \(i\)th example in~the~batch.
 Furthermore, we initialised the weights and biases following Xavier initialisation~\cite{glorot2010}.
 That is weights of our neural network are sampled from uniform distribution \(\mathcal{U}\):
 
@@ -445,8 +444,8 @@ That is weights of our neural network are sampled from uniform distribution \(\m
 	\right),
 \end{equation}
 
-where \(\mathit{in}\) is the number of input units of a layer
-and \(\mathit{out}\) is the number of output units
+where \(\mathit{in}\) is the number of~input units of a layer
+and \(\mathit{out}\) is the number of~output units
 and biases are set to zero.
 
 Before the analysis of results of LeNet-5,
@@ -520,7 +519,7 @@ based on neural networks.
 We start with two discrepancy-based approaches, which are DDC and Deep CORAL.
 Then, we continue with DANN, which is an adversarial-based domain adaptation method
 and with reconstruction-based DRCN.
-We conclude with the evaluation and comparison of results.
+We conclude with~the~evaluation and comparison of results.
 
 \subsection{DDC: Deep Domain Confusion}
 
@@ -530,16 +529,16 @@ by extending classification loss of a neural network with the MMD loss
 (see Equation~\ref{ddc_loss}).
 The MMD loss is enforced on the \textit{adaptation layer}
 that serves as an information bottleneck for domain confusion.
-More details on DDC are in Subsection~\ref{discrepancy_da}.
+More details on DDC are in~Subsection~\ref{discrepancy_da}.
 
 To select the size and placement of the adaptation layer,
-we followed the same procedure as in the DDC paper~\cite{tzeng2014}.
+we followed the~same procedure as in the DDC paper~\cite{tzeng2014}.
 Firstly, we took the LeNet-5 trained in previous Section~\ref{baseline}
 and extracted features from the first and second fully-connected layer
 (the last fully-connected layer has a trivial width)
 for all validation examples.
-Then, we computed MMD between the source and target data at each layer with the extracted features.
-The intuition is to place the adaptation layer after a layer with the smallest MMD
+Then, we computed MMD between the source and~target data at each layer with the extracted features.
+The intuition is to place the~adaptation layer after a layer with the smallest MMD
 because low MMD means more domain invariant features.
 We measured that the MMD at the first fully-connected layer is 50.70,
 while MMD at the second fully-connected layer is 53.33.
@@ -548,7 +547,7 @@ Secondly, we have to optimise the width of the adaptation layer.
 Therefore, we trained the LeNet-5 with the adaptation layer of sizes
 from \(\{4, 8, 16, 32, 64\}\), excluding the low width of 2
 and not exceeding the output size of the previous layer.
-The stepping is the power of two as in the original paper.
+The stepping is the power of two as in~the~original paper.
 Figure~\ref{adaptation_layer} plots the resulting MMD values for different setting
 and shows that the width 64 is the best.
 
@@ -579,15 +578,15 @@ and trained the network in the same way as described in the previous Section~\re
 \includegraphics[width=0.75\textwidth]{img/ddc_mmds.pdf}
 \end{center}
 \caption[Maximum mean discrepancy with and without MMD loss]{
-	This plot illustrates that enforcing the MMD loss has the expected effect. On the other hand, without the MMD loss, the MMD between the source and target domain gradually grows.
+	This plot illustrates that enforcing the MMD loss has the expected effect. On the other hand, without the MMD loss, the MMD between the~source and target domain gradually grows.
 }
 \label{ddc_mmds}
 \end{figure}
 
 The training of DDC proceeded similarly to the baseline.
 Moreover, we see that MMD is also minimalised in the bottom plot of Figure~\ref{ddc_mmds}.
-On the other side, if we train the network without enforcing MMD loss (\(\lambda = 0\)),
-then the MMD is growing, as shown in the top plot of Figure~\ref{ddc_mmds}.
+On~the~other side, if we train the network without enforcing MMD loss (\(\lambda = 0\)),
+then the~MMD is growing, as shown in the top plot of Figure~\ref{ddc_mmds}.
 
 \begin{table}
 \begin{center}
@@ -605,9 +604,9 @@ then the MMD is growing, as shown in the top plot of Figure~\ref{ddc_mmds}.
 \end{table}
 
 Although, training run as expected,
-DDC achieved an unfortunate result in comparison to baseline.
+DDC achieved an unfortunate result in~comparison to baseline.
 The \(F_1\) score on the source data is 0.9354 and 0.2005 on the target data that is lower than the baseline in both cases.
-Precision on target is 11.51\%,
+Precision on~target is 11.51\%,
 and the only improvement is the recall of value 77.89\%,
 but the decrease in precision is probably caused by that.
 
@@ -616,8 +615,8 @@ but the decrease in precision is probably caused by that.
 \textit{Deep Correlation Alignment} (Deep CORAL) is very similar to DDC.
 DDC aligns means of the source and target distributions with MMD loss
 while Deep CORAL aligns correlations with CORAL loss
-(see Equations~\ref{coral_loss} and \ref{deep_coral_loss}).
-Moreover, Deep CORAL applies the CORAL loss straight to a layer in a network
+(see Equations~\ref{coral_loss} and~\ref{deep_coral_loss}).
+Moreover, Deep CORAL applies the CORAL loss straight to a layer in~a~network
 not creating an adaptation layer.
 We implemented Deep CORAL with inspiration from the original
 code\footnote{Available from: \url{https://github.com/visionlearninggroup/CORAL}}
@@ -637,20 +636,20 @@ which makes the classification loss and the CORAL loss of similar magnitude as s
 Furthermore, we used the same batch size of value 128
 as in original experiments of Deep CORAL.
 The architecture is initialised in the same way as our baseline
-and optimised with Adam for 20 epochs.
+and optimised with~Adam for 20 epochs.
 
 \begin{figure}
 \begin{center}
 \subfloat[
-	The original paper states that the classification loss and the CORAL loss should be almost the same at the end of the training.
-	We show in this plot that the similarity can be achieved by setting \(\lambda = 0.0005\).
+	The original paper states that the classification loss and~the~CORAL loss should be almost the~same at~the~end of~the~training.
+	We show in this plot that the~similarity can be achieved by~setting \(\lambda = 0.0005\).
 	]{
 \includegraphics[width=0.75\textwidth]{img/deep-coral_losses.pdf}
 \label{deep_coral_losses}
 }\\
 \subfloat[
 	The CORAL statistic without enforcing the CORAL loss grows significantly in comparison to the scenario in the plot above
-	when the network is trained with the CORAL loss.
+	when the~network is trained with the CORAL loss.
 ]{
 \includegraphics[width=0.75\textwidth]{img/deep-coral_coral.pdf}
 \label{deep_coral_coral}
@@ -665,12 +664,12 @@ how the CORAL grows.
 Figure~\ref{deep_coral_coral} shows the same behaviour of CORAL
 without enforcing the minimisation of correlation loss as in the original paper.
 Then, we experimented with the best \(\lambda = 0.0005\)
-and obtained the training progress in Figure~\ref{deep_coral_losses}.
-However, the results are unsatisfactory, as in the case of DDC.
+and obtained the training progress in~Figure~\ref{deep_coral_losses}.
+However, the results are unsatisfactory, as in~the~case of~DDC.
 
 Source data \(F_1\) score is 0.9396 that is almost the same as baseline.
 There is a small but insignificant improvement in the target \(F_1\) score,
-which is of value 0.2509
+which is of~value 0.2509
 (the target precision is 14.97\% and the target recall is 77.37\%).
 These values are gains, but they are too small,
 and the model with such small precision is useless for identification of QSOs.
@@ -716,10 +715,10 @@ Furthermore, we also implemented the domain adaptation parameter \(\lambda\) fro
 \end{equation}
 
 where \(p\) is again the training progress
-and \(\gamma\) that was set to 10 as in the original paper.
+and \(\gamma\) that was set to 10 as in~the~original paper.
 
-Note that binary cross entropy loss is used for both the classification and domain loss.
-The optimiser is SGD with the learning rate schedule and momentum 0.9,
+Note that binary cross entropy loss is used for both the classification and~domain loss.
+The optimiser is SGD with the learning rate schedule and~momentum 0.9,
 the network is initialised as our baseline model,
 and the batch size is 128
 where the first half is source domain data and the second half is the target domain data.
@@ -741,7 +740,7 @@ where the first half is source domain data and the second half is the target dom
 \end{figure}
 
 Although following the original implementation as closely as possible
-and doing hyperparameter optimisation of \(\gamma \in \{0.1, 0.3, 1, 3, 10\}\)
+and~doing hyperparameter optimisation of \(\gamma \in \{0.1, 0.3, 1, 3, 10\}\)
 we were not able to get reasonable results with DANN.
 We infer from Figure~\ref{dann_training} that
 if gamma is high, the training will diverge.
@@ -756,11 +755,11 @@ More detail are provided in~Subsection~\ref{reconstruction_da}.
 
 We followed the original implementation\footnote{Available from: \url{https://github.com/ghif/drcn}} of DRCN~\cite{ghifary2016}.
 There is one big difference between the original paper and the official paper
-that is the order of training loops.
+that is the order of~training loops.
 The paper states that the network in an epoch
 should firstly be trained for classification task
 and then for reconstruction task.
-The implementation does it the other way around.
+The~implementation does it the other way around.
 We choose the working implementation and trained for reconstruction first.
 
 According to the implementation, we used Adam optimiser with batch size 128 for 20 epochs and Xavier initialisation.
@@ -794,7 +793,7 @@ we did not suppose to get a better result now.
 The source \(F_1\) score is 0.9393 and the target \(F_1\) score 0.2898,
 which is better than baseline
 but the development of the \(F_1\) score in Figure~\ref{drcn_f1} suggest no significance.
-Target precision is 17.97\% which is the best so far,
+Target precision is 17.97\% which is the~best so far,
 but target recall 74.74\% is the worst.
 
 \begin{table}
@@ -837,11 +836,11 @@ We would expect an increase in a metric of at least 5\% as in the original paper
 \end{table}
 
 Domain adaptation did not succeed,
-although the distributions of the source and target domain are different.
+although the distributions of~the~source and target domain are different.
 We prove the difference in Subsection~\ref{comparison},
 where we compared the two surveys.
 Furthermore, we confirmed the discrepancy with dimensionality reduction techniques.
-All three PCA, t-SNE and UMAP shows that the data does not occupy a single cluster,
+All three PCA, t-SNE and~UMAP shows that the data does not occupy a single cluster,
 but the SDSS spectra concentrate in the centre and LAMOST spectra on the edges
 (see Figures~\ref{pca}, \ref{tsne} and \ref{umap}).
 
@@ -853,29 +852,29 @@ Deep CORAL achieved the same with the CORAL metric for distribution difference
 and DRCN learnt the auxiliary reconstruction task
 that is supposed to support domain adaptation
 (see Figure~\ref{reconstruction}).
-Moreover, hyperparameter optimisation cannot improve the performance of the deep domain adaptation methods.
+Moreover, hyperparameter optimisation cannot improve the performance of~the~deep domain adaptation methods.
 
 All in all, we hypothesise the problem is in the data.
 Therefore, we visualise the incorrect classification of the baseline
-(the errors were almost the same for all the methods).
+(the errors were almost the~same for~all the methods).
 In Figure~\ref{src_fp} and Figure~\ref{src_fn},
 we display random spectra from source false positives and source false negatives, respectively.
-At the same time, we display target false positives and target false negatives in Figure~\ref{trg_fp} and Figure~\ref{trg_fn}, respectively.
-The rest of random spectra is in Appendix~\ref{spectra_appendix}.
+At~the~same time, we display target false positives and target false negatives in Figure~\ref{trg_fp} and Figure~\ref{trg_fn}, respectively.
+The rest of random spectra is in~Appendix~\ref{spectra_appendix}.
 
 We believe the misclassifications are evidence for our conclusion
-that the problem is in our imperfect datasets.
+that problem is in our imperfect datasets.
 The incorrectly classified examples are QSOs not yet identified by a catalogue of the surveys.
 There are also spectra incorrectly classified as QSOs by the official catalogues.
 Moreover, there are spectra with artefacts
 (for example, missing measurements at paricular wavelengths, wrong extraction from CCD chip). 
 However, the original deep domain adaptation methods are trained on well-prepared and clean data.
-For example, all data in the MNIST~\cite{lecun1998} or USPS~\cite{hull1994} are well-defined digits,
+For~example, all data in the MNIST~\cite{lecun1998} or USPS~\cite{hull1994} are well-defined digits,
 and the same applies to the Office dataset~\cite{saenko2010} commonly used as a domain adaptation benchmark.
 Such well-formed datasets provide a comfortable environment for basic research.
 On the other side, they do not resemble the real world or scientific situation.
 That is a big issue for the application of such method to scientific data.
-As we have shown, astronomy provides such a volume of data that is impossible to make clean.
+As we have shown, astronomy provides such a volume of~data that is impossible to make clean.
 Therefore, we need either robust machine learning algorithms
 or automatic procedures that clean data possibly also based on machine learning.
 However, by cleaning the data, we might lose some interesting objects with strange physical properties.
