@@ -137,12 +137,12 @@ That happens, even though dimensionality reduction indicate domain discrepancy
 and, for example, the training of DDC keeps MMD of the two distribution low in comparison when the MMD loss is not enforced.
 Therefore, we investigated the data in order to analyse
 what causes the inability of deep domain adaptation methods to improve performance.
-Our astronomical dataset contains a lot of problematic sampled
+Our astronomical dataset contains a lot of problematic samples
 (for example, not identified quasars or bad spectra).
 On the other hand, the original deep domain adaptation methods are based on well-prepared and clean data.
 
 That is a big issue for the application of such method to scientific data.
-As we have shown, astronomy provides such a volume of data that is impossible to make clean.
+As we have shown, astronomy provides such a volume of data that is impossible to make clean and labelled.
 Therefore, we need either robust machine learning algorithms or precise procedures
 that clean data possibly also based on machine learning.
 However, by cleaning the data, we might lose some interesting objects with~strange physical properties.
