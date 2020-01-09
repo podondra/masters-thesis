@@ -260,33 +260,39 @@ and has a very similar structure to t-SNE embedding in Figure~\ref{tsne}.
 \section{Baseline: Results without Deep Domain Adaptation}
 \label{baseline}
 
-Now, we are ready for training of neural networks
-but before we will dive into deep domain adaptation
-we will train a classical convulutional network
-which will serve as baseline to
-which we can compare results of networks augumented with deep domain adaptation.
+Now, we are ready for training of neural networks.
+However, before we dive into deep domain adaptation,
+we will train a classical convolutional network
+which will serve as a baseline to which we can compare results of networks augmented for deep domain adaptation.
 
-As the baseline, we choose LeNet-5~\cite{lecun1998} convolutional neural network
-which was originaly used to recognize hand written digits
-of the MNIST dataset~\cite{lecun1998}.
-We have choosen the architecture of LeNet-5
+As the baseline, we choose LeNet-5~\cite{lecun1998} convolutional neural network,
+which was initially used to recognise handwritten digits of the MNIST dataset~\cite{lecun1998}.
+We have chosen the architecture of LeNet-5
 because it is the simplest model used in the DANN paper~\cite{ganin2016}.
-However, the network is design for processing of two-dimensional images
-while spectrum is a one-dimensional image.
-Therefore, we have to substitude the two-dimensional convolutions with one-dimensional convolutions.
-Moreover, we increased the kernel size and stride of pooling layer from 2 to 16
-so that the output of the convolutional layer is reasonably big.
-If we left the original pooling layer
-the input to the first fully connected layer would be of size 43\,872.
-in comparison the original input size 768 for the MNIST dataset.
+Thus, we will not need to create our architecture for DANN experiment.
+However, the network is designed for processing of two-dimensional images
+while a spectrum is a one-dimensional image.
+Therefore, we have to substitute the two-dimensional convolutions with one-dimensional convolutions.
+Moreover, we increased the kernel size and stride of pooling layers from 2 to 16
+so that the output of the convolutional layers is reasonably big.
+If we left the original pooling layers,
+the input to the first fully connected layer would be of size 43\,872
+in comparison to the original input size 768 for the MNIST dataset.
 The kernel size and stride of 16 will reduce the input size of our network to 672.
-Figure~\ref{lenet_5} displays the final architecture
-which we implemented in PyTorch~\cite{paszke2019}.
+Figure~\ref{lenet_5} displays the final architecture,
+which we implemented in PyTorch~\cite{paszke2019} like all other models.
 
-\tikzstyle{layer} = [align=center,draw=black,font=\tiny,rectangle,text centered]
+\tikzstyle{layer} = [align=center, draw=black, font=\tiny, rectangle]
 \begin{figure}
 \begin{center}
-\subfloat[][LeNet-5]{
+\subfloat[
+	The architecture of our LeNet-5 contains three two one-dimensional convolutional layers and three fully-connected layer.
+	Both convolutional layers have kernel size of 5 and are followed by a pooling layer.
+	The first one has 32  and the second 48 channels.
+	The two first fully-connected layer has output of size 100.
+	All activation are ReLU except the last one,
+	which is sigmoid because our classification problem is binary.
+]{
 \begin{tikzpicture}[node distance=1.5cm]
 	\node (conv1) [layer] {conv1\\5-32\\ReLU};
 	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
@@ -304,7 +310,10 @@ which we implemented in PyTorch~\cite{paszke2019}.
 \end{tikzpicture}
 \label{lenet_5}
 }\\
-\subfloat[][DDC]{
+\subfloat[
+	The architecture DDC is almost the same as our LeNet-5.
+	It has only a fully-connected adaptation layer (bottleneck) of output size 64 inserted after the first fully-connected layer.
+]{
 \begin{tikzpicture}[node distance=1.5cm]
 	\node (conv1) [layer] {conv1\\5-32\\ReLU};
 	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
@@ -324,7 +333,9 @@ which we implemented in PyTorch~\cite{paszke2019}.
 \end{tikzpicture}
 \label{ddc_architecture}
 }\\
-\subfloat[][DANN]{
+\subfloat[
+	The architecture of DANN is composed of a feature extractor (white), label predictor (blue) and domain classifier (green) with~the~GRL layer.
+]{
 \begin{tikzpicture}[node distance=1.5cm]
 	\node (conv1) [layer] {conv1\\5-32\\ReLU};
 	\node (pool1) [layer,right of=conv1] {pool1\\16-16};
@@ -348,7 +359,9 @@ which we implemented in PyTorch~\cite{paszke2019}.
 \end{tikzpicture}
 \label{dann_architecture}
 }\\
-\subfloat[][DRCN]{
+\subfloat[
+	The architecture of DRCN contains an encoder (white), decoder (green) with an upsampling layer and classifier (blue).
+]{
 \begin{tikzpicture}[node distance=1.5cm]
 	% encoder
 	\node (conv1) [layer] {conv1\\5-32\\ReLU};
@@ -377,7 +390,7 @@ which we implemented in PyTorch~\cite{paszke2019}.
 \label{drcn_architecture}
 }
 \end{center}
-\caption[Architectures of deep domain adaptation model from experiments]{
+\caption[Experimental architectures of deep domain adaptation models]{
 	Diagrams of all architectures used in our experiments.
 	Note that the architectures are designed in such way
 	that the classificator is the same for all models
@@ -385,31 +398,44 @@ which we implemented in PyTorch~\cite{paszke2019}.
 	}
 \end{figure}
 
-Furthermore, Donahue et al. showed in the DeCAF (\textit{Deep Convolutional Activation Feature}) paper~\cite{donahue2014}
-that features extracted from deep CNN can be repurposed to novel tasks
-if the network were trained on a large fixed set in fully supervised fashion.
-Meaning that it can be used for domain adaptation on its own.
-Therefore, we can expected that our CNN trained on the large SDSS
+Donahue et al. showed in the \textit{Deep Convolutional Activation Feature} (DeCAF) paper~\cite{donahue2014}
+that features extracted from a deep CNN can be repurposed to novel tasks
+if the network was trained on a large fixed set in a fully supervised fashion,
+which means that it can be used for domain adaptation on its own.
+Therefore, we can expect that our CNN trained on the SDSS
 will be able to find features beneficial for domain adaptation.
-Still the DeCAF paper showed that
-deep CNN cannnot remove domain bias completelly.
-Therefore, there is a space for improvement with deep domain adaptation
-and DDC, Deep CORAL and DANN build in experiment on result of DeCAF
-because they use AlexNet~\cite{krizhevsky2012} pre-trained on ImageNet dataset.
+Still, the DeCAF paper shows that a deep CNN cannot remove domain bias completely.
+Therefore, there is a space for improvement with deep domain adaptation.
 
-We trained our adapted LeNet-5 on batches of size 64 for 20 epochs
-with the Adam optimiser~\cite{kingma2014} in its default setting
+\begin{figure}
+\begin{center}
+\subfloat[
+	The training and validation loss are similar proving no overfitting.
+]{\includegraphics[width=.75\textwidth]{img/lenet_losses.pdf}}\\
+\subfloat[
+	The source \(F_1\) score is gradually improving
+	while the target \(F_1\) score suffers.
+]{\includegraphics[width=.75\textwidth]{img/lenet_f1.pdf}}
+\end{center}
+\caption[Training progress of LeNet-5]{
+	Our LeNet-5 is properly learning on the source data.
+	However, it is unable to transfer knowledge to the target domain.
+}
+\label{lenet_losses}
+\end{figure}
+
+We trained our augmented LeNet-5 on batches of size 64 for 20 epochs with the Adam optimiser~\cite{kingma2014} in its default setting
 and used the \textit{binary cross entropy loss} defined as:
 
 \begin{equation}
 	\mathit{BCE}(\theta) = -\frac{1}{M} \sum_i^M [y_i \log \hat{y}_i + (1 - y_i) \log(1 - \hat{y}_i)],
 \end{equation}
 
-where \(\theta\) are all parameters of a model,
+where \(\theta\) are parameters of a model,
 \(M\) is the batch size,
-\(y_i \in \{0, 1\}\) is the true label
-and \(\hat{y}_i \in [0, 1]\) are the model predictions of the \(i\)-th example in the batch.
-Furthermore, we intialised the weights and biases in accordance with Xavier initialisation~\cite{glorot2010}.
+\(y_i \in \{0, 1\}\) is the true label,
+and \(\hat{y}_i \in [0, 1]\) are the model predictions of the \(i\)th example in the batch.
+Furthermore, we initialised the weights and biases following Xavier initialisation~\cite{glorot2010}.
 That is weights of our neural network are sampled from uniform distribution \(\mathcal{U}\):
 
 \begin{equation}
@@ -423,21 +449,9 @@ where \(\mathit{in}\) is the number of input units of a layer
 and \(\mathit{out}\) is the number of output units
 and biases are set to zero.
 
-% TODO describe training progress
-
-\begin{figure}
-\subfloat[][Losses]{
-\includegraphics[width=.5\textwidth]{img/lenet_losses.pdf}
-}
-\subfloat[][\(F_1\) score]{
-\includegraphics[width=.5\textwidth]{img/lenet_f1.pdf}
-}
-\caption{Training of LeNet-5}
-\label{lenet_losses}
-\end{figure}
-
-\textit{Recall} \(r\), \textit{precision} \(p\)
-and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \textit{recall}:
+Before the analysis of results of LeNet-5,
+we define performance metrics commonly used for imbalanced datasets:
+\textit{recall} \(r\), \textit{precision} \(p\) and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \textit{recall}:
 
 \begin{align}
 	r &= \frac{\mathit{TP}}{(\mathit{TP} + \mathit{FN})}, \\
@@ -447,64 +461,74 @@ and \textit{\(F_1\) score} is the harmonic mean between \textit{precision} and \
 
 where \(r\) is recall, \(p\) is precision,
 \(\mathit{TP}\) is the number of correctly classified QSOs,
-\(\mathit{FN}\) is the number of QSOs incorrectly classified as non-QSOs
+\(\mathit{FN}\) is the number of QSOs incorrectly classified as non-QSOs,
 and \(\mathit{FP}\) is the number of non-QSOs classified as QSOs.
-When precision and recall are perfect
-\(F_1\) score reaches its best value one and at worst can be zero.
+When precision and recall are perfect,
+\(F_1\) score reaches its best value one, and at worst can be zero.
 
-The result of our baseline are quite good on the source domain.
-Note that all metrics were computed on either the source or target validation sets in all our experiments.
-The source \(F_1\) score is 0.9397.
-The source recall is 95,82\% and the source precision is 92,19\%.
-That are quite high number on the source domain.
-However, the target \(F_1\) score is 0.2294 (target precision is is 13.48\% and target recall 76.84\%).
-That is a very poor result for the target data.
-We see that there probably is a huge domain discrepancy.
-Therefore, a pontentialy huge space for domain adaptation methods.
+Figure~\ref{lenet_losses} displays the training progress of our LeNet-5.
+We see that the network has converged and is not overfitting
+because the gap between the training and validation loss is small.
+The source \(F_1\) score in gradually improving meanwhile, the target \(F_1\) score suffers.
+
+The results\footnote{Note that all metrics (\(F_1\) score, precision, recall and confusion matrices) were computed on either the source or target validation sets in our experiments.} of our baseline are quite good on the source domain
+because the source \(F_1\) score is 0.9397
+(the source recall is 95.82\% and the source precision is 92.19\%).
+However, the target \(F_1\) score is 0.2294
+(the target precision is 13.48\% and the target recall 76.84\%).
+That is an inferior result for the target data in the light of source performance.
+We see that there probably is a considerable domain discrepancy,
+and, therefore, an opportunity for domain adaptation.
 
 \begin{table}
 \begin{center}
-\subfloat[][Source confusion matrix]{
+\subfloat[Confusion matrix for the source domain.]{
 \begin{tabular}{|l|r|r|}
 	\hline
-	Predicted class & \multicolumn{2}{c|}{Actual class} \\ \hline \hline
+	Predicted class & \multicolumn{2}{c|}{Actual class} \\
+	\hline \hline
 	& QSO & non-QSO \\ \hline
 	QSO & 6\,278 & 532 \\ \hline
 	non-QSO & 274 & 42\,916 \\ \hline
 \end{tabular}
 }
-\subfloat[][Target confusion matrix]{
+\subfloat[Confusion matrix for the target domain.]{
 \begin{tabular}{|l|r|r|}
 	\hline
-	Predicted class & \multicolumn{2}{c|}{Actual class} \\ \hline \hline
+	Predicted class & \multicolumn{2}{c|}{Actual class} \\
+	\hline \hline
 	& QSO & non-QSO \\ \hline
 	QSO & 146 & 937 \\ \hline
 	non-QSO & 44 & 48\,873 \\ \hline
 \end{tabular}
 }
 \end{center}
+\caption[Confusion matrices of the baseline model]{
+	Confusion matrices of the baseline model for the source and target validation sets.
+	We see the enormeous error on target domain
+	where the model predict 937 non-QSOs as QSOs and cannot identify 44 QSOs.
+}
 \end{table}
 
 \section{Experiments with Deep Domain Adaptation}
 
 We set the baseline result with classical CNN.
-Now, we apply four deep domain adaptation method to the same data
-to show if astronomical spectroscopy can benefit from domain adaptation
+Now, we apply four deep domain adaptation methods to the same data
+to analyse if astronomical spectroscopy can benefit from domain adaptation
 based on neural networks.
 
-We start with two discrepancy-based approach which are DDC and Deep.
-Then, we continue will DANN
-which is an adversarial-based domain adaptation method
+We start with two discrepancy-based approaches, which are DDC and Deep CORAL.
+Then, we continue will DANN, which is an adversarial-based domain adaptation method
 and we with reconstruction based DRCN.
-We conclude with evaluation and comparison of results.
+We conclude with the evaluation and comparison of results.
 
 \subsection{DDC: Deep Domain Confusion}
 
-Firts deep domain adaptation method is \textit{Deep Domain Confusion} (DDC).
+First deep domain adaptation method is \textit{Deep Domain Confusion} (DDC).
 DDC reduces the domain discrepancy (maximises domain confusion)
 by extending classification loss of a neural network with the MMD loss
 (see Equation~\ref{ddc_loss}).
-The MMD loss is enforced on \textit{adaptation layer}
+The MMD loss is enforced on the \textit{adaptation layer}
 that serves information bottleneck for domain confusion.
 More details on DDC are in Subsection~\ref{discrepancy_da}.
 
@@ -515,16 +539,16 @@ and extracted features from the first and second fully-connected layer
 (the last fully-connected layer has a trivial width)
 for all validation examples.
 Then, we computed MMD between the source and target data at each layer with the extracted features.
-The intuition is to place the adaptation layer after a layer with smallest MMD
+The intuition is to place the adaptation layer after a layer with the smallest MMD
 because low MMD means more domain invariant features.
-We measured that the MMD at the first fully-connected layer is 50.70
+We measured that the MMD at the first fully-connected layer is 50.70,
 while MMD at the second fully-connected layer is 53.33.
 Therefore, we will place the adaptation layer after the first fully-connected layer.
-Secondly, we have to optimise the width of the adaptataion layer.
-Therefore, we trained the LeNet with the adaptation layer of sizes
-from \(\{4, 8, 16, 32, 64\}\) excluding the low width of 2
-and not exceeding the output size of previous layer.
-The stepping is power of two as in the original paper.
+Secondly, we have to optimise the width of the adaptation layer.
+Therefore, we trained the LeNet-5 with the adaptation layer of sizes
+from \(\{4, 8, 16, 32, 64\}\), excluding the low width of 2
+and not exceeding the output size of the previous layer.
+The stepping is the power of two as in the original paper.
 Figure~\ref{adaptation_layer} plots the resulting MMD values for different setting
 and shows that the width 64 is the best.
 
@@ -533,43 +557,35 @@ It is the baseline CNN with the adaptation layer of width 64
 after the first fully-connected layer.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/adaptation_layer_width.pdf}
-	\caption{Width of the adatpation layer}
-	\label{adaptation_layer}
+\includegraphics[width=\textwidth]{img/adaptation_layer_width.pdf}
+\caption[Optimisation of the width of the adatpation layer]{
+	We employed the same metodology to optimise hyperparemetes as the original paper of DDC.
+	Therefore, we compute the MMD for different sizes of adaptation layers.
+	The scatter plot show the the size of 64 is the best closely followed by size of 8.
+}
+\label{adaptation_layer}
 \end{figure}
 
 Furthermore, we set the trade-off parameter \(\lambda\)
 between the binary cross entropy loss
-and the MMD loss to 0.25 as in the DDC experiments
-and trained the network in the same way as described in previous section~\ref{baseline}
-(Xavier initialisation, Adam optimizer, batch size 64 and 20 epochs).
-
-Figure~\ref{ddc_training} displays training progress of DDC
-which is correctly learning to classify.
-Moreover, we see that MMD is also minimalised in the bottom plot of Figure~\ref{ddc_mmds}
-while if we train the network without enforcing MMD loss (\(\lambda = 0\))
-then the MMD is growing as in the top plot of Figure~\ref{ddc_mmds}.
+and the MMD loss to 0.25 as in the DDC paper
+and trained the network in the same way as described in the previous Section~\ref{baseline}
+(Xavier initialisation, Adam optimiser, batch size 64 and 20 epochs).
 
 \begin{figure}
-\subfloat[][Losses]{
-\includegraphics[width=.5\textwidth]{img/ddc_losses.pdf}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{img/ddc_mmds.pdf}
+\end{center}
+\caption[Maximum mean discrepancy with and without MMD loss]{
+	This plot illustrate that enforcing the MMD loss has the expected effect. On the other hand, without the MMD loss, the MMD between the source and target domain gradually grows.
 }
-\subfloat[][Maximum mean discrepancy]{
-\includegraphics[width=.5\textwidth]{img/ddc_mmds.pdf}
 \label{ddc_mmds}
-}
-\caption{Training of DDC}
-\label{ddc_training}
 \end{figure}
 
-Although, training run as expected
-DDC achived poor result in comparison to baseline.
-The \(F_1\) score on source data is 0.9354 and on target 0.2005
-that is lower than the baseline in both cases.
-Precision on target is 11.51\% and
-the only imporovement is recall of value 77.89\%
-but that is probably caused by the decrease in precision.
-Table~\ref{ddc_confusion} shows a confusion matrix of the result.
+The training of DDC proceeded similarly to the baseline.
+Moreover, we see that MMD is also minimalised in the bottom plot of Figure~\ref{ddc_mmds}.
+On the other side, if we train the network without enforcing MMD loss (\(\lambda = 0\)),
+then the MMD is growing, as shown in the top plot of Figure~\ref{ddc_mmds}.
 
 \begin{table}
 \begin{center}
@@ -582,65 +598,79 @@ Table~\ref{ddc_confusion} shows a confusion matrix of the result.
 	non-QSO & 42 & 48\,672 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Target confusion matrix}
+\caption{Confusion matrix of DDC for target data}
 \label{ddc_confusion}
 \end{table}
+
+Although, training run as expected,
+DDC achieved an unfortunate result in comparison to baseline.
+The \(F_1\) score on the source data is 0.9354 and 0.2005 on the target data that is lower than the baseline in both cases.
+Precision on target is 11.51\%,
+and the only improvement is the recall of value 77.89\%,
+but the decrease in precision is probably caused by that.
 
 \subsection{Deep CORAL: Deep Correlation Alignment}
 
 \textit{Deep Correlation Alignment} (Deep CORAL) is very similar to DDC.
-While DDC aligns means of source and target distributions with MMD loss
-Deep CORAL aligns correlations with CORAL loss
+DDC aligns means of the source and target distributions with MMD loss
+while Deep CORAL aligns correlations with CORAL loss
 (see Equations~\ref{coral_loss} and \ref{deep_coral_loss}).
 Moreover, Deep CORAL applies the CORAL loss straight to a layer in a network
 not creating an adaptation layer.
-We implemented Deep CORAL with inspiration from original
+We implemented Deep CORAL with inspiration from the original
 code\footnote{Available from: \url{https://github.com/visionlearninggroup/CORAL}}
-and follow all the step described in corresponding paper~\cite{sun2016}.
+and followed all the step described in the corresponding paper~\cite{sun2016}.
 
 Originally, the architecture underlying Deep CORAL is AlexNet~\cite{krizhevsky2012}.
 There the CORAL loss was put on the last layer that has ten output units.
-However, our neural network has to have one output unit
+However, our neural network has to have one output unit,
 so applying CORAL loss does not make sense.
 Therefore, we applied the CORAL loss to the second fully-connected layer
 of our LeNet-5 architecture in Figure~\ref{lenet_5}.
 Then, we optimised the trade-off between classification and CORAL loss
 \(\lambda\) from \(\{0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001\}\).
-The best is \(\lambda = 0.0005\) which makes the calssification loss
-and the CORAL loss of similar magnitude as suggested by the paper
+The best is \(\lambda = 0.0005\),
+which makes the classification loss and the CORAL loss of similar magnitude as suggested by the paper
 (see Figure~\ref{deep_coral_losses}).
 Furthermore, we used the same batch size of value 128
 as in original experiments of Deep CORAL.
-The architecture is intialised in the same way as baseline
+The architecture is initialised in the same way as our baseline
 and optimised with Adam for 20 epochs.
 
-Firstly, we trained our Deep CORAL with \(\lambda = 0\) to see
-how the correlation alignment grows.
-Figure~\ref{deep_coral_coral} shows the same behavior of correlation alignment
-without enforcing the minimisation of correlation loss as in the original paper.
-Then, we carried out experiment with the best \(\lambda = 0.0005\)
-and obtained the training progress in Figure~\ref{deep_coral_losses}.
-However, the result are unsatisfactory as in the case of DDC.
-
 \begin{figure}
-\subfloat[][Training of Deep CORAL]{
-	\includegraphics[width=.5\textwidth]{img/deep-coral_losses.pdf}
-	\label{deep_coral_losses}
+\begin{center}
+\subfloat[
+	The original paper states that the classification loss and the CORAL loss should be almost the same at the end of training.
+	We show in this plot that the similarity can be achieved by setting \(\lambda = 0.0005\).
+	]{
+\includegraphics[width=0.75\textwidth]{img/deep-coral_losses.pdf}
+\label{deep_coral_losses}
+}\\
+\subfloat[
+	The CORAL statistic without enforcing the CORAL loss grow significantly in comparison to the scenario in the plot above
+	when the network is trained with the CORAL loss.
+]{
+\includegraphics[width=0.75\textwidth]{img/deep-coral_coral.pdf}
+\label{deep_coral_coral}
 }
-\subfloat[][CORAL with using CORAL loss]{
-	\includegraphics[width=.5\textwidth]{img/deep-coral_coral.pdf}
-	\label{deep_coral_coral}
-}
-\caption{Losses of Deep CORAL}
+\end{center}
+\caption{Training of Deep Correlation Alignment}
 \label{deep_coral_training}
 \end{figure}
 
-Source data \(F_1\) score is of value 0.9396
-that is almost the same as baseline
-and there is also a small but insignificant imporovement in the target \(F_1\) score
-which is of value 0.2509.
-Target precision is 14.97\% and target recall is 77.37\%.
-These values are gains but their are too small
+Firstly, we trained our Deep CORAL with \(\lambda = 0\) to see
+how the CORAL grows.
+Figure~\ref{deep_coral_coral} shows the same behaviour of CORAL
+without enforcing the minimisation of correlation loss as in the original paper.
+Then, we experimented with the best \(\lambda = 0.0005\)
+and obtained the training progress in Figure~\ref{deep_coral_losses}.
+However, the results are unsatisfactory, as in the case of DDC.
+
+Source data \(F_1\) score is 0.9396 that is almost the same as baseline.
+There is a small but insignificant improvement in the target \(F_1\) score,
+which is of value 0.2509
+(the target precision is 14.97\% and the target recall is 77.37\%).
+These values are gains, but they are too small,
 and the model with such small precision is useless for identification of QSOs.
 
 \begin{table}
@@ -654,71 +684,69 @@ and the model with such small precision is useless for identification of QSOs.
 	non-QSO & 43 & 48\,975 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Target confusion matrix of Deep CORAL}
+\caption{Confusion matrix of Deep CORAL for target data}
 \end{table}
 
 \subsection{DANN: Domain-Adversarial Neural Network}
 
 \textit{Domain-Adversarial Neural Network} (DANN) is an adversarial-based domain adaptation method.
 Our DANN architecture is depicted in Figure~\ref{dann_architecture}.
-It consist of a feature extractor, a predictor and a domain classifier
-that acts adversarially agains the feature extractor
+It consists of a feature extractor, a predictor and a domain classifier
+that acts adversarially against the feature extractor
 enforcing domain invariant representation.
 Further details are in Subsection~\ref{adversarial_da}.
 
-We code and schedule hyperparameters of DANN accoring to original
+We code and schedule hyperparameters of DANN according to the original
 implementation\footnote{Available from: \url{http://sites.skoltech.ru/compvision/projects/grl/}}
-and two papers where DANN was published~\cite{ganin2015, ganin2016}.
-The learning rate schedule for SGD with momentum:
+and the two papers where DANN was published~\cite{ganin2015, ganin2016}.
+Therefore, we implemented the learning rate schedule for SGD with momentum:
 
 \begin{equation}
 	\mu_p = \frac{\mu_0}{(1 + \alpha p)^\beta},
 \end{equation}
 
-where \(p\) is the training progress linearly changign from 0 to 1 in every iteration,
+where \(p\) is the training progress linearly changing from 0 to 1 in every iteration,
 initial learning rate \(\mu_0 = 0.01\), \(\alpha = 10\) and \(\beta = 0.75\).
-
-The domain adaptation parameter \(\lambda\) from Equation~\ref{dann_loss}
-start at 0 and grows to 1 with schedule:
+Furthermore, we also implemented the domain adaptation parameter \(\lambda\) from Equation~\ref{dann_loss} that starts at 0 and grows to 1 with the schedule:
 
 \begin{equation}
 	\lambda_p = \frac{2}{1 + e^{-\gamma p}} - 1,
 \end{equation}
 
 where \(p\) is again the training progress
-and \(\gamma\) that was set to 10 in the original paper.
-
-\begin{figure}
-	\subfloat[][Training losses of DANN]{
-		\includegraphics[width=.5\textwidth]{img/dann_losses.pdf}
-	}
-	\subfloat[][\(F_1\) score for different \(\gamma\)]{
-		\includegraphics[width=.5\textwidth]{img/dann_f1.pdf}
-	}
-	\caption{Training of DANN}
-	\label{dann_training}
-\end{figure}
+and \(\gamma\) that was set to 10 as in the original paper.
 
 Note that binary cross entropy loss is used for both the classification and domain loss.
 The optimiser is SGD with the learning rate schedule and momentum 0.9,
-the network is initialised as our baseline model
-and the batch size is 128 where first half are source domain data
-and the second half are the target domain data.
+the network is initialised as our baseline model,
+and the batch size is 128
+where the first half is source domain data and the second half is the target domain data.
 
-Although following the original impelementation as closely as possible
+\begin{figure}
+\begin{center}
+\subfloat[
+	Training losses of DANN
+]{\includegraphics[width=.75\textwidth]{img/dann_losses.pdf}}\\
+\subfloat[
+	\(F_1\) score for different \(\gamma\)
+]{\includegraphics[width=.75\textwidth]{img/dann_f1.pdf}}
+\end{center}
+\caption{Training of Domain-Adversarial Neural Network}
+\label{dann_training}
+\end{figure}
+
+Although following the original implementation as closely as possible
 and doing hyperparameter optimisation of \(\gamma \in \{0.1, 0.3, 1, 3, 10\}\)
 we were not able to get reasonable results with DANN.
 We infer from Figure~\ref{dann_training} that
-if gamma is high the training will diverge.
+if gamma is high, the training will diverge.
 On the other hand, if gamma is low \(F_1\) score regress.
 
 \subsection{DRCN: Deep Reconstruction-Classification Network}
 
-The last deep domain adaptation model is
-\textit{Deep Reconstruction-Classification Network} (DRCN)
-which uses reconstruction of target data as auxiliary task.
-Intuition is that the auxiliary task
-will enfore the network to capture also the structure of target data space.
+The last deep domain adaptation model is \textit{Deep Reconstruction-Classification Network} (DRCN)
+which uses a reconstruction of target data as an auxiliary task.
+Intuition is that the auxiliary task will enforce the network to capture also the structure of target data space.
 More detail are provided in~Subsection~\ref{reconstruction_da}.
 
 We followed the original implementation\footnote{Available from: \url{https://github.com/ghif/drcn}} of DRCN~\cite{ghifary2016}.
@@ -727,41 +755,34 @@ that is the order of training loops.
 The paper states that the network in an epoch
 should firstly be trained for classification task
 and then for reconstruction task.
-The implementation work the other way around.
+The implementation does it the other way around.
+We choose the working implementation and train for reconstruction first.
 
-We followed the working implementation and train for reconstruction first.
-Accordingly, we used Adam optimiser with batch size 128 for 20 epochs
-and Xavier initialisation.
+According to the implementation, we used Adam optimiser with batch size 128 for 20 epochs and Xavier initialisation.
 The trade-off parameter \(\lambda\) was set to 0.5.
-Figure~\ref{drcn_training} shows the training progress
-and Figure~\ref{reconstruction} show that the network is able to learn
-good representation that can supress noise
-while maitaining important spectral lines.
+Figure~\ref{reconstruction} shows that the network is able to learn a good representation that can suppress noise
+while maintaining important spectral lines.
 
 \begin{figure}
-\subfloat[][Validation reconstruction loss of DRCN]{
-	\includegraphics[width=.5\textwidth]{img/drcn_rec-loss.pdf}
-}
-\subfloat[][\(F_1\) score of DRCN and our LeNet-5]{
-	\includegraphics[width=.5\textwidth]{img/drcn_f1.pdf}
-	\label{drcn_f1}
-}
-\caption{Training of DRCN}
-\label{drcn_training}
+\begin{center}
+\includegraphics[width=.75\textwidth]{img/drcn_f1.pdf}
+\end{center}
+\caption{\(F_1\) score of DRCN and our LeNet-5}
+\label{drcn_f1}
 \end{figure}
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{img/reconstructed_spectra.pdf}
-	\caption{Spectra reconstructed with DRCN}
-	\label{reconstruction}
+\includegraphics[width=\textwidth]{img/reconstructed_spectra.pdf}
+\caption{Spectra reconstructed with convolutional autoencoder}
+\label{reconstruction}
 \end{figure}
 
-However, achiving poor results with previous methods
-we did not suppose to get good result now.
-Source \(F_1\) score is 0.9393 and target \(F_1\) score 0.2898
+However, achieving poor results with previous methods,
+we did not suppose to get a better result now.
+The source \(F_1\) score is 0.9393 and the target \(F_1\) score 0.2898,
 which is better than baseline
 but the development of the \(F_1\) score in Figure~\ref{drcn_f1} suggest no significance.
-Target precision is 17.97\% whcich si the best so far
+Target precision is 17.97\% which is the best so far,
 but target recall 74.74\% is the worst.
 
 \begin{table}
@@ -775,7 +796,7 @@ but target recall 74.74\% is the worst.
 	non-QSO & 48 & 49\,162 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Target confusion matrix of DRCN}
+\caption{Confusion matrix of DRCN for target data}
 \end{table}
 
 \section{Discussion of Experiments}

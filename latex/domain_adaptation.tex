@@ -337,9 +337,9 @@ where \(\mathcal{L}_C\) stands for classification loss on the labelled source da
 DDC introduces a hyperparameter~\(\lambda\)
 (\(\lambda = 0.25\) in experiments of DDC).
 
-\tikzstyle{block} = [align=center,draw=black,font=\tiny,rectangle,text centered]
-\tikzstyle{data} = [align=center,font=\tiny,text centered]
-\tikzstyle{loss} = [align=center,draw=black,font=\tiny,ellipse,text centered]
+\tikzstyle{block} = [align=center,draw=black,rectangle,text centered]
+\tikzstyle{data} = [align=center,text centered]
+\tikzstyle{loss} = [align=center,draw=black,ellipse,text centered]
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}[node distance=2.5cm]
@@ -350,7 +350,7 @@ DDC introduces a hyperparameter~\(\lambda\)
 	\node (al1) [block,right of=fe1] {adaptation\\layer};
 	\node (al2) [block,right of=fe2] {adaptation\\layer};
 	\node (clf) [block,right of=al1] {classifier};
-	\node (loss) [loss,right of=clf] {classification\\loss};
+	\node (loss) [loss,right of=clf] {prediction\\loss};
 	\node (mmd) [loss,right of=al2] {MMD\\loss};
 	\draw [->] (src) -- (fe1);
 	\draw [->] (trg) -- (fe2);
@@ -410,7 +410,7 @@ The CORAL loss can be even applied to several layers.
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}[node distance=2.5cm]
+\begin{tikzpicture}[node distance=3cm]
 	\node (src) [data] {source\\data};
 	\node (trg) [data, below of=src] {target\\data};
 	\node (fe1) [block,right of=src] {feature\\extractor};
@@ -560,7 +560,7 @@ to version fully compatible with SGD:
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}[node distance=2.5cm]
+\begin{tikzpicture}[node distance=3cm]
 	\node (src) [data] {source\\data};
 	\node (all) [data, below of=src] {all\\data};
 	\node (fe1) [block,right of=src] {feature\\extractor};
@@ -667,7 +667,7 @@ The objective~\ref{drcn_loss} can be optimised with SGD.
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}[node distance=2.5cm]
+\begin{tikzpicture}[node distance=3cm]
 	\node (src) [data] {source\\data};
 	\node (trg) [data, below of=src] {target\\data};
 	\node (enc1) [block,right of=src] {encoder};
