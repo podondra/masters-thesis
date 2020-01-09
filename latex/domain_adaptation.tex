@@ -18,11 +18,11 @@ Machine learning has a common assumption that training and test data are
 \textit{independent and identically distributed} (IID)
 that means data are drawn from the same feature space and the same distribution.~\cite{daume2006}
 When this assumption does not hold transfer learning or domain adaptation come into play.
-Moreover, from the biological point of the assumption seems to limit
+Moreover, from the biological point of view the assumption seems to limit
 because humans seem to have natural ways to transfer knowledge from previous experience to new challenges.~\cite{torrey2010}
 
 Transfer learning is defined in most papers regarding the survey by Pan and Yang~\cite{pan2010}.
-However, there is a more recent survey by Weiss et al.~\cite{weiss2016}
+There is a more recent survey by Weiss et al.~\cite{weiss2016}
 that has the benefit of containing newer methods than the survey by Pan and Yang~\cite{pan2010}.
 However, its definition of transfer learning and domain adaptation is the same.
 
@@ -31,18 +31,18 @@ as the ability of a system to recognise and apply knowledge and skill
 learned in previous problems to novel problems,
 and they introduce the notion of a \textit{domain} and a \textit{task}.
 
-A domain consists of a \textit{feature space} \(X\) and a marginal probability distribution \(P(X)\)
-(marginal express that it is summed over a label space \(Y\)).
-Therefore, a domain is as a tuple \(\mathcal{D} = [X, P(X)]\)
+A domain consists of a \textit{feature space} \(X\) and a \textit{marginal probability distribution} \(P(X)\)
+(marginal expresses that it is summed over a label space \(Y\)).
+Therefore, a domain is a tuple \(\mathcal{D} = [X, P(X)]\)
 of a~\(d\)-dimensional feature space \(X \subset \mathbb{R}^d\)
 and a~marginal probability distribution \(P(X)\).
 
 Given a specific domain \(\mathcal{D}\),
 a task consists of a \textit{label space} and an \textit{objective predictive function}
 which is not observed but learned from training data.
-Therefore, a task is also defined a tuple \(\mathcal{T} = [Y, P(Y | X)]\)
-where \(Y\) is a label space
-and \(P(Y | X)\) a conditional probability distribution
+Therefore, a task is also defined as a tuple \(\mathcal{T} = [Y, P(Y | X)]\)
+where \(Y\) is a \textit{label space}
+and \(P(Y | X)\) a \textit{conditional probability distribution}
 which we like to model as closely as possible.
 
 When we are given a transfer learning problem,
@@ -75,7 +75,7 @@ while the source and target tasks are the same.~\cite{pan2010}
 	}
 \end{figure}
 
-For example, we have introduced in previous Chapter~\ref{data_chapter}
+For example, we have introduced in Chapter~\ref{data_chapter}
 two domains.
 The source domain is the SDSS DR14 and the LAMOST DR5 is the target domain.
 We have shown that the domain have different data distribution
@@ -86,10 +86,9 @@ as we defined it.
 Lastly, Torrey and Shavlik in~\cite{torrey2010} warn
 that sometimes transfer learning can be harmful.
 Performance of our machine learning algorithm might suffer
-when the source and target domains or tasks need to be sufficiently related
-else negative transfer may occur.
+when the source and target domains or tasks are not sufficiently related.
 When the usage of source data degrades the performance,
-the situation is called \textit{negative transfer}.
+the situation is called a \textit{negative transfer}.
 On the other side, when the performance is improved,
 we talk about a \textit{positive transfer}.
 
@@ -102,7 +101,7 @@ It is assumed that source and target domains are not identical but related.
 If the domains were identical, it would be a standard machine learning problem.
 Therefore, there is a distribution discrepancy between the source and target domains.~\cite{csurka2017}
 
-More formally DA is the scenario of transfer learning
+More formally, DA is the scenario of transfer learning
 when the source \(\mathcal{D}^s = [X^s, P(X^s)]\)
 and target \(\mathcal{D}^t = [X^t, P(X^t)]\) domains
 are different (\(\mathcal{D}^s \ne \mathcal{D}^t\)),
@@ -114,7 +113,7 @@ In our case, the domains are different
 because the two archives have different target selection strategies,
 and the instruments are different (see Section~\ref{large_spec_surveys}).
 
-Based on the condition \(\mathcal{D}^s \ne \mathcal{D}^t\)
+Based on the condition \(\mathcal{D}^s \ne \mathcal{D}^t\),
 we categorise DA into \textit{homogeneous} and \textit{heterogeneous}.
 Homogeneous DA is setting in which the source \(X^s\)
 and target \(X^t\) feature spaces are the same (\(X^s = X^t\))
@@ -124,9 +123,8 @@ while in \textit{heterogeneous} DA, the source and target spaces are different
 Our case is the homogeneous DA,
 where the feature spaces are identical (\(X^s = X^t\)).
 Still, the source and target data have different distributions (\(P(X^s) \ne P(X^t)\)).
-Therefore, further, we focus on homogeneous DA
-because our spectra can be prepared into the same feature space \(\mathbb{R}^{3659}\)
-(see Section~\ref{data_preparation}).
+Therefore, further, we focus on the homogeneous DA
+because our spectra can be prepared into the same feature space \(\mathbb{R}^{3659}\).
 
 The second categorisation of DA is according to availability of labels in the target domain.
 Wang and Deng~\cite{wang2018} distinguish \textit{supervised}, \textit{semi-supervised} and \textit{unsupervised} DA:
@@ -144,7 +142,7 @@ because the LAMOST survey uses different criteria for identification of QSOs tha
 Now, we have all the tools to define our homogeneous unsupervised DA problem.
 In correspondence with~\cite{ganin2016},
 we consider a classification problem within an input space \(X\)
-with \(L\) possible labels from a set \(Y = {0, \dots, L - 1}\).
+with \(L\) possible labels from a set \(Y = \{0, \dots, L - 1\}\).
 The source \(\mathcal{D}_s\) and target \(\mathcal{D}_t\) domains
 have different distributions over \(X \times Y\).
 From the source and target domains
@@ -196,8 +194,6 @@ Therefore, there is enough space for specialised deep architectures for DA.
 The group of DA methods using neural networks is called \textit{deep DA}.
 Wang \& Deng define it in~\cite{wang2018} as methods that utilise deep neural networks to enhance the performance of DA.
 Deep DA architectures can be trained with \textit{backpropagation}.
-The idea is that they will learn domain invariant representation
-which is also discriminative for a common task.
 Such architectures can be trained with backpropagation
 learning domain invariant representation discriminative for a common task.
 For example, a network is extended with a particular loss, a domain classifier or an autoencoder as we will see next.
@@ -208,7 +204,7 @@ Then, Wang and Deng further improve and detail the categorisation into~\cite{wan
 \begin{itemize}
 	\item \textit{discrepancy-based} DA fine-tunes the neural network
 		with target data to diminish the domain shift;
-	\item \textit{adversarial-based} DA encourage domain confusion
+	\item \textit{adversarial-based} DA encourages domain confusion
 		by using discriminators with an adversarial objective; and
 	\item \textit{reconstruction-based} DA uses data reconstruction auxiliary task to learn domain invariant features.
 \end{itemize}
@@ -261,7 +257,7 @@ Next, we detail the three categories of DA according to the survey by Wang and D
 		};
 \end{tikzpicture}
 \caption[Mind map of deep domain adaptation]{
-	This mind map present categorisation of deep DA divided as we described it.
+	This mind map presents categorisation of deep DA divided as we described it.
 	Moreover, we also show concrete deep DA methods
 	that we have mentioned.
 }
@@ -319,11 +315,11 @@ MMD is a standard distribution distance metric which is empirically approximated
 	\label{maximam_mean_discrepancy}
 \end{equation}
 
-where \(\phi: X \to Z)\) is a feature extractor
+where \(\phi: X \to Z\) is a feature extractor
 from the data space \(X\) to a feature space \(Z\)
-that operates on both source and target \(\mathbf{x}_i \in X\) data points.
+that operates on both source and target data points \(\mathbf{x}_i \in X\).
 
-Using the adaptation layer with the domain loss function DDC claims to learn a representation
+Using the adaptation layer with the domain loss function, DDC claims to learn a representation
 that is both domain invariant but still offers strong semantic separation enabling to learn a robust label classifier.
 Therefore, the goal of DDC is to minimise a loss that incorporates both domain confusion loss and classification loss:
 
@@ -370,7 +366,7 @@ DDC introduces a hyperparameter~\(\lambda\)
 In comparison with DDC, \textit{Deep Correlation Alignment} (Deep CORAL) uses \textit{correlation alignment} (CORAL) instead of MMD.
 CORAL aligns the second-order statistic of the source and target distributions.
 Then, Deep CORAL is a deep neural network
-that incorporates a differentiable CORAL loss.
+that incorporates the differentiable CORAL loss.
 
 CORAL loss is defined as the distance between covariances of the source and target features extracted from a layer of a deep neural network:
 
@@ -459,22 +455,22 @@ It is based on the idea that useful features for DA
 cannot discriminate between source and target domains
 while maintaining discriminative properties for a classification task.
 
-DANN combines feature extractor, label predictor and domain classifier is a single architecture
+DANN combines a feature extractor, label predictor and domain classifier is a single architecture
 and can be trained with a standard backpropagation learning algorithm.
 Because of that, DANN proposes a \textit{gradient reversal layer} (GRL)
 that can be incorporated in almost any feed-forward neural network.
-Using the GRL DANN jointly optimises feature extractor and two discriminative classifiers.
+Using the GRL, DANN jointly optimises feature extractor and two discriminative classifiers.
 The first discriminative classifier is a label predictor that predicts classes and the second is a domain classifier
 that discriminates between source and target domains.
 
 The feature extractor is trained jointly to minimise a classification loss
 and maximise the loss of the domain classifier.
-Thus, domain classifier and feature extractor are learning in adversarial fashion to encourage domain invariant features.
+Thus, the domain classifier and feature extractor are learning in adversarial fashion to encourage domain invariant features.
 
 To define the learning objective let
 \(G_f(\cdot; \theta_f)\) be the neural network feature extractor with parameters \(\theta_f\),
 \(G_y(\cdot; \theta_y)\) be the label predictor with parameters \(\theta_y\)
-that takes features from \(G_f\) as inputs and output class probabilities,
+that takes features from \(G_f\) as inputs and outputs class probabilities,
 and \(G_d(\cdot; \theta_d)\) be the domain classifier with parameters \(\theta_d\). 
 Training DANN is optimising prediction loss and domain loss:
 
@@ -521,7 +517,7 @@ similar to \textit{stochastic gradient descent} (SGD):
 	\frac{\partial \mathcal{L}_d^i}{\partial \theta_d}.
 \end{align}
 
-However, the update in Equation~\ref{feature_parameters_update} has subtraction in it instead of addition.
+However, the update in Equation~\ref{feature_parameters_update} has subtraction in it instead of an addition.
 DANN overcomes the substruction by incorporating the GRL \(\mathcal{R}(\mathbf{z})\) between the feature extractor and domain classifier.
 The GRL has no parameters, and during forward propagation, the GRL acts as identity:
 
@@ -585,7 +581,7 @@ to version fully compatible with SGD:
 \label{reconstruction_da}
 
 The last group of methods is based on a data reconstruction auxiliary task.
-The reconstructor forces to find a shared representation of a source and target domains.
+The reconstructor forces to find a shared representation of the source and target domains.
 
 According to~\cite{wang2018}, subcategories are \textit{encoder-decoder} and
 \textit{adversarial} reconstruction.
@@ -609,9 +605,9 @@ because it is designed for image data while being more straightforward than DSN.
 
 \textit{Deep Reconstruction-Classification Network} (DRCN)~\cite{ghifary2016} is a CNN that learn both supervised source labelled classification and unsupervised target data reconstruction.
 The encoder is shared between both task, but decoding parameters are separate.
-The data reconstruction task is an auxiliary task supposed to help to learn good feature representation beneficial for DA scenario.
+The data reconstruction task is an auxiliary task supposed to help to learn good feature representation beneficial for the DA scenario.
 The intuition behind DRCN is
-that good representation for DA should capture both the properties for classification and data structure
+that good representation for DA should capture both the properties for classification and the data structure
 (reconstruct well the target domain).
 
 DRCN is composed of a label predictor for classification
@@ -738,10 +734,10 @@ It seems that active learning is crucial
 to achieving good result on astronomical data when using shallow DA methods.
 We speculate that it is the nature of scientific data
 that makes shallow DA method unusable on its own.
+
 Next, we describe a supervised deep DA  approach
 that shown to work well on astronomical data.
 Therefore, we think neural network DA methods should be promising in astronomy.
-
 The term transfer learning has been recently used in the context of deep learning.
 However, transfer learning in the context of deep learning means something more concrete than what we defined as transfer learning previously.
 Transfer learning in the context of deep learning is the specific situation
@@ -758,7 +754,7 @@ in a citizen science Galaxy Zoo project~\cite{lintott2010}.
 This transfer learning approach allowed them to lower the best error rate so far by 15\%.
 
 Next application of deep DA method in astronomy is \textit{Deep Variational Transfer} (DVT)~\cite{belhaj2018}.
-DVT is a semisupervised model based on variational autoencoders~\cite{kingma2014a} and mixture models.
+DVT is a semi-supervised model based on variational autoencoders~\cite{kingma2014a} and mixture models.
 They encode the source and target data into a shared latent space
 and identify clusters with the labelled target data.
 They experimented with light curves (time series of light intensity) of stars.
@@ -766,4 +762,4 @@ They experimented with light curves (time series of light intensity) of stars.
 This section shows that applications of deep DA in astronomy are minimal.
 Therefore, our work will be almost the first to explore the ideas
 of deep DA in astronomy with huge potential to discover
-either new tool for astronomy or a new challenge for deep DA.
+either a new tool for astronomy or a new challenge for deep DA.

@@ -114,7 +114,7 @@ Data of such size usually cannot fit into memory,
 and access to a disk significantly slows learning on a GPU.
 
 Therefore, we have subsampled the data to the size of ImageNet~\cite{russakovsky2015}.
-We believe that the size of ImageNet is more than reasonable
+We believe that the size of ImageNet is reasonable
 because ImageNet is the dataset that enables the superiority of deep neural network in computer vision.
 ImageNet has 1 million training examples, 50 thousand validation examples
 and 100 thousand testing examples.
@@ -188,7 +188,7 @@ and we do not want to suppress the relationship.
 
 \textit{Principal component analysis} (PCA) is a simple linear machine learning algorithm
 that is used either for visualisation or feature extraction by dimensionality reduction.
-PCA learns a representation whose features are uncorrelation with each other
+PCA learns a representation whose features are uncorrelated with each other
 and selects features with the largest variation.~\cite{goodfellow2016}
 We show the visualisation obtained with PCA in Figure~\ref{pca}.
 The plot shows that source data tent to concentrate in the middle
@@ -215,12 +215,12 @@ which is a guess about the number of neighbours of a data point.
 Typically, the optimal value is between 5 and 50.
 
 We reduce dimensionality with t-SNE for perplexities from \(\{5, 10, 30, 50, 100\}\).
-The best result was for the value 30,
+The best result was for the value 50,
 and the result is shown in Figure~\ref{tsne}.
-The t-SNE embedding has a similar structure to Figure~\ref{pca} of PCA.
+The t-SNE embedding has a similar structure as Figure~\ref{pca} of PCA.
 There are mostly source data in the centre and target data around it.
 However, the separation between the centre and edges seems to be larger.
-Still, there is the line component extending to the right.
+Still, there is the line component extending downward this time.
 
 t-SNE is often used in the papers presenting a deep domain adaptation methods
 to show how feature extracted from a higher layer in an adapted network
@@ -234,7 +234,7 @@ can be easily visually separated in a t-SNE visualisation.
 	Embedding of t-SNE of the same data
 	as in the reduction with PCA shows the very similar result as PCA.
 	However, there is more notable central sort of line component
-	extending to the right.
+	extending downward.
 	}
 \label{tsne}
 \end{figure}
@@ -269,7 +269,7 @@ As the baseline, we choose LeNet-5~\cite{lecun1998} convolutional neural network
 which was initially used to recognise handwritten digits of the MNIST dataset~\cite{lecun1998}.
 We have chosen the architecture of LeNet-5
 because it is the simplest model used in the DANN paper~\cite{ganin2016}.
-Thus, we will not need to create our architecture for DANN experiment.
+Thus, we will not need to create our architecture for the DANN experiment.
 However, the network is designed for processing of two-dimensional images
 while a spectrum is a one-dimensional image.
 Therefore, we have to substitute the two-dimensional convolutions with one-dimensional convolutions.
@@ -286,7 +286,7 @@ which we implemented in PyTorch~\cite{paszke2019} like all other models.
 \begin{figure}
 \begin{center}
 \subfloat[
-	The architecture of our LeNet-5 contains three two one-dimensional convolutional layers and three fully-connected layers.
+	The architecture of our LeNet-5 contains two one-dimensional convolutional layers and three fully-connected layers.
 	Both convolutional layers have a kernel size of 5 and are followed by a pooling layer.
 	The first one has 32  and the second 48 channels.
 	The two first fully-connected layers have outputs of sizes 100.
@@ -518,8 +518,8 @@ to analyse if astronomical spectroscopy can benefit from domain adaptation
 based on neural networks.
 
 We start with two discrepancy-based approaches, which are DDC and Deep CORAL.
-Then, we continue will DANN, which is an adversarial-based domain adaptation method
-and we with reconstruction based DRCN.
+Then, we continue with DANN, which is an adversarial-based domain adaptation method
+and with reconstruction-based DRCN.
 We conclude with the evaluation and comparison of results.
 
 \subsection{DDC: Deep Domain Confusion}
@@ -529,7 +529,7 @@ DDC reduces the domain discrepancy (maximises domain confusion)
 by extending classification loss of a neural network with the MMD loss
 (see Equation~\ref{ddc_loss}).
 The MMD loss is enforced on the \textit{adaptation layer}
-that serves information bottleneck for domain confusion.
+that serves as an information bottleneck for domain confusion.
 More details on DDC are in Subsection~\ref{discrepancy_da}.
 
 To select the size and placement of the adaptation layer,
@@ -557,7 +557,9 @@ It is the baseline CNN with the adaptation layer of width 64
 after the first fully-connected layer.
 
 \begin{figure}
-\includegraphics[width=\textwidth]{img/adaptation_layer_width.pdf}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{img/adaptation_layer_width.pdf}
+\end{center}
 \caption[Optimisation of the width of the adaptation layer]{
 	We employed the same methodology to optimise hyperparametes as the original paper of DDC.
 	Therefore, we compute the MMD for different sizes of adaptation layers.
@@ -619,12 +621,12 @@ Moreover, Deep CORAL applies the CORAL loss straight to a layer in a network
 not creating an adaptation layer.
 We implemented Deep CORAL with inspiration from the original
 code\footnote{Available from: \url{https://github.com/visionlearninggroup/CORAL}}
-and followed all the step described in the corresponding paper~\cite{sun2016}.
+and followed all the steps described in the corresponding paper~\cite{sun2016}.
 
 Originally, the architecture underlying Deep CORAL is AlexNet~\cite{krizhevsky2012}.
 There the CORAL loss was put on the last layer that has ten output units.
 However, our neural network has to have one output unit,
-so applying CORAL loss does not make sense.
+so applying CORAL loss to it does not make sense.
 Therefore, we applied the CORAL loss to the second fully-connected layer
 of our LeNet-5 architecture in Figure~\ref{lenet_5}.
 Then, we optimised the trade-off between classification and CORAL loss
@@ -698,7 +700,7 @@ Further details are in Subsection~\ref{adversarial_da}.
 
 We code and schedule hyperparameters of DANN according to the original
 implementation\footnote{Available from: \url{http://sites.skoltech.ru/compvision/projects/grl/}}
-and the two papers where DANN was published~\cite{ganin2015, ganin2016}.
+and the two papers where DANN was published~\cite{ganin2016, ganin2015}.
 Therefore, we implemented the learning rate schedule for SGD with momentum:
 
 \begin{equation}
@@ -732,7 +734,7 @@ where the first half is source domain data and the second half is the target dom
 ]{\includegraphics[width=.75\textwidth]{img/dann_f1.pdf}}
 \end{center}
 \caption[Training of Domain-Adversarial Neural Network]{
-	We could not converge the DANN while keeping the \(F_1\) score low
+	We could not converge DANN while keeping the \(F_1\) score low
 	even though we did hyperparameter optimisation.
 }
 \label{dann_training}
@@ -759,7 +761,7 @@ The paper states that the network in an epoch
 should firstly be trained for classification task
 and then for reconstruction task.
 The implementation does it the other way around.
-We choose the working implementation and train for reconstruction first.
+We choose the working implementation and trained for reconstruction first.
 
 According to the implementation, we used Adam optimiser with batch size 128 for 20 epochs and Xavier initialisation.
 The trade-off parameter \(\lambda\) was set to 0.5.
@@ -772,7 +774,7 @@ while maintaining important spectral lines.
 \end{center}
 \caption[Comparison of \(F_1\) score of DRCN and LeNet-5]{
 	Although the final \(F_1\) score of DRCN is higher than the \(F_1\) score of LeNet-5,
-	the full progress should that the result is not significant.
+	the full progress shows that the result is not significant.
 }
 \label{drcn_f1}
 \end{figure}
@@ -811,10 +813,10 @@ but target recall 74.74\% is the worst.
 
 \section{Discussion of Experiments}
 
-We summarise the results of baseline and deep domain adaptation methods in Table~\ref{summary}.
+We summarise the results of our baseline and deep domain adaptation methods in Table~\ref{summary}.
 We do not include the performance of DANN
 because we were not able to train it correctly even though we did hyperparameter optimisation.
-Table~\ref{summary} clearly shows that domain adaptation based on neural networks do cannot significantly improve performance in comparison to baseline
+Table~\ref{summary} clearly shows that domain adaptation based on neural networks cannot significantly improve performance in comparison to baseline
 when applied to astronomical data.
 We would expect an increase in a metric of at least 5\% as in the original paper of the deep domain methods on standard academical datasets.
 
@@ -830,14 +832,14 @@ We would expect an increase in a metric of at least 5\% as in the original paper
 	DRCN & 0.9393 & 0.2898 & 17.97 & 74.74 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Summary table of experiments results}
+\caption{Summary table of results of experiments}
 \label{summary}
 \end{table}
 
 Domain adaptation did not succeed,
 although the distributions of the source and target domain are different.
 We prove the difference in Subsection~\ref{comparison},
-where we compare the two surveys.
+where we compared the two surveys.
 Furthermore, we confirmed the discrepancy with dimensionality reduction techniques.
 All three PCA, t-SNE and UMAP shows that the data does not occupy a single cluster,
 but the SDSS spectra concentrate in the centre and LAMOST spectra on the edges
@@ -851,7 +853,7 @@ Deep CORAL achieved the same with the CORAL metric for distribution difference
 and DRCN learnt the auxiliary reconstruction task
 that is supposed to support domain adaptation
 (see Figure~\ref{reconstruction}).
-Moreover, even, hyperparameter optimisation cannot improve the performance of the deep domain adaptation methods.
+Moreover, hyperparameter optimisation cannot improve the performance of the deep domain adaptation methods.
 
 All in all, we hypothesise the problem is in the data.
 Therefore, we visualise the incorrect classification of the baseline
@@ -864,7 +866,7 @@ The rest of random spectra is in Appendix~\ref{spectra_appendix}.
 We believe the misclassifications are evidence for our conclusion
 that the problem is in our imperfect datasets.
 The incorrectly classified examples are QSOs not yet identified by a catalogue of the surveys.
-There are also spectra incorrectly classified as a QSO by the official catalogues.
+There are also spectra incorrectly classified as QSOs by the official catalogues.
 Moreover, there are spectra with artefacts
 (for example, missing measurements at paricular wavelengths, wrong extraction from CCD chip). 
 However, the original deep domain adaptation methods are trained on well-prepared and clean data.
@@ -888,16 +890,20 @@ after domain adaptation (see Section~\ref{da_astronomy}).
 \subfloat[Spectrum \texttt{spec-0967-52636-0214} is a QSO.]{
 \includegraphics[width=\textwidth]{img/src_fn/spec-0967-52636-0214.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-1199-52703-0317}]{
+\subfloat[Spectrum \texttt{spec-1199-52703-0317} has no visual features of a QSO.]{
 \includegraphics[width=\textwidth]{img/src_fn/spec-1199-52703-0317.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-1992-53466-0317}]{
+\subfloat[Spectrum \texttt{spec-1992-53466-0317} has no visual features of a QSO.]{
 \includegraphics[width=\textwidth]{img/src_fn/spec-1992-53466-0317.pdf}
 }\\
 \subfloat[Spectrum \texttt{spec-2656-54484-0409} is a QSO.]{
 \includegraphics[width=\textwidth]{img/src_fn/spec-2656-54484-0409.pdf}
 }
-\caption{The first part of sample of source false negatives}
+\caption[The first part of sample of source false negatives]{
+	The first part of sample of source false negatives resembles
+	that the CNN incorrectly classifies some true QSOs.
+	However, there are also spectra not clearly QSOs.
+}
 \label{src_fn}
 \end{figure}
 
@@ -908,7 +914,7 @@ after domain adaptation (see Section~\ref{da_astronomy}).
 \subfloat[Spectrum \texttt{spec-0560-52296-0199} is a QSO probably not yet identified by SDSS.]{
 \includegraphics[width=\textwidth]{img/src_fp/spec-0560-52296-0199.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-0620-52081-0223}]{
+\subfloat[Spectrum \texttt{spec-0620-52081-0223} has some emission lines, but it is not clear if it is a QSO.]{
 \includegraphics[width=\textwidth]{img/src_fp/spec-0620-52081-0223.pdf}
 }\\
 \subfloat[Spectrum \texttt{spec-0713-52178-0031} is a QSO probably not yet identified by SDSS.]{
@@ -917,7 +923,10 @@ after domain adaptation (see Section~\ref{da_astronomy}).
 \subfloat[Spectrum \texttt{spec-0769-54530-0502} is a QSO probably not yet identified by SDSS.]{
 \includegraphics[width=\textwidth]{img/src_fp/spec-0769-54530-0502.pdf}
 }
-\caption{The first of part sample of source false positives}
+\caption[The first of part sample of source false positives]{
+	The first of part sample of source false positives shows that
+	they contain a significant amount of QSOs not yet in the catalogues of QSOs of the SDSS.
+}
 \label{src_fp}
 \end{figure}
 
@@ -925,19 +934,22 @@ after domain adaptation (see Section~\ref{da_astronomy}).
 \subfloat[Spectrum \texttt{spec-56627-HD095359N274143M01\_sp09-194} is a QSO.]{
 \includegraphics[width=\textwidth]{img/trg_fn/spec-56627-HD095359N274143M01_sp09-194.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-57163-HD163226N274234M01\_sp13-166}]{
+\subfloat[Spectrum \texttt{spec-57163-HD163226N274234M01\_sp13-166} cannot be clearly identified as~a~QSO.]{
 \includegraphics[width=\textwidth]{img/trg_fn/spec-57163-HD163226N274234M01_sp13-166.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-57284-EG234322N101953M01\_sp04-154}]{
+\subfloat[Spectrum \texttt{spec-57284-EG234322N101953M01\_sp04-154} cannot be clearly identified as~a~QSO.]{
 \includegraphics[width=\textwidth]{img/trg_fn/spec-57284-EG234322N101953M01_sp04-154.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-57367-GAC100N13M1\_sp14-011}]{
+\subfloat[Spectrum \texttt{spec-57367-GAC100N13M1\_sp14-011} cannot be clearly identified as a~QSO.]{
 \includegraphics[width=\textwidth]{img/trg_fn/spec-57367-GAC100N13M1_sp14-011.pdf}
 }\\
-\subfloat[Spectrum \texttt{spec-57388-EG015238N022953M01\_sp11-103}]{
+\subfloat[Spectrum \texttt{spec-57388-EG015238N022953M01\_sp11-103} cannot be clearly identified as~a~QSO.]{
 \includegraphics[width=\textwidth]{img/trg_fn/spec-57388-EG015238N022953M01_sp11-103.pdf}
 }
-\caption{The first part of sample of target false negatives}
+\caption[The first part of sample of target false negatives]{
+	The first part of sample of target false negatives reveals
+	they contain spectra not clearly QSOs from the visual perspective.
+}
 \label{trg_fn}
 \end{figure}
 
@@ -957,6 +969,10 @@ after domain adaptation (see Section~\ref{da_astronomy}).
 \subfloat[Spectrum \texttt{spec-56344-GAC088N41V3\_sp08-176} contains bad pixels.]{
 \includegraphics[width=\textwidth]{img/trg_fp/spec-56344-GAC088N41V3_sp08-176.pdf}
 }
-\caption{The first part of sample of target false positives}
+\caption[The first part of sample of target false positives]{
+	The first part of sample of target false positives resembles
+	that they contain spectra with bad pixels
+	and a QSO that is not yet identified.
+}
 \label{trg_fp}
 \end{figure}
