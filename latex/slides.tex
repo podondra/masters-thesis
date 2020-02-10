@@ -47,7 +47,7 @@
 	\begin{block}{Domain Adaptation}
 		Given a source domain \(\mathcal{D}^s\) and task \(\mathcal{T}^s\) and a target domain \(\mathcal{D}^t\) and task \(\mathcal{T}^t\),
 		\textit{domain adaptation} is the scenario
-		when domains are different (\(\mathcal{D}^s \neq \mathcal{D}^t\))
+		when domains are different (\(\mathcal{D}^s \neq \mathcal{D}^t\)),
 		but tasks are the same (\(\mathcal{T}^s = \mathcal{T}^t\)).
 	\end{block}
 }
@@ -75,16 +75,16 @@
 \frame{
 	\frametitle{SDSS and LAMOST Datasets}
 	\begin{exampleblock}{Sloan Digital Sky Survey}
-		SDSS uses a 2.5~m telescope (USA) with~spectral resolution \(R \sim 1\,900\). Its data release 14 contains 4\,851\,200 spectra.
+		SDSS uses a 2.5~m telescope (USA) with~spectral resolution \(R \sim 1\,900\). Targets \textit{extragalactic} objects. Its data release 14 contains 4\,851\,200 spectra.
 	\end{exampleblock}
 	\begin{exampleblock}{Large Sky Area Multi-Object Fiber Spectroscopic Telescope}
-		LAMOST uses about 6.5~m telescope (China) with spectral resolution \(R \sim 1\,250\). Its data release 5 contains 9\,026\,365 spectra.
+		LAMOST uses about 6.5~m telescope (China) with spectral resolution \(R \sim 1\,250\). Targets both \textit{intra-} and \textit{extragalactic} objects. Its data release 5 contains 9\,026\,365 spectra.
 	\end{exampleblock}
 	\begin{alertblock}{Comparison of the Two Surveys}
 		Different instruments, sky coverage and mission.
 	\end{alertblock}
 	\begin{block}{Task: Quasar Identification}
-		Problem of \textit{quasar identification} in LAMOST (\textit{target domain}) using labelled data from SDSS (\textit{source domain}).
+		The problem of \textit{quasar identification} in~LAMOST (\textit{target domain}) using labelled data from SDSS (\textit{source domain}).
 	\end{block}
 }
 \frame{
@@ -93,14 +93,19 @@
 	(supermassive black hole surrounded by a gaseous accretion disk and jets).
 	\begin{figure}
 		\includegraphics[width=0.75\textwidth]{img/spec_3c_273.pdf}
-		\caption{Redshifted spectrum with characteristical combination of spectral lines (for example, Lyman-alpha forest).}
+		\caption{Redshifted spectrum with a characteristical combination of spectral lines (for example, Lyman-alpha forest).}
 	\end{figure}
 }
 \frame{
-	\frametitle{Sky Coverage Discrepancy}
 	\begin{figure}
-		\subfloat[Sky Coverage of SDSS]{\includegraphics[width=.5\textwidth]{img/sdss.pdf}}\\
-		\subfloat[Sky Coverage of LAMOST]{\includegraphics[width=.5\textwidth]{img/lamost.pdf}}
+		\includegraphics[width=\textwidth]{img/sdss.pdf}
+		\caption{Sky Coverage of SDSS}
+	\end{figure}
+}
+\frame{
+	\begin{figure}
+		\includegraphics[width=\textwidth]{img/lamost.pdf}
+		\caption{Sky Coverage of LAMOST}
 	\end{figure}
 }
 \frame{
@@ -113,8 +118,8 @@
 \section{Neural Networks in Domain Adaptation}
 \frame{
 	\frametitle{Deep Domain Adaptation}
-	Methods that utilise \textit{neural networks} ot enhance the performace of~domain adaptation.
-	\begin{block}{Categorisation}
+	Methods that utilise \textit{neural networks} to enhance the performance of~domain adaptation.
+	\begin{block}{Categorisation\footfullcite{wang2018}}
 		\begin{itemize}
 			\item \textit{discrepancy-based} (fine-tuning with target data)
 			\item \textit{adversarial-based} (discriminator with adversarial objective)
@@ -255,26 +260,38 @@
 			DANN & \multicolumn{4}{c|}{did not converge} \\ \hline
 			DRCN & 0.9393 & 0.2898 & 17.97 & 74.74 \\ \hline
 		\end{tabular}
-		\caption{Summary table of results of experiments}
+		\caption{
+			Summary table of results of experiments where
+			\textit{precision} is \(\frac{\mathit{TP}}{\mathit{TP} + \mathit{FP}}\)
+			and \textit{recall} is \(\frac{\mathit{TP}}{\mathit{TP} + \mathit{FN}}\).
+		}
 	\end{table}
 }
 \section{Problems of Scientific Data}
 \frame{
 	\frametitle{Problems of Scientific Data}
-	The methods did not achieve satisfoctory results although:
+	The methods did not achieve satisfactory results, although:
 	\begin{enumerate}
-		\item Dimensionality reduction shows discrepancy of distributions.
-		\item Statistics of the methods (MMD and CORAL are low, reconstruction works properly).
+		\item Dimensionality reduction shows the discrepancy of distributions.
+		\item Statistics of the methods (MMD and CORAL are low, reconstruction works appropriately).
 	\end{enumerate}
 	\begin{alertblock}{The cause of failure}
-		Imperfect and noisy datasets that is proved by \textit{misclassifications}.
+		Imperfect and noisy datasets proved by \textit{misclassifications}.
 	\end{alertblock}
 }
 \frame{
-	\frametitle{Misclassifications in the Datasets}
+	\frametitle{Misclassifications in Source False Positives}
 	\begin{figure}
-		\subfloat[Source false positive but is clearly QSO.]{
-			\includegraphics[width=\textwidth]{img/src_fp/spec-0560-52296-0199.pdf}
+		\subfloat{\includegraphics[width=\textwidth]{img/src_fp/spec-0560-52296-0199.pdf}}\\
+		\subfloat{\includegraphics[width=\textwidth]{img/src_fp/spec-2045-53350-0417.pdf}}
+		\caption{Source false positive but are QSOs.}
+	\end{figure}
+}
+\frame{
+	\frametitle{Misclassifications in Target False Positives}
+	\begin{figure}
+		\subfloat[Target false positive probably because of pipeline error.]{
+			\includegraphics[width=\textwidth]{img/trg_fp/spec-56609-VB035N38V1_sp08-037.pdf}
 		}\\
 		\subfloat[Target false positive but contains bad pixels.]{
 			\includegraphics[width=\textwidth]{img/trg_fp/spec-56225-GAC051N24B1_sp10-104.pdf}
@@ -282,10 +299,22 @@
 	\end{figure}
 }
 \frame{
+	\frametitle{Misclassifications in False Negatives}
+	\begin{figure}
+		\subfloat{\includegraphics[width=\textwidth]{img/src_fn/spec-1199-52703-0317.pdf}}\\
+		\subfloat{\includegraphics[width=\textwidth]{img/trg_fn/spec-57163-HD163226N274234M01_sp13-166.pdf}}
+		\caption{False negatives but no visual features of QSOs.}
+	\end{figure}
+}
+\frame{
 	\frametitle{Suggested Solutions}
 	\begin{enumerate}
-		\item New more robust architectures or learning algorithms.
+		\item New or more robust architectures or learning algorithms.
 		\item Automatic preprocessing algorithms based on machine learning.
 	\end{enumerate}
+	\begin{figure}
+	\includegraphics[width=.75\textwidth]{img/sdss_gaulme.jpg}
+	\caption{The SDSS telescope at night by~\href{https://www.sdss.org/wp-content/uploads/2016/07/sdss_gaulme1.jpg}{Patrick Gaulme} is licensed under~CC~BY~4.0.}
+	\end{figure}
 }
 \end{document}
