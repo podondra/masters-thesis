@@ -8,3 +8,7 @@ Deep Domain Confusion, Deep Correlation Alignment, Domain-Adversarial Network an
 However, our experiments reveal that these model cannot improve classification performance in comparison to a convolutional neural network that does not consider domain adaptation.
 Using dimensionality reduction, statistics of the selected methods and misclassifications,
 we show that the domain adaptation methods are not robust enough to be applied to the complex and dirty astronomical data.
+
+## Implementation
+
+Implementation of experiments is available at [podondra/qso](https://github.com/podondra/qso/tree/v0-thesis) repository.
